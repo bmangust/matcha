@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { act } from "react-dom/test-utils";
 
 const initialGeneralState = {
   id: "",
@@ -16,7 +15,6 @@ const initialGeneralState = {
   max_age: 0,
   images: null,
   liked_by: [],
-  liked_by: [],
   matches: [],
   position: { lat: 0, lon: 0 },
 };
@@ -26,7 +24,6 @@ const generalSlice = createSlice({
   initialState: initialGeneralState,
   reducers: {
     saveNewState(state, action) {
-      console.log(state);
       console.log(action.payload);
       Object.keys(initialGeneralState).forEach((key) => {
         if (key === "position") {
@@ -34,7 +31,6 @@ const generalSlice = createSlice({
         }
         state[key] = action.payload[key];
       });
-      console.log(state);
     },
   },
 });
