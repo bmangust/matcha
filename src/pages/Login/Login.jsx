@@ -19,8 +19,9 @@ const Login = (props) => {
       email: props.email,
       password: props.password,
     };
-    const response = await api.post("signin", JSON.stringify(body));
-    // console.log(response);
+    const response = await api.post("signin", body);
+    console.log(response.data);
+
     if (response.data.status === true) {
       props.saveNewState(response.data.data);
     } else {

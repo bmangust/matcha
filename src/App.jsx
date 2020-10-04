@@ -7,6 +7,7 @@ import { theme } from "./theme";
 
 import LoginContainter from "./pages/Login/LoginContainer";
 import RegisterContainer from "./pages/Register/RegisterContainer";
+import Main from "./containers/Main/Main";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Switch>
           <Route path="/register" component={RegisterContainer} exact />
           <Route path="/login" component={LoginContainter} exact />
+          <Route path="/main" component={Main} exact />
           <Route path="/" component={RegisterContainer} exact />
         </Switch>
       </React.Fragment>
