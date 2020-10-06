@@ -147,7 +147,7 @@ const Register = (props) => {
         select
       >
         {genders
-          .fileter((el) => el.value !== "both")
+          .filter((el) => el.value !== "both")
           .map((el) => (
             <MenuItem key={el.value} value={el.value}>
               {el.label}

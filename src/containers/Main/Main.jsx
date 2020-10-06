@@ -32,7 +32,6 @@ const useStyles = makeStyles({
   },
   View: {
     minHeight: "100vh",
-    width: "100vw",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -75,7 +74,6 @@ const Main = (props) => {
       <div className={classes.View}>{el.content}</div>
     </TabPanel>
   ));
-  console.log(renderedTabs);
 
   return (
     <Paper>
