@@ -2,8 +2,10 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Paper, AppBar, Tabs, Tab } from "@material-ui/core";
 import SwipeableViews from "react-swipeable-views";
-import { Search, Message, Settings } from "@material-ui/icons";
+import { Search, Message, Settings, ExitToApp } from "@material-ui/icons";
 import Strangers from "../../pages/Strangers/Strangers";
+import { api } from "../../axios";
+import Profile from "../../pages/Profile/Profile";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -27,6 +29,9 @@ const useStyles = makeStyles({
   },
   AppBar: {
     position: "fixed",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     left: 0,
     bottom: 0,
   },
@@ -55,18 +60,36 @@ const tabs = [
     index: 2,
     label: "Settings",
     icon: <Settings />,
-    content: <div>Settings</div>,
+    content: <Profile />,
   },
 ];
 
 const Main = (props) => {
   const classes = useStyles();
   const [selectedTab, setValue] = React.useState(0);
-  const handleChange = (event, nextValue) => {
+  const handleChange = async (event, nextValue) => {
+    if (nextValue === 3) {
+      console.log("logout");
+      try {
+        const res = await fetch("http://localhost:8080/api/v1/signout", {
+          method: "DELETE",
+        });
+        const json = await res.json();
+        console.log(json);
+        // api.delete("signout");
+      } catch (e) {
+        console.log(e);
+      }
+      return;
+    }
     setValue(nextValue);
   };
   const handleChangeIndex = (index) => {
     setValue(index);
+  };
+  const onLogoutHandler = (e) => {
+    e.preventDefault();
+    console.log("logout");
   };
   const renderedTabs = tabs.map((el) => <Tab icon={el.icon} key={el.index} />);
   const tabPanels = tabs.map((el) => (
@@ -87,6 +110,11 @@ const Main = (props) => {
       <AppBar className={classes.AppBar} position="static">
         <Tabs value={selectedTab} onChange={handleChange} centered>
           {renderedTabs}
+          <Tab
+            icon={<ExitToApp />}
+            key="logout"
+            onClick={(e) => onLogoutHandler(e)}
+          />
         </Tabs>
       </AppBar>
     </Paper>

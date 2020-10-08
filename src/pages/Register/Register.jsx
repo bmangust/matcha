@@ -66,14 +66,14 @@ const Register = (props) => {
       max_age: props.maxAge,
     };
     console.log(body);
-    const response = await api.post("signin", body);
+    const response = await api.post("signup", body);
     console.log(response.data);
-    history.push("/main");
-    // if (response.data.status === true) {
-    //   // props.saveNewState(response.data.data);
-    // } else {
-    //   // show notification on failure
-    // }
+    if (response.data.status === true) {
+      // props.saveNewState(response.data.data);
+      history.push("login");
+    } else {
+      // show notification on failure
+    }
     // dispatch call to server
     // props.onRegister();
   };

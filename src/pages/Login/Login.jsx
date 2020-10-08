@@ -10,7 +10,7 @@ const Login = (props) => {
   const history = useHistory();
 
   const onReginsterHandler = (history) => {
-    history.push("/register");
+    history.push("register");
   };
 
   const onLoginHandler = async (e) => {
@@ -24,6 +24,7 @@ const Login = (props) => {
 
     if (response.data.status === true) {
       props.saveNewState(response.data.data);
+      history.push("main");
     } else {
       // show notification on failure
     }

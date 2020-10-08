@@ -11,7 +11,15 @@ export const theme = createMuiTheme({
       main: pink[400],
     },
   },
-  // shape: {
-  //   borderRadius: 40,
-  // },
+  override: {
+    MuiButton: {
+      variant: "outlined",
+      color: "primary",
+      size: "large",
+    },
+  },
+  shape: {
+    borderRadius: 30,
+  },
+  spacing: 5,
 });

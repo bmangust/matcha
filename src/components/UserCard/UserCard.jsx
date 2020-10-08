@@ -44,6 +44,7 @@ const UserCard = (props) => {
               className={css.UserCard__image}
               src={el}
               key={el.split("/").pop()}
+              alt={el.split("/").pop()}
             />
           ))}
         </div>
