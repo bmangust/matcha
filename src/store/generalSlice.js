@@ -27,7 +27,8 @@ const generalSlice = createSlice({
       console.log(action.payload);
       Object.keys(initialGeneralState).forEach((key) => {
         if (key === "position") {
-          state.position.lat = action.payload.position;
+          state.position.lat = action.payload.position.lat;
+          state.position.lon = action.payload.position.lon;
         }
         state[key] = action.payload[key];
       });
