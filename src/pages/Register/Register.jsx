@@ -8,8 +8,25 @@ import {
   Typography,
   Slider,
   Box,
+  makeStyles,
+  Container,
+  List,
 } from "@material-ui/core";
-import { useStyles } from "../../style";
+import { theme } from "../../theme";
+
+const useStyles = makeStyles({
+  Input: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
+  Form: {
+    width: "50%",
+    textAlign: "center",
+  },
+  Button: {
+    margin: "8px",
+  },
+});
 
 const Register = (props) => {
   const classes = useStyles();
@@ -79,175 +96,167 @@ const Register = (props) => {
   };
 
   return (
-    <form className="screen__center">
-      <TextField
-        className={[classes.Margin, classes.Input].join(" ")}
-        type="email"
-        label="Email"
-        variant="outlined"
-        value={props.email}
-        onChange={(e) => props.changeEmail(e.target.value)}
-        required
-      />
-      <TextField
-        className={[classes.Margin, classes.Input].join(" ")}
-        type="text"
-        label="Phone"
-        variant="outlined"
-        value={props.phone}
-        onChange={(e) => props.changePhone(e.target.value)}
-        required
-      />
-      <TextField
-        className={[classes.Margin, classes.Input].join(" ")}
-        type="text"
-        label="Username"
-        variant="outlined"
-        value={props.username}
-        onChange={(e) => props.changeUsername(e.target.value)}
-        required
-      />
-      {/* <TextField
-        className={[classes.Margin, classes.Input].join(" ")}
+    <Container>
+      <form className={classes.Form}>
+        <List>
+          <TextField
+            className={classes.Input}
+            type="email"
+            label="Email"
+            value={props.email}
+            onChange={(e) => props.changeEmail(e.target.value)}
+            required
+          />
+          <TextField
+            className={classes.Input}
+            type="text"
+            label="Phone"
+            value={props.phone}
+            onChange={(e) => props.changePhone(e.target.value)}
+            required
+          />
+          <TextField
+            className={classes.Input}
+            type="text"
+            label="Username"
+            value={props.username}
+            onChange={(e) => props.changeUsername(e.target.value)}
+            required
+          />
+          {/* <TextField
+        className={classes.Input}
         type="text"
         label="First Name"
-        variant="outlined"
+        
         value={props.firstName}
         onChange={(e) => props.changeFirstName(e.target.value)}
         required
       />
       <TextField
-        className={[classes.Margin, classes.Input].join(" ")}
+        className={classes.Input}
         type="text"
         label="Last Name"
-        variant="outlined"
+        
         value={props.lastName}
         onChange={(e) => props.changeLastName(e.target.value)}
         required
       /> */}
-      <TextField
-        className={[classes.Margin, classes.Input].join(" ")}
-        type="date"
-        label="Birth Date"
-        variant="outlined"
-        InputLabelProps={{ shrink: true }}
-        value={getDate(props.birthDate)}
-        onChange={(e) => props.changeBirthDate(e.target.value)}
-        required
-      />
+          <TextField
+            className={classes.Input}
+            type="date"
+            label="Birth Date"
+            InputLabelProps={{ shrink: true }}
+            value={getDate(props.birthDate)}
+            onChange={(e) => props.changeBirthDate(e.target.value)}
+            required
+          />
 
-      <TextField
-        className={[classes.Margin, classes.Input].join(" ")}
-        type="select"
-        label="Gender"
-        variant="outlined"
-        value={props.gender}
-        onChange={(e) => props.changeGender(e.target.value)}
-        required
-        select
-      >
-        {genders
-          .filter((el) => el.value !== "both")
-          .map((el) => (
-            <MenuItem key={el.value} value={el.value}>
-              {el.label}
-            </MenuItem>
-          ))}
-      </TextField>
-      <TextField
-        className={[classes.Margin, classes.Input].join(" ")}
-        type="text"
-        label="Country"
-        variant="outlined"
-        value={props.country}
-        onChange={(e) => props.changeCountry(e.target.value)}
-        required
-      />
-      <TextField
-        className={[classes.Margin, classes.Input].join(" ")}
-        type="text"
-        label="City"
-        variant="outlined"
-        value={props.city}
-        onChange={(e) => props.changeCity(e.target.value)}
-        required
-      />
-      <TextField
-        className={[classes.Margin, classes.Input].join(" ")}
-        type="number"
-        label="Maximum search distance"
-        variant="outlined"
-        value={props.maxDist}
-        onChange={(e) => props.changeMaxDist(e.target.value)}
-        required
-      />
-      <TextField
-        className={[classes.Margin, classes.Input].join(" ")}
-        type="select"
-        label="Look for"
-        variant="outlined"
-        value={props.lookFor}
-        onChange={(e) => props.changeLookFor(e.target.value)}
-        required
-        select
-      >
-        {genders.map((el) => (
-          <MenuItem key={el.value} value={el.value}>
-            {el.label}
-          </MenuItem>
-        ))}
-      </TextField>
-      <Box className={[classes.Margin, classes.Input].join(" ")}>
-        <Typography id="range-slider" gutterBottom>
-          Search age range
-        </Typography>
-        <Slider
-          value={[props.minAge, props.maxAge]}
-          onChange={(e, value) => props.changeSearchAgeRange(value)}
-          valueLabelDisplay="auto"
-          aria-labelledby="range-slider"
-        />
-      </Box>
-      <TextField
-        className={[classes.Margin, classes.Input].join(" ")}
-        type="password"
-        label="Password"
-        variant="outlined"
-        value={props.password}
-        onChange={(e) => props.changePassword(e.target.value)}
-        required
-      />
-      <TextField
-        className={[classes.Margin, classes.Input].join(" ")}
-        type="password"
-        label="Confirm password"
-        variant="outlined"
-        value={props.confirm}
-        onChange={(e) => {
-          props.changeConfirmPassword(e.target.value);
-        }}
-        required
-      />
-      <Button
-        className={classes.Margin}
-        variant="contained"
-        color="primary"
-        size="large"
-        type="submit"
-        onClick={(e) => onRegisterHandler(e)}
-      >
-        Sign up
-      </Button>
-      <Button
-        className={classes.Margin}
-        variant="outlined"
-        color="primary"
-        size="large"
-        onClick={() => onLoginHandler(history)}
-      >
-        Already a member?
-      </Button>
-    </form>
+          <TextField
+            className={classes.Input}
+            type="select"
+            label="Gender"
+            value={props.gender}
+            onChange={(e) => props.changeGender(e.target.value)}
+            required
+            select
+          >
+            {genders
+              .filter((el) => el.value !== "both")
+              .map((el) => (
+                <MenuItem key={el.value} value={el.value}>
+                  {el.label}
+                </MenuItem>
+              ))}
+          </TextField>
+          <TextField
+            className={classes.Input}
+            type="text"
+            label="Country"
+            value={props.country}
+            onChange={(e) => props.changeCountry(e.target.value)}
+            required
+          />
+          <TextField
+            className={classes.Input}
+            type="text"
+            label="City"
+            value={props.city}
+            onChange={(e) => props.changeCity(e.target.value)}
+            required
+          />
+          <TextField
+            className={classes.Input}
+            type="number"
+            label="Maximum search distance"
+            value={props.maxDist}
+            onChange={(e) => props.changeMaxDist(e.target.value)}
+            required
+          />
+          <TextField
+            className={classes.Input}
+            type="select"
+            label="Look for"
+            value={props.lookFor}
+            onChange={(e) => props.changeLookFor(e.target.value)}
+            required
+            select
+          >
+            {genders.map((el) => (
+              <MenuItem key={el.value} value={el.value}>
+                {el.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <Box className={classes.Input}>
+            <Typography id="range-slider" gutterBottom>
+              Search age range
+            </Typography>
+            <Slider
+              value={[props.minAge, props.maxAge]}
+              onChange={(e, value) => props.changeSearchAgeRange(value)}
+              valueLabelDisplay="auto"
+              aria-labelledby="range-slider"
+            />
+          </Box>
+          <TextField
+            className={classes.Input}
+            type="password"
+            label="Password"
+            value={props.password}
+            onChange={(e) => props.changePassword(e.target.value)}
+            required
+          />
+          <TextField
+            className={classes.Input}
+            type="password"
+            label="Confirm password"
+            value={props.confirm}
+            onChange={(e) => {
+              props.changeConfirmPassword(e.target.value);
+            }}
+            required
+          />
+          <Button
+            className={classes.Button}
+            variant="contained"
+            color="primary"
+            size="large"
+            type="submit"
+            onClick={(e) => onRegisterHandler(e)}
+          >
+            Sign up
+          </Button>
+          <Button
+            className={classes.Button}
+            color="primary"
+            size="large"
+            onClick={() => onLoginHandler(history)}
+          >
+            Already a member?
+          </Button>
+        </List>
+      </form>
+    </Container>
   );
 };
 

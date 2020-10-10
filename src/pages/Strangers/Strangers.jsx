@@ -1,7 +1,16 @@
 import React from "react";
-import css from "./Strangers.module.css";
-
 import UserCard from "../../components/UserCard/UserCard";
+import { makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles({
+  Strangers: {
+    fontSize: "2rem",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    paddingBottom: "40px",
+  },
+});
 
 const strangers = [
   {
@@ -49,8 +58,9 @@ const strangers = [
 ];
 
 const Strangers = (props) => {
+  const classes = useStyles();
   return (
-    <div className={css.Strangers}>
+    <div className={classes.Strangers}>
       <h2>Strangers</h2>
       {strangers.map((el) => (
         <UserCard {...el} key={el.id} />
