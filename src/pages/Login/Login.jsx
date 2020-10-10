@@ -2,8 +2,41 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { api } from "../../axios";
 
-import { Button, TextField } from "@material-ui/core";
-import { useStyles } from "../../style";
+import {
+  Button,
+  TextField,
+  Container,
+  List,
+  ListItem,
+  makeStyles,
+} from "@material-ui/core";
+import { theme } from "../../theme";
+
+const useStyles = makeStyles({
+  Input: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
+  Form: {
+    width: "50%",
+    height: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  Button: {
+    margin: "8px",
+  },
+  List: {
+    width: "100%",
+  },
+  ListItem: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
 
 const Login = (props) => {
   const classes = useStyles();
@@ -31,45 +64,45 @@ const Login = (props) => {
   };
 
   return (
-    <form className="screen__center">
-      <TextField
-        className={classes.Margin}
-        type="email"
-        label="Email"
-        variant="outlined"
-        value={props.email}
-        onChange={(event) => props.changeEmail(event.target.value)}
-        required
-      />
-      <TextField
-        className={classes.Margin}
-        type="password"
-        label="Password"
-        variant="outlined"
-        value={props.password}
-        onChange={(event) => props.changePassword(event.target.value)}
-        required
-      />
-      <Button
-        className={classes.Margin}
-        variant="contained"
-        color="primary"
-        size="large"
-        type="submit"
-        onClick={(e) => onLoginHandler(e)}
-      >
-        Login
-      </Button>
-      <Button
-        className={classes.Margin}
-        variant="outlined"
-        color="primary"
-        size="large"
-        onClick={() => onReginsterHandler(history)}
-      >
-        Register
-      </Button>
-    </form>
+    <Container>
+      <form className={classes.Form}>
+        <List className={classes.List}>
+          <ListItem className={classes.ListItem}>
+            <TextField
+              type="email"
+              label="Email"
+              value={props.email}
+              onChange={(event) => props.changeEmail(event.target.value)}
+              required
+            />
+          </ListItem>
+          <ListItem className={classes.ListItem}>
+            <TextField
+              type="password"
+              label="Password"
+              value={props.password}
+              onChange={(event) => props.changePassword(event.target.value)}
+              required
+            />
+          </ListItem>
+          <ListItem className={classes.ListItem}>
+            <Button
+              className={classes.Button}
+              type="submit"
+              onClick={(e) => onLoginHandler(e)}
+            >
+              Login
+            </Button>
+            <Button
+              className={classes.Button}
+              onClick={() => onReginsterHandler(history)}
+            >
+              Register
+            </Button>
+          </ListItem>
+        </List>
+      </form>
+    </Container>
   );
 };
 
