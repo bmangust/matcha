@@ -3,13 +3,22 @@
   margin: 0;
   box-sizing: border-box;
   transition: 0.3s;
+  font-family: "Quicksand";
 }
+
+/* @font-face {
+  font-family: "Quicksand";
+  src: "../public/fonts/Quicksand-VariableFont_wght.ttf"
+    format("woff2-variations");
+  font-weight: 125 950;
+  font-stretch: 75% 125%;
+  font-style: normal;
+} */
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: "Quicksand", "Roboto", "Helvetica Neue", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -17,13 +26,4 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
-}
-
-.screen__center {
-  width: 100vw;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
