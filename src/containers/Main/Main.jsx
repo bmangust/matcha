@@ -1,27 +1,13 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, Paper, AppBar, Tabs, Tab } from "@material-ui/core";
+import { Paper, AppBar, Tabs, Tab } from "@material-ui/core";
 import SwipeableViews from "react-swipeable-views";
 import { Search, Message, Settings, ExitToApp } from "@material-ui/icons";
 import Strangers from "../../pages/Strangers/Strangers";
 import { api } from "../../axios";
 import Profile from "../../pages/Profile/Profile";
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <Box
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {children}
-    </Box>
-  );
-}
+import TabPanel from "../TabPanel/TabPanel";
+import { backgroundColor } from "../../theme";
 
 const useStyles = makeStyles({
   selectedTab: {
@@ -41,8 +27,11 @@ const useStyles = makeStyles({
     justifyContent: "center",
     alignItems: "center",
   },
+  Paper: {
+    borderRadius: 0,
+    backgroundColor: backgroundColor.background,
+  },
 });
-
 const tabs = [
   {
     index: 0,
@@ -66,30 +55,28 @@ const tabs = [
 
 const Main = (props) => {
   const classes = useStyles();
-  const [selectedTab, setValue] = React.useState(0);
+  const [selectedTab, setValue] = React.useState(2);
   const handleChange = async (event, nextValue) => {
     if (nextValue === 3) {
+      // dispatch logout
+
       console.log("logout");
-      try {
-        const res = await fetch("http://localhost:8080/api/v1/signout", {
-          method: "DELETE",
-        });
-        const json = await res.json();
-        console.log(json);
-        // api.delete("signout");
-      } catch (e) {
-        console.log(e);
-      }
+      // try {
+      //   const res = await fetch("http://localhost:8080/api/v1/signout", {
+      //     method: "DELETE",
+      //   });
+      //   const json = await res.json();
+      //   console.log(json);
+      //   api.delete("signout");
+      // } catch (e) {
+      //   console.log(e);
+      // }
       return;
     }
     setValue(nextValue);
   };
   const handleChangeIndex = (index) => {
     setValue(index);
-  };
-  const onLogoutHandler = (e) => {
-    e.preventDefault();
-    console.log("logout");
   };
   const renderedTabs = tabs.map((el) => <Tab icon={el.icon} key={el.index} />);
   const tabPanels = tabs.map((el) => (
@@ -99,7 +86,7 @@ const Main = (props) => {
   ));
 
   return (
-    <Paper>
+    <Paper className={classes.Paper}>
       <SwipeableViews
         enableMouseEvents
         index={selectedTab}
@@ -110,11 +97,7 @@ const Main = (props) => {
       <AppBar className={classes.AppBar} position="static">
         <Tabs value={selectedTab} onChange={handleChange} centered>
           {renderedTabs}
-          <Tab
-            icon={<ExitToApp />}
-            key="logout"
-            onClick={(e) => onLogoutHandler(e)}
-          />
+          <Tab icon={<ExitToApp />} key="logout" />
         </Tabs>
       </AppBar>
     </Paper>
