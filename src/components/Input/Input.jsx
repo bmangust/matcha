@@ -35,7 +35,12 @@ const getDate = (timestamp) => {
 const Input = (props) => {
   const classes = useStyles();
   const { type, label, name, values, value, onChange } = { ...props };
-  if (type === "text" || type === "number" || type === "email") {
+  if (
+    type === "text" ||
+    type === "number" ||
+    type === "email" ||
+    type === "password"
+  ) {
     return (
       <TextField
         type={type}
@@ -84,6 +89,8 @@ const Input = (props) => {
         />
       </Box>
     );
+  } else {
+    return null;
   }
 };
 

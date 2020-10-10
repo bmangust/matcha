@@ -41,6 +41,7 @@ const UpdateInfo = () => {
   const [city, setCity] = React.useState("");
   const [maxDistance, setMaxDistance] = React.useState(30);
   const [ageRange, setAgeRange] = React.useState([20, 30]);
+  const [password, setPassword] = React.useState("");
   const inputs = [
     {
       name: "username",
@@ -132,6 +133,15 @@ const UpdateInfo = () => {
       value: ageRange,
       onChange: (value) => {
         setAgeRange(value);
+      },
+    },
+    {
+      name: "password",
+      type: "password",
+      label: "Password",
+      value: password,
+      onChange: (e) => {
+        setPassword(e.target.value);
       },
     },
   ];
