@@ -87,6 +87,7 @@ const Login = (props) => {
           </ListItem>
           <ListItem className={classes.ListItem}>
             <Button
+              variant="contained"
               className={classes.Button}
               type="submit"
               onClick={(e) => onLoginHandler(e)}

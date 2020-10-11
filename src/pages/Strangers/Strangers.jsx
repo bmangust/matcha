@@ -1,6 +1,6 @@
 import React from "react";
 import UserCard from "../../components/UserCard/UserCard";
-import { makeStyles } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
   Strangers: {
@@ -8,7 +8,7 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    paddingBottom: "40px",
+    paddingBottom: "60px",
   },
 });
 
@@ -62,9 +62,11 @@ const Strangers = (props) => {
   return (
     <div className={classes.Strangers}>
       <h2>Strangers</h2>
-      {strangers.map((el) => (
-        <UserCard {...el} key={el.id} />
-      ))}
+      <Grid container item xs={10} spacing={3}>
+        {strangers.map((el) => (
+          <UserCard {...el} key={el.id} />
+        ))}
+      </Grid>
     </div>
   );
 };

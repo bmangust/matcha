@@ -55,22 +55,19 @@ const tabs = [
 
 const Main = (props) => {
   const classes = useStyles();
-  const [selectedTab, setValue] = React.useState(2);
+  const [selectedTab, setValue] = React.useState(0);
   const handleChange = async (event, nextValue) => {
     if (nextValue === 3) {
       // dispatch logout
 
       console.log("logout");
-      // try {
-      //   const res = await fetch("http://localhost:8080/api/v1/signout", {
-      //     method: "DELETE",
-      //   });
-      //   const json = await res.json();
-      //   console.log(json);
-      //   api.delete("signout");
-      // } catch (e) {
-      //   console.log(e);
-      // }
+      try {
+        // const json = await api.post("signout");
+        // console.log(json);
+        api.delete("signout");
+      } catch (e) {
+        console.log(e);
+      }
       return;
     }
     setValue(nextValue);
@@ -87,13 +84,13 @@ const Main = (props) => {
 
   return (
     <Paper className={classes.Paper}>
-      <SwipeableViews
+      {/* <SwipeableViews
         enableMouseEvents
         index={selectedTab}
         onChangeIndex={handleChangeIndex}
-      >
-        {tabPanels}
-      </SwipeableViews>
+      > */}
+      {tabPanels}
+      {/* </SwipeableViews> */}
       <AppBar className={classes.AppBar} position="static">
         <Tabs value={selectedTab} onChange={handleChange} centered>
           {renderedTabs}

@@ -12,7 +12,6 @@ const useStyles = makeStyles({
   UpdateInfo: {
     width: "100%",
     heigth: "100%",
-    backgroundColor: "white",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -146,7 +145,7 @@ const UpdateInfo = () => {
     },
   ];
   return (
-    <Container clasName={classes.UpdateInfo}>
+    <Container className={classes.UpdateInfo}>
       <List>
         {inputs.map((el) => (
           <ListItem key={el.name}>

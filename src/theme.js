@@ -34,19 +34,6 @@ export const theme = createMuiTheme({
         justifyContent: "center",
       },
     },
-    MuiFab: {
-      primary: {
-        "&$hover": {
-          backgroundColor: primaryColor.light,
-        },
-      },
-      hover: {
-        backgroundColor: primaryColor.light,
-        "&$hover": {
-          backgroundColor: primaryColor.light,
-        },
-      },
-    },
   },
   shape: {
     borderRadius: 30,
