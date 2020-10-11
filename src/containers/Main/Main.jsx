@@ -8,6 +8,7 @@ import { api } from "../../axios";
 import Profile from "../../pages/Profile/Profile";
 import TabPanel from "../TabPanel/TabPanel";
 import { backgroundColor } from "../../theme";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
   selectedTab: {
@@ -54,17 +55,14 @@ const tabs = [
 ];
 
 const Main = (props) => {
+  const history = useHistory();
   const classes = useStyles();
   const [selectedTab, setValue] = React.useState(0);
   const handleChange = async (event, nextValue) => {
     if (nextValue === 3) {
-      // dispatch logout
-
-      console.log("logout");
       try {
-        // const json = await api.post("signout");
-        // console.log(json);
         api.delete("signout");
+        history.push("/login");
       } catch (e) {
         console.log(e);
       }

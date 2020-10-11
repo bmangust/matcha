@@ -5,7 +5,7 @@ const initialGeneralState = {
   email: "",
   phone: "",
   username: "",
-  birthDate: 0,
+  birth_date: 0,
   gender: "",
   country: "",
   city: "",

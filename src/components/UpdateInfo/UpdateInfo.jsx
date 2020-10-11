@@ -6,6 +6,7 @@ import {
   Button,
 } from "@material-ui/core";
 import React from "react";
+import { connect } from "react-redux";
 import Input from "../Input/Input";
 
 const useStyles = makeStyles({
@@ -28,18 +29,18 @@ const saveUserInfo = () => {
   console.log("[Update info] saving info");
 };
 
-const UpdateInfo = () => {
+const UpdateInfo = (props) => {
   const classes = useStyles();
-  const [username, setUsername] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [phone, setPhone] = React.useState("");
-  const [birthDate, setBirthdate] = React.useState(1577836800000);
-  const [gender, setGender] = React.useState("male");
-  const [searchFor, setSearchFor] = React.useState("female");
-  const [country, setCountry] = React.useState("");
-  const [city, setCity] = React.useState("");
-  const [maxDistance, setMaxDistance] = React.useState(30);
-  const [ageRange, setAgeRange] = React.useState([20, 30]);
+  const [username, setUsername] = React.useState(props.username);
+  const [email, setEmail] = React.useState(props.email);
+  const [phone, setPhone] = React.useState(props.phone);
+  const [birthDate, setBirthdate] = React.useState(props.birthDate);
+  const [gender, setGender] = React.useState(props.gender);
+  const [searchFor, setSearchFor] = React.useState(props.lookFor);
+  const [country, setCountry] = React.useState(props.country);
+  const [city, setCity] = React.useState(props.city);
+  const [maxDistance, setMaxDistance] = React.useState(props.maxDist);
+  const [ageRange, setAgeRange] = React.useState([props.minAge, props.maxAge]);
   const [password, setPassword] = React.useState("");
   const inputs = [
     {
@@ -162,4 +163,20 @@ const UpdateInfo = () => {
   );
 };
 
-export default UpdateInfo;
+const mapStateToProps = (state) => ({
+  email: state.general.email,
+  username: state.general.username,
+  phone: state.general.phone,
+  // firstName: state.general.firstName,
+  // lastName: state.general.lastName,
+  birthDate: state.general.birth_date,
+  gender: state.general.gender,
+  country: state.general.country,
+  city: state.general.city,
+  maxDist: state.general.max_dist,
+  lookFor: state.general.look_for,
+  minAge: state.general.min_age,
+  maxAge: state.general.max_age,
+});
+
+export default connect(mapStateToProps)(UpdateInfo);
