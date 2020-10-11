@@ -7,6 +7,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { connect } from "react-redux";
+import { api } from "../../axios";
 import Input from "../Input/Input";
 
 const useStyles = makeStyles({
@@ -25,10 +26,6 @@ const useStyles = makeStyles({
   },
 });
 
-const saveUserInfo = () => {
-  console.log("[Update info] saving info");
-};
-
 const UpdateInfo = (props) => {
   const classes = useStyles();
   const [username, setUsername] = React.useState(props.username);
@@ -36,7 +33,7 @@ const UpdateInfo = (props) => {
   const [phone, setPhone] = React.useState(props.phone);
   const [birthDate, setBirthdate] = React.useState(props.birthDate);
   const [gender, setGender] = React.useState(props.gender);
-  const [searchFor, setSearchFor] = React.useState(props.lookFor);
+  const [lookFor, setLookFor] = React.useState(props.lookFor);
   const [country, setCountry] = React.useState(props.country);
   const [city, setCity] = React.useState(props.city);
   const [maxDistance, setMaxDistance] = React.useState(props.maxDist);
@@ -90,13 +87,13 @@ const UpdateInfo = (props) => {
       },
     },
     {
-      name: "searchFor",
+      name: "lookFor",
       type: "select",
       label: "I look for",
       values: ["male", "female", "both"],
-      value: searchFor,
+      value: lookFor,
       onChange: (e) => {
-        setSearchFor(e.target.value);
+        setLookFor(e.target.value);
       },
     },
     {
@@ -145,6 +142,31 @@ const UpdateInfo = (props) => {
       },
     },
   ];
+
+  const saveUserInfo = async (e) => {
+    e.preventDefault();
+    const body = {
+      id: props.id,
+      email: email,
+      username: username,
+      birth_date: birthDate,
+      phone: phone,
+      gender: gender,
+      country: country,
+      city: city,
+      max_dist: maxDistance,
+      look_for: lookFor,
+      min_age: ageRange[0],
+      max_age: ageRange[1],
+    };
+    if (password.length) {
+      body.password = password;
+    }
+    console.log("[UpdateInfo] update user info");
+    console.log(body);
+    const response = await api.post("user", body);
+    console.log(response.data);
+  };
   return (
     <Container className={classes.UpdateInfo}>
       <List>
@@ -164,6 +186,7 @@ const UpdateInfo = (props) => {
 };
 
 const mapStateToProps = (state) => ({
+  id: state.general.id,
   email: state.general.email,
   username: state.general.username,
   phone: state.general.phone,

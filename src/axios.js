@@ -5,13 +5,14 @@ const port = 8080;
 
 export const api = axios.create({
   baseURL: `http://${host}:${port}/api/v1/`,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
-    // "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, DELETE",
   },
 });
 
 export const media = axios.create({
   baseURL: `http://${host}:${port}/api/media`,
+  withCredentials: true,
   headers: { "Content-Type": "application/json" },
 });
