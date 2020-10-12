@@ -72,7 +72,7 @@ const Register = (props) => {
       email: props.email,
       username: props.username,
       password: props.password,
-      birth_date: props.birthDate / 10,
+      birth_date: props.birthDate,
       phone: props.phone,
       gender: props.gender,
       country: props.country,

@@ -73,6 +73,7 @@ const Input = (props) => {
         label="Birth Date"
         InputLabelProps={{ shrink: true }}
         value={getDate(value)}
+        onChange={(e) => onChange(e)}
       />
     );
   } else if (type === "slider") {

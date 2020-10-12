@@ -9,6 +9,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { api } from "../../axios";
 import Input from "../Input/Input";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles({
   UpdateInfo: {
@@ -27,6 +28,7 @@ const useStyles = makeStyles({
 });
 
 const UpdateInfo = (props) => {
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [username, setUsername] = React.useState(props.username);
   const [email, setEmail] = React.useState(props.email);
@@ -39,6 +41,17 @@ const UpdateInfo = (props) => {
   const [maxDistance, setMaxDistance] = React.useState(props.maxDist);
   const [ageRange, setAgeRange] = React.useState([props.minAge, props.maxAge]);
   const [password, setPassword] = React.useState("");
+ 
+  const changeBirthDate = (newDate) => {
+    let date = null;
+    if (typeof newDate === 'string' && newDate.indexOf('-') === -1) {
+      date = new Date(+newDate).getTime();
+    } else {
+      date = new Date(newDate).getTime();
+    }
+    if (date && !isNaN(date)) setBirthdate(date);
+  };
+
   const inputs = [
     {
       name: "username",
@@ -60,7 +73,7 @@ const UpdateInfo = (props) => {
     },
     {
       name: "phone",
-      type: "number",
+      type: "text",
       label: "Phone",
       value: phone,
       onChange: (e) => {
@@ -73,7 +86,7 @@ const UpdateInfo = (props) => {
       label: "Birth date",
       value: birthDate,
       onChange: (e) => {
-        setBirthdate(e.target.value);
+        changeBirthDate(e.target.value)
       },
     },
     {
@@ -166,7 +179,15 @@ const UpdateInfo = (props) => {
     console.log(body);
     const response = await api.post("user", body);
     console.log(response.data);
+
+    if (response.data.status) {
+      enqueueSnackbar("Successfully saved!", { variant: "success" });
+    } else {
+      console.log(response.data);
+      enqueueSnackbar("Server error", { variant: "error" });
+    }
   };
+
   return (
     <Container className={classes.UpdateInfo}>
       <List>
