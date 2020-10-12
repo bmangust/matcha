@@ -1,6 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { api } from "../../axios";
+import { useSnackbar } from "notistack";
 
 import {
   Button,
@@ -39,6 +40,7 @@ const useStyles = makeStyles({
 });
 
 const Login = (props) => {
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const history = useHistory();
 
@@ -59,7 +61,7 @@ const Login = (props) => {
       props.saveNewState(response.data.data);
       history.push("main");
     } else {
-      // show notification on failure
+      enqueueSnackbar("Email or password is wrong", {variant: 'error'});
     }
   };
 

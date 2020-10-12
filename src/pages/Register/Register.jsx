@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useHistory } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import { api } from "../../axios";
 import {
   Button,
@@ -29,6 +30,7 @@ const useStyles = makeStyles({
 });
 
 const Register = (props) => {
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const history = useHistory();
 
@@ -86,13 +88,10 @@ const Register = (props) => {
     const response = await api.post("signup", body);
     console.log(response.data);
     if (response.data.status === true) {
-      // props.saveNewState(response.data.data);
       history.push("login");
     } else {
-      // show notification on failure
+      enqueueSnackbar(response.data.data, {variant: 'error'});
     }
-    // dispatch call to server
-    // props.onRegister();
   };
 
   return (
