@@ -8,19 +8,22 @@ import { theme } from "./theme";
 import LoginContainter from "./pages/Login/LoginContainer";
 import RegisterContainer from "./pages/Register/RegisterContainer";
 import Main from "./containers/Main/Main";
+import { SnackbarProvider } from "notistack";
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <React.Fragment>
-        <CssBaseline />
-        <Switch>
-          <Route path="/register" component={RegisterContainer} exact />
-          <Route path="/login" component={LoginContainter} exact />
-          <Route path="/main" component={Main} exact />
-          <Route path="/" component={RegisterContainer} exact />
-        </Switch>
-      </React.Fragment>
+      <SnackbarProvider maxSnack={3}>
+        <React.Fragment>
+          <CssBaseline />
+          <Switch>
+            <Route path="/register" component={RegisterContainer} exact />
+            <Route path="/login" component={LoginContainter} exact />
+            <Route path="/main" component={Main} exact />
+            <Route path="/" component={RegisterContainer} exact />
+          </Switch>
+        </React.Fragment>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }
