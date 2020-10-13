@@ -7,9 +7,11 @@ import {
   Badge,
   Fab,
 } from "@material-ui/core";
+import { useSnackbar } from "notistack";
 import PublishIcon from "@material-ui/icons/Publish";
 import React from "react";
-import { api } from "../../axios";
+import { connect } from "react-redux";
+import { api, media } from "../../axios";
 import UpdateInfo from "../../components/UpdateInfo/UpdateInfo";
 import TabPanel from "../../containers/TabPanel/TabPanel";
 import { backgroundColor, primaryColor } from "../../theme";
@@ -56,7 +58,8 @@ const buttons = [
   },
 ];
 
-const Profile = () => {
+const Profile = (props) => {
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [currentTab, setCurrentTab] = React.useState(0);
 
@@ -64,8 +67,33 @@ const Profile = () => {
     setCurrentTab(next);
   };
 
-  const changeAvatarHandler = (e) => {
-    console.log("[Profile] change avatar");
+  const changeAvatarHandler = async (e) => {
+    const image = e.target.files[0];
+    if (image.size > 1000000) {
+      enqueueSnackbar("The file is larger than 1MB", { variant: "error" });
+    }
+    const base64Image = await toBase64(image);
+    const data = {
+      id: props.id,
+      isAvatar: true,
+      user_image: base64Image,
+    };
+
+    console.log(data);
+    const res = await media.post("", data, { withCredentials: false });
+    console.log(res);
+    // enqueueSnackbar("The file was uploaded", { variant: "success" });
+  };
+
+  const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+
+  const showSnackbar = (message, variant = "success") => () => {
+    enqueueSnackbar(message, { variant: variant });
   };
 
   const tabs = buttons.map((el, index) => (
@@ -78,6 +106,14 @@ const Profile = () => {
     </TabPanel>
   ));
 
+  const getUsers = async () => {
+    const res = await api.get("strangers");
+    console.log(res.data);
+  };
+
+  const avatar = (props.images && props.images[0]) ||
+        "https://avatarfiles.alphacoders.com/253/253160.jpg";
+
   return (
     <Container className={classes.Profile}>
       <h2>Profile</h2>
@@ -89,7 +125,12 @@ const Profile = () => {
           horizontal: "right",
         }}
         badgeContent={
-          <Fab color="primary" aria-label="upload image" component="label">
+          <Fab
+            color="primary"
+            aria-label="upload image"
+            component="label"
+            onChange={(e) => changeAvatarHandler(e)}
+          >
             <PublishIcon />
             <input type="file" style={{ display: "none" }} />
           </Fab>
@@ -98,7 +139,7 @@ const Profile = () => {
         <Avatar
           className={classes.Avatar}
           alt="Travis Howard"
-          src="https://avatarfiles.alphacoders.com/253/253160.jpg"
+          src={avatar}
         />
       </Badge>
 
@@ -110,8 +151,14 @@ const Profile = () => {
         {tabs}
       </Tabs>
       {tabPanels}
+      <Fab onClick={getUsers} >GET</Fab>
     </Container>
   );
 };
 
-export default Profile;
+const mapStateToProps = (state) => ({
+  id: state.general.id,
+  images: state.general.images,
+});
+
+export default connect(mapStateToProps)(Profile);
