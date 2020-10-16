@@ -5,9 +5,6 @@ import { Grid, makeStyles } from "@material-ui/core";
 const useStyles = makeStyles({
   Strangers: {
     fontSize: "2rem",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
     paddingBottom: "60px",
   },
 });
@@ -60,14 +57,18 @@ const strangers = [
 const Strangers = (props) => {
   const classes = useStyles();
   return (
-    <div className={classes.Strangers}>
-      <h2>Strangers</h2>
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      className={classes.Strangers}
+    >
       <Grid container item xs={10} spacing={3}>
         {strangers.map((el) => (
           <UserCard {...el} key={el.id} />
         ))}
       </Grid>
-    </div>
+    </Grid>
   );
 };
 

@@ -12,9 +12,9 @@ import PublishIcon from "@material-ui/icons/Publish";
 import React from "react";
 import { connect } from "react-redux";
 import { api, media } from "../../axios";
-import UpdateInfo from "../../components/UpdateInfo/UpdateInfo";
 import TabPanel from "../../containers/TabPanel/TabPanel";
 import { backgroundColor, primaryColor } from "../../theme";
+import UpdateInfo from "../../containers/UpdateInfo/UpdateInfo";
 
 const useStyles = makeStyles({
   indicator: {
@@ -80,21 +80,18 @@ const Profile = (props) => {
     };
 
     console.log(data);
-    const res = await media.post("", data, { withCredentials: false });
+    const res = await media.post("", data);
     console.log(res);
-    // enqueueSnackbar("The file was uploaded", { variant: "success" });
+    enqueueSnackbar("The file was uploaded", { variant: "success" });
   };
 
-  const toBase64 = file => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
-
-  const showSnackbar = (message, variant = "success") => () => {
-    enqueueSnackbar(message, { variant: variant });
-  };
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
 
   const tabs = buttons.map((el, index) => (
     <Tab disableRipple label={el.text} key={index} />
@@ -111,13 +108,12 @@ const Profile = (props) => {
     console.log(res.data);
   };
 
-  const avatar = (props.images && props.images[0]) ||
-        "https://avatarfiles.alphacoders.com/253/253160.jpg";
+  const avatar =
+    (props.images && props.images[0]) ||
+    "https://avatarfiles.alphacoders.com/253/253160.jpg";
 
   return (
     <Container className={classes.Profile}>
-      <h2>Profile</h2>
-
       <Badge
         overlap="circle"
         anchorOrigin={{
@@ -136,11 +132,7 @@ const Profile = (props) => {
           </Fab>
         }
       >
-        <Avatar
-          className={classes.Avatar}
-          alt="Travis Howard"
-          src={avatar}
-        />
+        <Avatar className={classes.Avatar} alt="Travis Howard" src={avatar} />
       </Badge>
 
       <Tabs
@@ -151,7 +143,7 @@ const Profile = (props) => {
         {tabs}
       </Tabs>
       {tabPanels}
-      <Fab onClick={getUsers} >GET</Fab>
+      <Fab onClick={getUsers}>GET</Fab>
     </Container>
   );
 };

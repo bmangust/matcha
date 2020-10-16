@@ -14,7 +14,6 @@ import {
 import ChevronLeftRoundedIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightRoundedIcon from "@material-ui/icons/ChevronRight";
 import { FavoriteOutlined } from "@material-ui/icons";
-import { secondaryColor } from "../../theme";
 
 const useStyles = makeStyles({
   UserCard: {
@@ -82,7 +81,7 @@ const UserCard = (props) => {
   const [displayedImage, setDisplayedImage] = React.useState(0);
 
   return (
-    <Grid item xs={12} sm={6}>
+    <Grid item xs={12} sm={6} lg={4}>
       <Card className={classes.UserCard}>
         <div>
           <MobileStepper

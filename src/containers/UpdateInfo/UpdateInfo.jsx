@@ -8,13 +8,12 @@ import {
 import React from "react";
 import { connect } from "react-redux";
 import { api } from "../../axios";
-import Input from "../Input/Input";
 import { useSnackbar } from "notistack";
+import Input from "../../components/Input/Input";
 
 const useStyles = makeStyles({
   UpdateInfo: {
     width: "100%",
-    heigth: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -41,10 +40,10 @@ const UpdateInfo = (props) => {
   const [maxDistance, setMaxDistance] = React.useState(props.maxDist);
   const [ageRange, setAgeRange] = React.useState([props.minAge, props.maxAge]);
   const [password, setPassword] = React.useState("");
- 
+
   const changeBirthDate = (newDate) => {
     let date = null;
-    if (typeof newDate === 'string' && newDate.indexOf('-') === -1) {
+    if (typeof newDate === "string" && newDate.indexOf("-") === -1) {
       date = new Date(+newDate).getTime();
     } else {
       date = new Date(newDate).getTime();
@@ -86,7 +85,7 @@ const UpdateInfo = (props) => {
       label: "Birth date",
       value: birthDate,
       onChange: (e) => {
-        changeBirthDate(e.target.value)
+        changeBirthDate(e.target.value);
       },
     },
     {
@@ -189,7 +188,7 @@ const UpdateInfo = (props) => {
   };
 
   return (
-    <Container className={classes.UpdateInfo}>
+    <Container>
       <List>
         {inputs.map((el) => (
           <ListItem key={el.name}>
