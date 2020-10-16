@@ -13,5 +13,5 @@ https://github.com/NmadeleiDev/matcha_backend
 
 steps to run:
 
-npm i
-npm start
+- npm i
+- npm start
