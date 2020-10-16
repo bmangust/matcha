@@ -1,14 +1,28 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Paper, AppBar, Tabs, Tab } from "@material-ui/core";
-import SwipeableViews from "react-swipeable-views";
+
+import { useDispatch, useSelector } from "react-redux";
+import { Switch, Route, useHistory, withRouter, Link } from "react-router-dom";
+import { logout } from "../../store/generalSlice";
+import { handleBack, setSelectedTab } from "../../store/UISlice";
+
+import {
+  AppBar,
+  Tabs,
+  Tab,
+  Container,
+  Grid,
+  CircularProgress,
+} from "@material-ui/core";
 import { Search, Message, Settings, ExitToApp } from "@material-ui/icons";
-import Strangers from "../../pages/Strangers/Strangers";
-import { api } from "../../axios";
-import Profile from "../../pages/Profile/Profile";
-import TabPanel from "../TabPanel/TabPanel";
+import { makeStyles } from "@material-ui/core/styles";
 import { backgroundColor } from "../../theme";
-import { useHistory } from "react-router-dom";
+
+import Strangers from "../../pages/Strangers/Strangers";
+import Profile from "../../pages/Profile/Profile";
+import Header from "../../components/Header/Header";
+import Chat from "../Chat/Chat";
+
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles({
   selectedTab: {
@@ -16,87 +30,143 @@ const useStyles = makeStyles({
   },
   AppBar: {
     position: "fixed",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
     left: 0,
     bottom: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   View: {
-    minHeight: "100vh",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
-  Paper: {
-    borderRadius: 0,
+  Max: {
+    width: "100%",
+    height: "100vh",
+  },
+  Container: {
     backgroundColor: backgroundColor.background,
+    maxWidth: "100vw",
+  },
+  Header: {
+    paddingTop: "30px",
+    position: "static",
+    top: 0,
+    left: 0,
   },
 });
 const tabs = [
   {
     index: 0,
-    label: "Search",
+    label: "Strangers",
     icon: <Search />,
     content: <Strangers />,
+    url: "/",
   },
   {
     index: 1,
     label: "Chat",
     icon: <Message />,
-    content: <div>Chat</div>,
+    content: <Chat />,
+    url: "/chat",
   },
   {
     index: 2,
     label: "Settings",
     icon: <Settings />,
     content: <Profile />,
+    url: "/profile",
+  },
+  {
+    index: 3,
+    label: "Logout",
+    icon: <ExitToApp />,
+    content: null,
+    url: "/logout",
   },
 ];
 
 const Main = (props) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const { header, selectedTab, companion } = useSelector((state) => state.UI);
+  const isLoading = useSelector((state) => state.general.isLoading);
+  const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
-  const [selectedTab, setValue] = React.useState(0);
-  const handleChange = async (event, nextValue) => {
-    if (nextValue === 3) {
-      try {
-        api.delete("signout");
-        history.push("/login");
-      } catch (e) {
-        console.log(e);
-      }
+
+  const handleChange = async (e, url) => {
+    if (url === "/logout") {
+      dispatch(logout(enqueueSnackbar));
+      history.push("/login");
       return;
     }
-    setValue(nextValue);
+    const tab = tabs.find((e) => e.url === url);
+    dispatch(setSelectedTab({ selectedTab: tab }));
+    history.push(url);
   };
-  const handleChangeIndex = (index) => {
-    setValue(index);
+
+  const handleBackButton = () => {
+    dispatch(handleBack(history));
   };
-  const renderedTabs = tabs.map((el) => <Tab icon={el.icon} key={el.index} />);
-  const tabPanels = tabs.map((el) => (
-    <TabPanel value={selectedTab} index={el.index} key={el.label + el.index}>
-      <div className={classes.View}>{el.content}</div>
-    </TabPanel>
-  ));
+
+  const renderedTabs = tabs.map((el) => {
+    return (
+      <Tab
+        icon={el.icon}
+        value={el.url}
+        key={el.index}
+        component={Link}
+        to={el.url}
+      />
+    );
+  });
 
   return (
-    <Paper className={classes.Paper}>
-      {/* <SwipeableViews
-        enableMouseEvents
-        index={selectedTab}
-        onChangeIndex={handleChangeIndex}
-      > */}
-      {tabPanels}
-      {/* </SwipeableViews> */}
-      <AppBar className={classes.AppBar} position="static">
-        <Tabs value={selectedTab} onChange={handleChange} centered>
-          {renderedTabs}
-          <Tab icon={<ExitToApp />} key="logout" />
-        </Tabs>
-      </AppBar>
-    </Paper>
+    <Container>
+      {isLoading ? (
+        <Grid
+          container
+          justify="center"
+          alignItems="center"
+          className={classes.Max}
+        >
+          <CircularProgress />
+        </Grid>
+      ) : (
+        <Grid
+          container
+          direction="column"
+          justify="flex-start"
+          alignItems="stretch"
+          spacing={1}
+          className={classes.Container}
+        >
+          <Grid className={classes.Header}>
+            <Header
+              showBackButton={true}
+              header={header || tabs[0].label}
+              handleBack={handleBackButton}
+            />
+          </Grid>
+          <Switch>
+            <Route path="/chat" component={Chat} />
+            <Route path="/profile" component={Profile} />
+            <Route path="/" component={Strangers} />
+          </Switch>
+          <AppBar className={classes.AppBar} position="static">
+            <Tabs
+              value={selectedTab?.url || "/"}
+              centered
+              onChange={handleChange}
+            >
+              {renderedTabs}
+            </Tabs>
+          </AppBar>
+        </Grid>
+      )}
+    </Container>
   );
 };
 
-export default Main;
+export default withRouter(Main);
