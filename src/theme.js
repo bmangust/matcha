@@ -34,6 +34,24 @@ export const theme = createMuiTheme({
         justifyContent: "center",
       },
     },
+    MuiBadge: {
+      anchorOriginTopRightCircle: {
+        top: "23%",
+        right: "33%",
+        transform: "scale(1.5) translate(50%, -50%)",
+        border: `1px solid ${backgroundColor.foreground}`,
+      },
+    },
+    // MuiBottomNavigation: {
+    //   root: {
+    //     position: "fixed",
+    //     left: 0,
+    //     bottom: 0,
+    //     display: "flex",
+    //     alignItems: "center",
+    //     justifyContent: "center",
+    //   },
+    // },
   },
   shape: {
     borderRadius: 30,
