@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
@@ -9,20 +9,32 @@ import LoginContainter from "./pages/Login/LoginContainer";
 import RegisterContainer from "./pages/Register/RegisterContainer";
 import Main from "./containers/Main/Main";
 import { SnackbarProvider } from "notistack";
+import { useSelector } from "react-redux";
 
 function App() {
+  const { isAuth } = useSelector((state) => state.general);
   return (
     <ThemeProvider theme={theme}>
       <SnackbarProvider maxSnack={3}>
-        <React.Fragment>
+        <>
           <CssBaseline />
-          <Switch>
-            <Route path="/register" component={RegisterContainer} exact />
-            <Route path="/login" component={LoginContainter} exact />
-            <Route path="/main" component={Main} exact />
-            <Route path="/" component={RegisterContainer} exact />
-          </Switch>
-        </React.Fragment>
+          {isAuth ? (
+            <Switch>
+              <Route path="/" component={Main} />
+              <Route path="/login">
+                <Redirect to="/" />
+              </Route>
+            </Switch>
+          ) : (
+            <Switch>
+              <Route path="/register" component={RegisterContainer} exact />
+              <Route path="/login" component={LoginContainter} exact />
+              <Route path="/">
+                <Redirect to="/login" />
+              </Route>
+            </Switch>
+          )}
+        </>
       </SnackbarProvider>
     </ThemeProvider>
   );

@@ -1,6 +1,5 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { api } from "../../axios";
 import { useSnackbar } from "notistack";
 
 import {
@@ -10,6 +9,8 @@ import {
   List,
   ListItem,
   makeStyles,
+  CircularProgress,
+  Grid,
 } from "@material-ui/core";
 import { theme } from "../../theme";
 
@@ -18,9 +19,12 @@ const useStyles = makeStyles({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
-  Form: {
+  Grid: {
     width: "50%",
     height: "100vh",
+  },
+  Form: {
+    width: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -50,61 +54,61 @@ const Login = (props) => {
 
   const onLoginHandler = async (e) => {
     e.preventDefault();
-    const body = {
-      email: props.email,
-      password: props.password,
-    };
-    const response = await api.post("signin", body);
-    console.log(response.data);
-
-    if (response.data.status === true) {
-      props.saveNewState(response.data.data);
-      history.push("main");
-    } else {
-      enqueueSnackbar("Email or password is wrong", {variant: 'error'});
-    }
+    props.auth(props.email, props.password, enqueueSnackbar);
   };
+
+  const form = (
+    <form className={classes.Form}>
+      <List className={classes.List}>
+        <ListItem className={classes.ListItem}>
+          <TextField
+            type="email"
+            label="Email"
+            value={props.email}
+            onChange={(event) => props.changeEmail(event.target.value)}
+            required
+          />
+        </ListItem>
+        <ListItem className={classes.ListItem}>
+          <TextField
+            type="password"
+            label="Password"
+            value={props.password}
+            onChange={(event) => props.changePassword(event.target.value)}
+            required
+          />
+        </ListItem>
+        <ListItem className={classes.ListItem}>
+          <Button
+            variant="contained"
+            className={classes.Button}
+            type="submit"
+            onClick={(e) => onLoginHandler(e)}
+          >
+            Login
+          </Button>
+          <Button
+            className={classes.Button}
+            onClick={() => onReginsterHandler(history)}
+          >
+            Register
+          </Button>
+        </ListItem>
+      </List>
+    </form>
+  );
 
   return (
     <Container>
-      <form className={classes.Form}>
-        <List className={classes.List}>
-          <ListItem className={classes.ListItem}>
-            <TextField
-              type="email"
-              label="Email"
-              value={props.email}
-              onChange={(event) => props.changeEmail(event.target.value)}
-              required
-            />
-          </ListItem>
-          <ListItem className={classes.ListItem}>
-            <TextField
-              type="password"
-              label="Password"
-              value={props.password}
-              onChange={(event) => props.changePassword(event.target.value)}
-              required
-            />
-          </ListItem>
-          <ListItem className={classes.ListItem}>
-            <Button
-              variant="contained"
-              className={classes.Button}
-              type="submit"
-              onClick={(e) => onLoginHandler(e)}
-            >
-              Login
-            </Button>
-            <Button
-              className={classes.Button}
-              onClick={() => onReginsterHandler(history)}
-            >
-              Register
-            </Button>
-          </ListItem>
-        </List>
-      </form>
+      <Grid
+        className={classes.Grid}
+        container
+        direction="column"
+        justify="center"
+        alignItems="center"
+      >
+        {props.isLoading ? <CircularProgress /> : form}
+      </Grid>
     </Container>
   );
 };

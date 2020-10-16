@@ -90,7 +90,7 @@ const Register = (props) => {
     if (response.data.status === true) {
       history.push("login");
     } else {
-      enqueueSnackbar(response.data.data, {variant: 'error'});
+      enqueueSnackbar(response.data.data, { variant: "error" });
     }
   };
 
