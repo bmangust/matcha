@@ -1,25 +1,42 @@
-import { makeStyles, Grid } from "@material-ui/core";
+import { makeStyles, Grid, List, ListItem } from "@material-ui/core";
 import React from "react";
+import Message from "./Message/Message";
 import SendForm from "./SendForm/SendForm";
 
 const useStyles = makeStyles({
-  Send: {
-    marginTop: "auto",
-    marginBottom: "70px",
+  Container: {
+    minHeight: "91vh",
   },
-  Messages: {
+  List: {
     flexGrow: 2,
+    width: "70%",
+    maxHeight: "70vh",
+    margin: "0 auto",
+    overflowY: "auto",
+  },
+  ListItem: {
+    margin: "20px auto",
   },
   Header: {
     marginTop: "30px",
   },
-  Container: {
-    minHeight: "91vh",
+  SendForm: {
+    marginTop: "auto",
+    marginBottom: "70px",
   },
 });
 
 const ChatRoom = (props) => {
+  const { companion } = { ...props };
+  const { name, messages, image } = { ...companion };
   const classes = useStyles();
+  const renderedMessages = messages
+    ? messages.map((el) => (
+        <ListItem key={el.id} className={classes.ListItem}>
+          <Message self={el.self} text={el.text} image={image} name={name} />
+        </ListItem>
+      ))
+    : "No messages yet";
   return (
     <Grid
       container
@@ -29,10 +46,8 @@ const ChatRoom = (props) => {
       spacing={1}
       className={classes.Container}
     >
-      <Grid item className={classes.Messages}>
-        Messages
-      </Grid>
-      <Grid item className={classes.Send}>
+      <List className={classes.List}>{renderedMessages}</List>
+      <Grid item className={classes.SendForm}>
         <SendForm />
       </Grid>
     </Grid>

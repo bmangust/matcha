@@ -3,7 +3,7 @@ import React from "react";
 import ChatList from "./ChatList/ChatList";
 import ChatRoom from "./ChatRoom/ChatRoom";
 import { showBackButton, setHeader } from "../../store/UISlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -15,30 +15,47 @@ const useStyles = makeStyles({
 const Chat = (props) => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const companion = useSelector((state) => state.UI.companion);
+  const [companion, setCompanion] = React.useState(null);
   const companions = [
     {
       id: 0,
       name: "Alex",
-      lastMessage: "Hello, Max",
       image: null,
       newMessages: 3,
+      messages: [
+        { id: 0, self: true, text: "Hello, Alex!" },
+        { id: 1, self: true, text: "Are you ready?" },
+        { id: 2, self: false, text: "Hello, Max. Yes, I am" },
+      ],
     },
     {
       id: 1,
       name: "Katie",
-      lastMessage: "Are you there?",
       image: null,
       newMessages: 0,
+      messages: [
+        { id: 0, self: false, text: "Hello, Max!" },
+        { id: 1, self: false, text: "Are you ready?" },
+        { id: 2, self: true, text: "Hello, Katie. No, just a second" },
+        {
+          id: 3,
+          self: false,
+          text:
+            "If true, compact vertical padding designed for keyboard and mouse input will be used for the list and list items. The prop is available to descendant components as the dense context.",
+        },
+        {
+          id: 4,
+          self: true,
+          text:
+            "This feature relies on CSS sticky positioning. Unfortunately it's not implemented by all the supported browsers. It defaults to disableSticky when not supported.",
+        },
+      ],
     },
   ];
 
-  console.log(props);
-
   const handleChatSelect = (id) => {
-    console.log(id);
     const selectedCompanion = companions.find((e) => e.id === id);
-    console.log(selectedCompanion);
+    setCompanion((prev) => selectedCompanion);
     dispatch(setHeader({ header: selectedCompanion?.name || null }));
     dispatch(showBackButton());
     props.history.push(`/chat/${id}`);

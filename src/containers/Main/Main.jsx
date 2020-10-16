@@ -89,7 +89,7 @@ const tabs = [
 
 const Main = (props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { header, selectedTab, companion } = useSelector((state) => state.UI);
+  const { header, selectedTab } = useSelector((state) => state.UI);
   const isLoading = useSelector((state) => state.general.isLoading);
   const dispatch = useDispatch();
   const history = useHistory();

@@ -2,11 +2,14 @@ import { Badge, Button, Grid, Typography, makeStyles } from "@material-ui/core";
 import { ChevronLeftRounded } from "@material-ui/icons";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import React from "react";
+import { useLocation } from "react-router-dom";
+import { primaryColor } from "../../theme";
 
 const useStyles = makeStyles({
   Header: {
     textAlign: "center",
     fontFamily: "Righteous",
+    color: primaryColor.dark,
   },
 });
 
@@ -15,13 +18,19 @@ const Header = (props) => {
   const { header, notification, handleBack, handleBadgeClick } = {
     ...props,
   };
-  const showBackButton = props.showBackButton || false;
+  const loc = useLocation();
+  //show backbutton only if we're in submenu
+  const showBackButton = loc.pathname.split("/").length > 2;
+
   return (
     <Grid container item spacing={1}>
       <Grid item xs={1}>
         {showBackButton ? (
           <Button variant="text" color="inherit" onClick={handleBack}>
-            <ChevronLeftRounded fontSize="large" />
+            <ChevronLeftRounded
+              style={{ color: primaryColor.dark }}
+              fontSize="large"
+            />
           </Button>
         ) : null}
       </Grid>
@@ -38,7 +47,10 @@ const Header = (props) => {
             variant="dot"
             badgeContent={notification || 0}
           >
-            <NotificationsIcon fontSize="large" />
+            <NotificationsIcon
+              style={{ color: primaryColor.dark }}
+              fontSize="large"
+            />
           </Badge>
         </Button>
       </Grid>

@@ -24,6 +24,9 @@ const UISlice = createSlice({
     setHeader(state, { payload }) {
       state.header = payload.header;
     },
+    // setCompanion(state, { payload }) {
+    //   state.companion = payload.companion;
+    // },
   },
 });
 
@@ -32,11 +35,13 @@ export const {
   hideBackButton,
   setSelectedTab,
   setHeader,
+  // setCompanion,
 } = UISlice.actions;
 
 export const handleBack = (history) => (dispatch) => {
   dispatch(hideBackButton());
   dispatch(setHeader({ header: "Chat" }));
+  // dispatch(setCompanion({ companion: null }));
   history.push("/chat");
 };
 
