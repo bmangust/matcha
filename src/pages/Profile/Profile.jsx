@@ -80,7 +80,7 @@ const Profile = (props) => {
     };
 
     console.log(data);
-    const res = await media.post("", data);
+    const res = await media.post("upload", data);
     console.log(res);
     enqueueSnackbar("The file was uploaded", { variant: "success" });
   };

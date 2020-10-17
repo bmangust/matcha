@@ -34,7 +34,7 @@ const getDate = (timestamp) => {
 
 const Input = (props) => {
   const classes = useStyles();
-  const { type, label, name, values, value, onChange } = { ...props };
+  const { type, label, name, values, value, onChange, rules } = { ...props };
   if (
     type === "text" ||
     type === "number" ||
