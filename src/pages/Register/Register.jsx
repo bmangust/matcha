@@ -4,16 +4,30 @@ import { useSnackbar } from "notistack";
 import { api } from "../../axios";
 import {
   Button,
-  TextField,
-  MenuItem,
-  Typography,
-  Slider,
-  Box,
   makeStyles,
   Container,
   List,
+  ListItem,
 } from "@material-ui/core";
 import { theme } from "../../theme";
+import Input from "../../components/Input/Input";
+import {
+  changeEmail,
+  changeUsername,
+  changePhone,
+  // changeFirstName,
+  // changeLastName,
+  changeBirthDate,
+  changeGender,
+  changeCountry,
+  changeCity,
+  changeMaxDist,
+  changeLookFor,
+  changeSearchAgeRange,
+  changePassword,
+  changeConfirmPassword,
+} from "./registerSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles({
   Input: {
@@ -31,58 +45,44 @@ const useStyles = makeStyles({
 
 const Register = (props) => {
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
   const classes = useStyles();
   const history = useHistory();
-
-  const genders = [
-    {
-      value: "male",
-      label: "Male",
-    },
-    {
-      value: "female",
-      label: "Female",
-    },
-    {
-      value: "both",
-      label: "Both",
-    },
-  ];
+  const {
+    email,
+    username,
+    password,
+    confirm,
+    birthDate,
+    phone,
+    gender,
+    country,
+    city,
+    maxDist,
+    lookFor,
+    minAge,
+    maxAge,
+  } = useSelector((state) => state.register);
 
   const onLoginHandler = (history) => {
     history.push("/login");
   };
 
-  const getDate = (timestamp) => {
-    const date = new Date(timestamp);
-    let year = date.getFullYear();
-    if (year < 10) year = "000" + year;
-    else if (year < 100) year = "00" + year;
-    else if (year < 1000) year = "0" + year;
-    else if (year > 3000) year = 3000;
-    let month = date.getMonth() + 1;
-    month = month < 10 ? "0" + month : "" + month;
-    let day = date.getDate();
-    day = day < 10 ? "0" + day : "" + day;
-    const formattedDate = `${year}-${month}-${day}`;
-    return formattedDate;
-  };
-
   const onRegisterHandler = async (e) => {
     e.preventDefault();
     const body = {
-      email: props.email,
-      username: props.username,
-      password: props.password,
-      birth_date: props.birthDate,
-      phone: props.phone,
-      gender: props.gender,
-      country: props.country,
-      city: props.city,
-      max_dist: props.maxDist,
-      look_for: props.lookFor,
-      min_age: props.minAge,
-      max_age: props.maxAge,
+      email: email,
+      username: username,
+      password: password,
+      birth_date: birthDate,
+      phone: phone,
+      gender: gender,
+      country: country,
+      city: city,
+      max_dist: maxDist,
+      look_for: lookFor,
+      min_age: minAge,
+      max_age: maxAge,
     };
     console.log(body);
     const response = await api.post("signup", body);
@@ -94,147 +94,147 @@ const Register = (props) => {
     }
   };
 
+  const inputs = [
+    {
+      name: "username",
+      type: "text",
+      label: "Username",
+      value: username,
+      onChange: (e) => {
+        dispatch(changeUsername(e.target.value));
+      },
+    },
+    // {
+    //   name: "firstName",
+    //   type: "text",
+    //   label: "First name",
+    //   value: firstName,
+    //   onChange: (e) => {
+    //     dispatch(changeFirstName(e.target.value));
+    //   },
+    // },
+    // {
+    //   name: "lastName",
+    //   type: "text",
+    //   label: "Last name",
+    //   value: lastName,
+    //   onChange: (e) => {
+    //     dispatch(changeLastName(e.target.value));
+    //   },
+    // },
+    {
+      name: "email",
+      type: "email",
+      label: "Email",
+      value: email,
+      onChange: (e) => {
+        dispatch(changeEmail(e.target.value));
+      },
+    },
+    {
+      name: "phone",
+      type: "text",
+      label: "Phone",
+      value: phone,
+      onChange: (e) => {
+        dispatch(changePhone(e.target.value));
+      },
+    },
+    {
+      name: "birthDate",
+      type: "date",
+      label: "Birth date",
+      value: birthDate,
+      onChange: (e) => {
+        dispatch(changeBirthDate(e.target.value));
+      },
+    },
+    {
+      name: "gender",
+      type: "select",
+      label: "I'm",
+      values: ["male", "female"],
+      value: gender,
+      onChange: (e) => {
+        dispatch(changeGender(e.target.value));
+      },
+    },
+    {
+      name: "lookFor",
+      type: "select",
+      label: "I look for",
+      values: ["male", "female", "both"],
+      value: lookFor,
+      onChange: (e) => {
+        dispatch(changeLookFor(e.target.value));
+      },
+    },
+    {
+      name: "country",
+      type: "text",
+      label: "Country",
+      value: country,
+      onChange: (e) => {
+        dispatch(changeCountry(e.target.value));
+      },
+    },
+    {
+      name: "city",
+      type: "text",
+      label: "City",
+      value: city,
+      onChange: (e) => {
+        dispatch(changeCity(e.target.value));
+      },
+    },
+    {
+      name: "maxDistance",
+      type: "slider",
+      label: "Search distance",
+      value: maxDist,
+      onChange: (value) => {
+        dispatch(changeMaxDist(value));
+      },
+    },
+    {
+      name: "ageRange",
+      type: "slider",
+      label: "Age search range",
+      value: [minAge, maxAge],
+      onChange: (value) => {
+        dispatch(changeSearchAgeRange(value));
+      },
+    },
+    {
+      name: "password",
+      type: "password",
+      label: "Password",
+      value: password,
+      onChange: (e) => {
+        dispatch(changePassword(e.target.value));
+      },
+    },
+    {
+      name: "confirm",
+      type: "password",
+      label: "Confirm",
+      value: confirm,
+      onChange: (e) => {
+        dispatch(changeConfirmPassword(e.target.value));
+      },
+    },
+  ];
+
   return (
     <Container>
       <form className={classes.Form}>
         <List>
-          <TextField
-            className={classes.Input}
-            type="email"
-            label="Email"
-            value={props.email}
-            onChange={(e) => props.changeEmail(e.target.value)}
-            required
-          />
-          <TextField
-            className={classes.Input}
-            type="text"
-            label="Phone"
-            value={props.phone}
-            onChange={(e) => props.changePhone(e.target.value)}
-            required
-          />
-          <TextField
-            className={classes.Input}
-            type="text"
-            label="Username"
-            value={props.username}
-            onChange={(e) => props.changeUsername(e.target.value)}
-            required
-          />
-          {/* <TextField
-        className={classes.Input}
-        type="text"
-        label="First Name"
-        
-        value={props.firstName}
-        onChange={(e) => props.changeFirstName(e.target.value)}
-        required
-      />
-      <TextField
-        className={classes.Input}
-        type="text"
-        label="Last Name"
-        
-        value={props.lastName}
-        onChange={(e) => props.changeLastName(e.target.value)}
-        required
-      /> */}
-          <TextField
-            className={classes.Input}
-            type="date"
-            label="Birth Date"
-            InputLabelProps={{ shrink: true }}
-            value={getDate(props.birthDate)}
-            onChange={(e) => props.changeBirthDate(e.target.value)}
-            required
-          />
+          {inputs.map((el) => (
+            <ListItem key={el.name}>
+              <Input {...el} />
+            </ListItem>
+          ))}
 
-          <TextField
-            className={classes.Input}
-            type="select"
-            label="Gender"
-            value={props.gender}
-            onChange={(e) => props.changeGender(e.target.value)}
-            required
-            select
-          >
-            {genders
-              .filter((el) => el.value !== "both")
-              .map((el) => (
-                <MenuItem key={el.value} value={el.value}>
-                  {el.label}
-                </MenuItem>
-              ))}
-          </TextField>
-          <TextField
-            className={classes.Input}
-            type="text"
-            label="Country"
-            value={props.country}
-            onChange={(e) => props.changeCountry(e.target.value)}
-            required
-          />
-          <TextField
-            className={classes.Input}
-            type="text"
-            label="City"
-            value={props.city}
-            onChange={(e) => props.changeCity(e.target.value)}
-            required
-          />
-          <TextField
-            className={classes.Input}
-            type="number"
-            label="Maximum search distance"
-            value={props.maxDist}
-            onChange={(e) => props.changeMaxDist(e.target.value)}
-            required
-          />
-          <TextField
-            className={classes.Input}
-            type="select"
-            label="Look for"
-            value={props.lookFor}
-            onChange={(e) => props.changeLookFor(e.target.value)}
-            required
-            select
-          >
-            {genders.map((el) => (
-              <MenuItem key={el.value} value={el.value}>
-                {el.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <Box className={classes.Input}>
-            <Typography id="range-slider" gutterBottom>
-              Search age range
-            </Typography>
-            <Slider
-              value={[props.minAge, props.maxAge]}
-              onChange={(e, value) => props.changeSearchAgeRange(value)}
-              valueLabelDisplay="auto"
-              aria-labelledby="range-slider"
-            />
-          </Box>
-          <TextField
-            className={classes.Input}
-            type="password"
-            label="Password"
-            value={props.password}
-            onChange={(e) => props.changePassword(e.target.value)}
-            required
-          />
-          <TextField
-            className={classes.Input}
-            type="password"
-            label="Confirm password"
-            value={props.confirm}
-            onChange={(e) => {
-              props.changeConfirmPassword(e.target.value);
-            }}
-            required
-          />
           <Button
             className={classes.Button}
             variant="contained"

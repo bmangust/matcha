@@ -6,7 +6,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import { theme } from "./theme";
 
 import LoginContainter from "./pages/Login/LoginContainer";
-import RegisterContainer from "./pages/Register/RegisterContainer";
+import Register from "./pages/Register/Register";
 import Main from "./containers/Main/Main";
 import { SnackbarProvider } from "notistack";
 import { useSelector } from "react-redux";
@@ -27,7 +27,7 @@ function App() {
             </Switch>
           ) : (
             <Switch>
-              <Route path="/register" component={RegisterContainer} exact />
+              <Route path="/register" component={Register} exact />
               <Route path="/login" component={LoginContainter} exact />
               <Route path="/">
                 <Redirect to="/login" />

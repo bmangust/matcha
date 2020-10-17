@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { api } from "../axios";
+import { resetUIState } from "./UISlice";
 
 const initialGeneralState = {
   isAuth: false,
@@ -40,17 +41,8 @@ const generalSlice = createSlice({
       state.isAuth = false;
       state.isLoading = false;
     },
-    resetState(state) {
-      Object.keys(initialGeneralState).forEach((key) => {
-        if (key === "position") {
-          state.position.lat = initialGeneralState.position.lat;
-          state.position.lon = initialGeneralState.position.lon;
-        }
-        state[key] = initialGeneralState[key];
-      });
-    },
+    resetGeneralState: () => initialGeneralState,
     saveNewState(state, action) {
-      console.log(action.payload);
       Object.keys(action.payload).forEach((key) => {
         if (key === "position") {
           state.position.lat = action.payload.position.lat;
@@ -67,7 +59,7 @@ export const {
   stopLoading,
   authSuccess,
   authFail,
-  resetState,
+  resetGeneralState,
   saveNewState,
 } = generalSlice.actions;
 
@@ -79,7 +71,7 @@ export const auth = (email, password, enqueueSnackbar) => async (dispatch) => {
       dispatch(saveNewState(res.data.data));
       dispatch(authSuccess());
     } else {
-      dispatch(resetState());
+      dispatch(resetGeneralState());
       enqueueSnackbar("Email or password is wrong", { variant: "error" });
     }
   } catch (err) {
@@ -94,7 +86,8 @@ export const logout = (enqueueSnackbar) => async (dispatch) => {
   const res = await api.delete("/signout");
   console.log(res);
   if (res.data.status) {
-    dispatch(resetState());
+    dispatch(resetGeneralState());
+    dispatch(resetUIState());
     enqueueSnackbar("Successful logout", { variant: "success" });
   } else {
     dispatch(stopLoading());

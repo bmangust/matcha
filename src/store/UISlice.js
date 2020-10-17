@@ -24,6 +24,7 @@ const UISlice = createSlice({
     setHeader(state, { payload }) {
       state.header = payload.header;
     },
+    resetUIState: () => initialUIState,
     // setCompanion(state, { payload }) {
     //   state.companion = payload.companion;
     // },
@@ -35,6 +36,7 @@ export const {
   hideBackButton,
   setSelectedTab,
   setHeader,
+  resetUIState,
   // setCompanion,
 } = UISlice.actions;
 

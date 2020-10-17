@@ -23,6 +23,7 @@ const registerSlice = createSlice({
   initialState: initialRegisterState,
   reducers: {
     changeEmail(state, action) {
+      console.log(action);
       state.email = action.payload;
     },
     changeUsername(state, action) {
