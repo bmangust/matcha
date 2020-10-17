@@ -4,7 +4,6 @@ import { useSnackbar } from "notistack";
 
 import {
   Button,
-  TextField,
   Container,
   List,
   ListItem,
@@ -13,6 +12,11 @@ import {
   Grid,
 } from "@material-ui/core";
 import { theme } from "../../theme";
+
+import { changeEmail, changePassword } from "./loginSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { auth } from "../../store/generalSlice";
+import Input from "../../components/Input/Input";
 
 const useStyles = makeStyles({
   Input: {
@@ -35,7 +39,7 @@ const useStyles = makeStyles({
   List: {
     width: "100%",
   },
-  ListItem: {
+  Buttons: {
     width: "100%",
     display: "flex",
     alignItems: "center",
@@ -45,6 +49,9 @@ const useStyles = makeStyles({
 
 const Login = (props) => {
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
+  const { email, password } = useSelector((state) => state.login);
+  const { isLoading } = useSelector((state) => state.general);
   const classes = useStyles();
   const history = useHistory();
 
@@ -54,31 +61,38 @@ const Login = (props) => {
 
   const onLoginHandler = async (e) => {
     e.preventDefault();
-    props.auth(props.email, props.password, enqueueSnackbar);
+    dispatch(auth(email, password, enqueueSnackbar));
   };
+  const inputs = [
+    {
+      name: "email",
+      type: "email",
+      label: "Email",
+      value: email,
+      onChange: (e) => {
+        dispatch(changeEmail(e.target.value));
+      },
+    },
+    {
+      name: "password",
+      type: "password",
+      label: "Password",
+      value: password,
+      onChange: (e) => {
+        dispatch(changePassword(e.target.value));
+      },
+    },
+  ];
 
   const form = (
     <form className={classes.Form}>
       <List className={classes.List}>
-        <ListItem className={classes.ListItem}>
-          <TextField
-            type="email"
-            label="Email"
-            value={props.email}
-            onChange={(event) => props.changeEmail(event.target.value)}
-            required
-          />
-        </ListItem>
-        <ListItem className={classes.ListItem}>
-          <TextField
-            type="password"
-            label="Password"
-            value={props.password}
-            onChange={(event) => props.changePassword(event.target.value)}
-            required
-          />
-        </ListItem>
-        <ListItem className={classes.ListItem}>
+        {inputs.map((el) => (
+          <ListItem key={el.name}>
+            <Input {...el} />
+          </ListItem>
+        ))}
+        <ListItem className={classes.Buttons}>
           <Button
             variant="contained"
             className={classes.Button}
@@ -107,7 +121,7 @@ const Login = (props) => {
         justify="center"
         alignItems="center"
       >
-        {props.isLoading ? <CircularProgress /> : form}
+        {isLoading ? <CircularProgress /> : form}
       </Grid>
     </Container>
   );

@@ -5,7 +5,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { theme } from "./theme";
 
-import LoginContainter from "./pages/Login/LoginContainer";
+import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Main from "./containers/Main/Main";
 import { SnackbarProvider } from "notistack";
@@ -28,7 +28,7 @@ function App() {
           ) : (
             <Switch>
               <Route path="/register" component={Register} exact />
-              <Route path="/login" component={LoginContainter} exact />
+              <Route path="/login" component={Login} exact />
               <Route path="/">
                 <Redirect to="/login" />
               </Route>
