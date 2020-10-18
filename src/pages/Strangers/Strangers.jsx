@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import UserCard from "../../components/UserCard/UserCard";
-import { Grid, makeStyles } from "@material-ui/core";
+import { Grid, makeStyles, Typography } from "@material-ui/core";
+import { api } from "../../axios";
 
 const useStyles = makeStyles({
   Strangers: {
@@ -9,53 +10,39 @@ const useStyles = makeStyles({
   },
 });
 
-const strangers = [
-  {
-    id: 253160,
-    username: "Spidey",
-    age: 25,
-    images: ["https://avatarfiles.alphacoders.com/253/253160.jpg"],
-    tags: ["sport"],
-    liked: false,
-  },
-  {
-    id: 253809,
-    username: "Mary",
-    age: 21,
-    images: [
-      "https://avatarfiles.alphacoders.com/253/253809.png",
-      "https://avatarfiles.alphacoders.com/252/252602.jpg",
-      "https://avatarfiles.alphacoders.com/251/251867.png",
-    ],
-    tags: ["dolls", "beauty", "relax"],
-    liked: true,
-  },
-  {
-    id: 251890,
-    username: "Fallen",
-    age: 31,
-    images: [
-      "https://avatarfiles.alphacoders.com/251/251890.jpg",
-      "https://avatarfiles.alphacoders.com/254/254919.png",
-    ],
-    tags: ["weapons", "anime"],
-    liked: false,
-  },
-  {
-    id: 251973,
-    username: "Sweetie",
-    age: 42,
-    images: [
-      "https://avatarfiles.alphacoders.com/251/251973.jpg",
-      "https://avatarfiles.alphacoders.com/252/252670.png",
-    ],
-    tags: ["beach", "bike"],
-    liked: false,
-  },
-];
-
-const Strangers = (props) => {
+const Strangers = () => {
   const classes = useStyles();
+  const [users, setUsers] = useState(null);
+  const [cards, setCards] = useState(null);
+
+  const getUsers = async () => {
+    const res = await api.get("strangers");
+    console.log(res.data);
+    if (res.data.status) {
+      console.log(res.data.data);
+      return res.data.data;
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    console.log("[Strangers] loaded");
+    getUsers().then((res) => setUsers(res));
+  }, []);
+
+  useEffect(() => {
+    const noUsers = <Typography>No users to display</Typography>;
+    if (!users) {
+      setCards(noUsers);
+      return;
+    }
+    console.log(users);
+    const cards = users.map((el) => <UserCard {...el} key={el.id} />);
+    setCards(cards);
+  }, [users]);
+
+  console.log(users);
+
   return (
     <Grid
       container
@@ -64,9 +51,7 @@ const Strangers = (props) => {
       className={classes.Strangers}
     >
       <Grid container item xs={10} spacing={3}>
-        {strangers.map((el) => (
-          <UserCard {...el} key={el.id} />
-        ))}
+        {cards}
       </Grid>
     </Grid>
   );
