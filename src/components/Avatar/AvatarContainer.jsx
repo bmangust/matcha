@@ -42,7 +42,7 @@ const AvatarContainer = () => {
     if (image.size > 1000000) {
       enqueueSnackbar("The file is larger than 1MB", { variant: "error" });
     }
-    const res = await mediaUpload(id, image, true);
+    const res = await mediaUpload(id, image);
     setSelectedFile(image);
 
     if (res.data.status) {

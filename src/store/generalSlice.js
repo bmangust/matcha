@@ -18,6 +18,7 @@ const initialGeneralState = {
   min_age: 0,
   max_age: 0,
   images: null,
+  avatar: null,
   liked_by: [],
   matches: [],
   position: { lat: 0, lon: 0 },

@@ -6,10 +6,11 @@ import {
   Button,
 } from "@material-ui/core";
 import React from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { api } from "../../axios";
 import { useSnackbar } from "notistack";
 import Input from "../../components/Input/Input";
+import { saveNewState } from "../../store/generalSlice";
 
 const useStyles = makeStyles({
   UpdateInfo: {
@@ -40,6 +41,7 @@ const UpdateInfo = (props) => {
   const [maxDistance, setMaxDistance] = React.useState(props.maxDist);
   const [ageRange, setAgeRange] = React.useState([props.minAge, props.maxAge]);
   const [password, setPassword] = React.useState("");
+  const dispatch = useDispatch();
 
   const changeBirthDate = (newDate) => {
     let date = null;
@@ -180,6 +182,7 @@ const UpdateInfo = (props) => {
     console.log(response.data);
 
     if (response.data.status) {
+      dispatch(saveNewState(body));
       enqueueSnackbar("Successfully saved!", { variant: "success" });
     } else {
       console.log(response.data);

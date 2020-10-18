@@ -9,7 +9,7 @@ export const api = axios.create({
 });
 
 export const media = axios.create({
-  baseURL: "/api/media/",
+  baseURL: "/api/media/img/",
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
   responseType: "blob",

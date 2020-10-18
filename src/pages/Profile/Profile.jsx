@@ -1,7 +1,6 @@
-import { Tabs, Tab, Container, makeStyles, Fab } from "@material-ui/core";
+import { Tabs, Tab, Container, makeStyles } from "@material-ui/core";
 import React from "react";
 import { connect } from "react-redux";
-import { api } from "../../axios";
 import TabPanel from "../../containers/TabPanel/TabPanel";
 import AvatarContainer from "../../components/Avatar/AvatarContainer";
 import { backgroundColor, primaryColor } from "../../theme";
@@ -63,11 +62,6 @@ const Profile = (props) => {
     </TabPanel>
   ));
 
-  const getUsers = async () => {
-    const res = await api.get("strangers");
-    console.log(res.data);
-  };
-
   return (
     <Container className={classes.Profile}>
       <AvatarContainer />
@@ -79,7 +73,6 @@ const Profile = (props) => {
         {tabs}
       </Tabs>
       {tabPanels}
-      <Fab onClick={getUsers}>GET</Fab>
     </Container>
   );
 };
