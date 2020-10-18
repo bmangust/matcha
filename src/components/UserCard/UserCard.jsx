@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardMedia,
@@ -14,6 +14,8 @@ import {
 import ChevronLeftRoundedIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightRoundedIcon from "@material-ui/icons/ChevronRight";
 import { FavoriteOutlined } from "@material-ui/icons";
+import defaultImage from "../../Images/default-avatar.png";
+import { media } from "../../axios";
 
 const useStyles = makeStyles({
   UserCard: {
@@ -77,8 +79,28 @@ const useStyles = makeStyles({
 
 const UserCard = (props) => {
   const classes = useStyles();
-  const { username, age, images, tags } = props;
-  const [displayedImage, setDisplayedImage] = React.useState(0);
+  const { username, birth_date, images } = props;
+  const [displayedImage, setDisplayedImage] = useState(0);
+  const [imagesArray, setImagesArray] = useState([]);
+  const tags = props.tags || ["No tags"];
+
+  useEffect(() => {
+    if (images) {
+      const promises = images.map((img) => media.get(img));
+      const fetchedImages = [];
+      Promise.all(promises).then((imgs) => {
+        imgs.forEach((img) => {
+          console.log(img);
+          const file = URL.createObjectURL(img.data);
+          fetchedImages.push(file);
+        });
+        console.log(fetchedImages);
+        setImagesArray(() => fetchedImages);
+      });
+    }
+  }, [images]);
+
+  const age = new Date().getFullYear() - new Date(birth_date).getFullYear();
 
   return (
     <Grid item xs={12} sm={6} lg={4}>
@@ -86,7 +108,7 @@ const UserCard = (props) => {
         <div>
           <MobileStepper
             variant="dots"
-            steps={images.length}
+            steps={imagesArray.length}
             position="static"
             activeStep={displayedImage}
             className={classes.Stepper}
@@ -94,7 +116,10 @@ const UserCard = (props) => {
               <Button
                 size="small"
                 onClick={() => setDisplayedImage((prev) => prev + 1)}
-                disabled={displayedImage === images.length - 1}
+                disabled={
+                  imagesArray.length === 0 ||
+                  displayedImage === imagesArray.length - 1
+                }
               >
                 <ChevronRightRoundedIcon />
               </Button>
@@ -103,7 +128,7 @@ const UserCard = (props) => {
               <Button
                 size="small"
                 onClick={() => setDisplayedImage((prev) => prev - 1)}
-                disabled={displayedImage === 0}
+                disabled={displayedImage === 0 || imagesArray.length === 0}
               >
                 <ChevronLeftRoundedIcon />
               </Button>
@@ -114,7 +139,10 @@ const UserCard = (props) => {
             <FavoriteOutlined />
           </Fab>
 
-          <CardMedia className={classes.media} image={images[displayedImage]} />
+          <CardMedia
+            className={classes.media}
+            image={imagesArray[displayedImage] || defaultImage}
+          />
 
           <CardContent className={classes.Info}>
             <Container className={classes.InfoHeader}>
