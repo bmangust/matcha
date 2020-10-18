@@ -1,12 +1,6 @@
 import axios from "axios";
 
-// const host = "aim-love.ga";
-// const port = "";
-const host = "localhost";
-const port = ":8080";
-
 export const api = axios.create({
-  // baseURL: `http://${host}${port}/api/main/`,
   baseURL: `/api/main/`,
   withCredentials: true,
   headers: {
@@ -15,8 +9,21 @@ export const api = axios.create({
 });
 
 export const media = axios.create({
-  // baseURL: `http://${host}${port}/api/media/`,
-  baseURL: `/api/media/`,
+  baseURL: "/api/media/",
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
+  responseType: "blob",
 });
+
+export const mediaUpload = async (id, file, isAvatar = false) => {
+  let formData = new FormData();
+  formData.append("id", id);
+  formData.append("isAvatar", isAvatar);
+  formData.append("user_image", file);
+  const res = await axios.post("/api/media/upload/", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res;
+};
