@@ -1,21 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { api } from "../../axios";
+import { startLoading, stopLoading } from "../../store/generalSlice";
+import { xssSanitize } from "../../utils";
 
 const initialRegisterState = {
   email: "",
   username: "",
-  // firstName: "",
-  // lastName: "",
-  birthDate: 1577836800000,
-  phone: "",
-  gender: "male",
-  country: "",
-  city: "",
-  maxDist: 100,
-  lookFor: "female",
-  minAge: 18,
-  maxAge: 25,
   password: "",
   confirm: "",
+  phone: "+7",
+  emailValid: false,
+  usernameValid: false,
+  passwordValid: false,
+  confirmValid: false,
+  phoneValid: false,
+  registerSuccess: false,
 };
 
 const registerSlice = createSlice({
@@ -23,12 +22,40 @@ const registerSlice = createSlice({
   initialState: initialRegisterState,
   reducers: {
     changeEmail(state, action) {
-      console.log(action);
       state.email = action.payload;
     },
     changeUsername(state, action) {
       state.username = action.payload;
     },
+    changePassword(state, action) {
+      state.password = action.payload;
+    },
+    changeConfirmPassword(state, action) {
+      state.confirm = action.payload;
+    },
+
+    changeEmailValid(state, { payload }) {
+      state.emailValid = payload;
+    },
+    changeUsernameValid(state, { payload }) {
+      state.usernameValid = payload;
+    },
+    changePasswordValid(state, { payload }) {
+      state.passwordValid = payload;
+    },
+    changeConfirmValid(state, { payload }) {
+      state.confirmValid = payload;
+    },
+    changePhoneValid(state, { payload }) {
+      state.phoneValid = payload;
+    },
+    onRegisterSuccess(state) {
+      state.registerSuccess = true;
+    },
+    onRegisterFail(state) {
+      state.registerSuccess = false;
+    },
+
     // changeFirstName(state, action) {
     //   state.firstName = action.payload;
     // },
@@ -39,7 +66,6 @@ const registerSlice = createSlice({
       let date = new Date(action.payload).getTime();
       if (!isNaN(date)) state.birthDate = date;
     },
-
     changePhone(state, action) {
       state.phone = action.payload;
     },
@@ -65,22 +91,26 @@ const registerSlice = createSlice({
     changeMaxAge(state, action) {
       state.maxAge = action.payload;
     },
-
-    changePassword(state, action) {
-      state.password = action.payload;
-    },
-    changeConfirmPassword(state, action) {
-      state.confirm = action.payload;
-    },
   },
 });
 
 export const {
   changeEmail,
   changeUsername,
-  changePhone,
+  changePassword,
+  changeConfirmPassword,
+
+  changeEmailValid,
+  changeUsernameValid,
+  changePasswordValid,
+  changeConfirmValid,
+  changePhoneValid,
+  onRegisterSuccess,
+  onRegisterFail,
+
   // changeFirstName,
   // changeLastName,
+  changePhone,
   changeBirthDate,
   changeGender,
   changeCountry,
@@ -88,8 +118,22 @@ export const {
   changeMaxDist,
   changeLookFor,
   changeSearchAgeRange,
-  changePassword,
-  changeConfirmPassword,
 } = registerSlice.actions;
+
+export const register = (username, email, password) => async (dispatch) => {
+  dispatch(startLoading());
+  const body = {
+    username: xssSanitize(username),
+    email: xssSanitize(email),
+    password: xssSanitize(password),
+  };
+  console.log(body);
+  const response = await api.post("signup", body);
+  console.log(response.data);
+  if (response.data.status === true) {
+    dispatch(onRegisterSuccess());
+  }
+  dispatch(stopLoading());
+};
 
 export default registerSlice.reducer;

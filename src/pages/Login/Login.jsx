@@ -1,61 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useSnackbar } from "notistack";
+import { makeStyles, CircularProgress, Grid } from "@material-ui/core";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
-  Button,
-  Container,
-  List,
-  ListItem,
-  makeStyles,
-  CircularProgress,
-  Grid,
-} from "@material-ui/core";
-import { theme } from "../../theme";
-
-import { changeEmail, changePassword } from "./loginSlice";
-import { useDispatch, useSelector } from "react-redux";
+  changeEmail,
+  changeEmailValid,
+  changePassword,
+  changePasswordValid,
+} from "./loginSlice";
 import { auth } from "../../store/generalSlice";
-import Input from "../../components/Input/Input";
+import Form from "../../components/Form/Form";
 
 const useStyles = makeStyles({
-  Input: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-  },
   Grid: {
-    width: "50%",
     height: "100vh",
-  },
-  Form: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  Button: {
-    margin: "8px",
-  },
-  List: {
-    width: "100%",
-  },
-  Buttons: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
 
-const Login = (props) => {
+const Login = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch();
-  const { email, password } = useSelector((state) => state.login);
-  const { isLoading } = useSelector((state) => state.general);
   const classes = useStyles();
   const history = useHistory();
+  const dispatch = useDispatch();
+  const { email, password, emailValid, passwordValid } = useSelector(
+    (state) => state.login
+  );
+  const { isLoading } = useSelector((state) => state.general);
+  const [formValid, setFormValid] = useState(true);
 
-  const onReginsterHandler = (history) => {
+  // useEffect(() => {
+  //   const formValid =
+  //     (emailValid && passwordValid) ||
+  //     (email.length > 0 && password.length > 0);
+  //   setFormValid(formValid);
+  // }, [emailValid, passwordValid]);
+
+  const onRegisterHandler = () => {
     history.push("register");
   };
 
@@ -63,14 +45,26 @@ const Login = (props) => {
     e.preventDefault();
     dispatch(auth(email, password, enqueueSnackbar));
   };
+
   const inputs = [
     {
       name: "email",
       type: "email",
       label: "Email",
       value: email,
+      onValidate: (isValid) => {
+        dispatch(changeEmailValid(isValid));
+      },
       onChange: (e) => {
         dispatch(changeEmail(e.target.value));
+      },
+      rules: {
+        helperText: "invalid email",
+        rule: {
+          minLength: 3,
+          maxLength: 40,
+          regex: /^([\w%+-.]+)@([\w-]+\.)+([\w]{2,})$/i,
+        },
       },
     },
     {
@@ -78,52 +72,60 @@ const Login = (props) => {
       type: "password",
       label: "Password",
       value: password,
+      required: true,
+      // onValidate: (isValid) => {
+      //   dispatch(changePasswordValid(isValid));
+      // },
       onChange: (e) => {
         dispatch(changePassword(e.target.value));
       },
+      // rules: {
+      //   helperText:
+      //     "Use at least one lower- and uppercase letter, number and symbol. Min length 4",
+      //   rule: {
+      //     minLength: 4,
+      //     maxLength: 20,
+      //     regex: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?]).{4,}$/,
+      //   },
+      // },
     },
   ];
 
-  const form = (
-    <form className={classes.Form}>
-      <List className={classes.List}>
-        {inputs.map((el) => (
-          <ListItem key={el.name}>
-            <Input {...el} />
-          </ListItem>
-        ))}
-        <ListItem className={classes.Buttons}>
-          <Button
-            variant="contained"
-            className={classes.Button}
-            type="submit"
-            onClick={(e) => onLoginHandler(e)}
-          >
-            Login
-          </Button>
-          <Button
-            className={classes.Button}
-            onClick={() => onReginsterHandler(history)}
-          >
-            Register
-          </Button>
-        </ListItem>
-      </List>
-    </form>
-  );
+  const buttons = [
+    {
+      variant: "contained",
+      type: "submit",
+      text: "Sign in",
+      disabled: !formValid,
+      onClick: (e) => {
+        onLoginHandler(e);
+      },
+    },
+    {
+      text: "Not yet with us?",
+      onClick: onRegisterHandler,
+    },
+  ];
 
   return (
-    <Container>
+    <Grid container justify="center" alignItems="center">
       <Grid
-        className={classes.Grid}
+        item
+        xs={12}
+        sm={6}
         container
         direction="column"
         justify="center"
         alignItems="center"
+        className={classes.Grid}
       >
-        {isLoading ? <CircularProgress /> : form}
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          <Form inputs={inputs} buttons={buttons} />
+        )}
       </Grid>
-    </Container>
+    </Grid>
   );
 };
 

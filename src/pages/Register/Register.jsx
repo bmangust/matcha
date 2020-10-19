@@ -1,49 +1,43 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { api } from "../../axios";
-import {
-  Button,
-  makeStyles,
-  Container,
-  List,
-  ListItem,
-} from "@material-ui/core";
-import { theme } from "../../theme";
-import Input from "../../components/Input/Input";
+import { makeStyles, Grid, CircularProgress } from "@material-ui/core";
 import {
   changeEmail,
   changeUsername,
-  changePhone,
-  // changeFirstName,
-  // changeLastName,
-  changeBirthDate,
-  changeGender,
-  changeCountry,
-  changeCity,
-  changeMaxDist,
-  changeLookFor,
-  changeSearchAgeRange,
   changePassword,
   changeConfirmPassword,
+  changeEmailValid,
+  changeUsernameValid,
+  changePasswordValid,
+  changeConfirmValid,
+  register,
 } from "./registerSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Form from "../../components/Form/Form";
 
 const useStyles = makeStyles({
-  Input: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+  Grid: {
+    height: "100vh",
   },
   Form: {
-    width: "50%",
-    textAlign: "center",
+    width: "100%",
   },
   Button: {
     margin: "8px",
   },
+  List: {
+    width: "100%",
+  },
+  Buttons: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 
-const Register = (props) => {
+const Register = () => {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -53,44 +47,36 @@ const Register = (props) => {
     username,
     password,
     confirm,
-    birthDate,
-    phone,
-    gender,
-    country,
-    city,
-    maxDist,
-    lookFor,
-    minAge,
-    maxAge,
-  } = useSelector((state) => state.register);
 
-  const onLoginHandler = (history) => {
+    emailValid,
+    usernameValid,
+    passwordValid,
+    confirmValid,
+    registerSuccess,
+  } = useSelector((state) => state.register);
+  const [formValid, setFormValid] = useState(false);
+  const { isLoading } = useSelector((state) => state.general);
+
+  const onLoginHandler = () => {
     history.push("/login");
   };
 
+  useEffect(() => {
+    const formValid =
+      emailValid && usernameValid && passwordValid && confirmValid;
+    setFormValid(formValid);
+  }, [emailValid, usernameValid, passwordValid, confirmValid]);
+
   const onRegisterHandler = async (e) => {
     e.preventDefault();
-    const body = {
-      email: email,
-      username: username,
-      password: password,
-      birth_date: birthDate,
-      phone: phone,
-      gender: gender,
-      country: country,
-      city: city,
-      max_dist: maxDist,
-      look_for: lookFor,
-      min_age: minAge,
-      max_age: maxAge,
-    };
-    console.log(body);
-    const response = await api.post("signup", body);
-    console.log(response.data);
-    if (response.data.status === true) {
-      history.push("login");
+    await dispatch(register(username, email, password));
+    if (registerSuccess) {
+      enqueueSnackbar("Account successfully created, now login", {
+        variant: "success",
+      });
+      history.push("/login");
     } else {
-      enqueueSnackbar(response.data.data, { variant: "error" });
+      enqueueSnackbar("Server error, please try again", { variant: "error" });
     }
   };
 
@@ -100,109 +86,42 @@ const Register = (props) => {
       type: "text",
       label: "Username",
       value: username,
+      required: true,
+      onValidate: (isValid) => {
+        dispatch(changeUsernameValid(isValid));
+      },
       onChange: (e) => {
         dispatch(changeUsername(e.target.value));
       },
+      rules: {
+        helperText:
+          "Use letters, numbers or symbols ., %, _, -, +. Min length 3",
+        rule: {
+          minLength: 3,
+          maxLength: 20,
+          regex: /^[\w%-+.]+$/,
+        },
+      },
     },
-    // {
-    //   name: "firstName",
-    //   type: "text",
-    //   label: "First name",
-    //   value: firstName,
-    //   onChange: (e) => {
-    //     dispatch(changeFirstName(e.target.value));
-    //   },
-    // },
-    // {
-    //   name: "lastName",
-    //   type: "text",
-    //   label: "Last name",
-    //   value: lastName,
-    //   onChange: (e) => {
-    //     dispatch(changeLastName(e.target.value));
-    //   },
-    // },
     {
       name: "email",
       type: "email",
       label: "Email",
       value: email,
+      required: true,
+      onValidate: (isValid) => {
+        dispatch(changeEmailValid(isValid));
+      },
       onChange: (e) => {
         dispatch(changeEmail(e.target.value));
       },
-    },
-    {
-      name: "phone",
-      type: "text",
-      label: "Phone",
-      value: phone,
-      onChange: (e) => {
-        dispatch(changePhone(e.target.value));
-      },
-    },
-    {
-      name: "birthDate",
-      type: "date",
-      label: "Birth date",
-      value: birthDate,
-      onChange: (e) => {
-        dispatch(changeBirthDate(e.target.value));
-      },
-    },
-    {
-      name: "gender",
-      type: "select",
-      label: "I'm",
-      values: ["male", "female"],
-      value: gender,
-      onChange: (e) => {
-        dispatch(changeGender(e.target.value));
-      },
-    },
-    {
-      name: "lookFor",
-      type: "select",
-      label: "I look for",
-      values: ["male", "female", "both"],
-      value: lookFor,
-      onChange: (e) => {
-        dispatch(changeLookFor(e.target.value));
-      },
-    },
-    {
-      name: "country",
-      type: "text",
-      label: "Country",
-      value: country,
-      onChange: (e) => {
-        dispatch(changeCountry(e.target.value));
-      },
-    },
-    {
-      name: "city",
-      type: "text",
-      label: "City",
-      value: city,
-      onChange: (e) => {
-        dispatch(changeCity(e.target.value));
-      },
-    },
-    {
-      name: "maxDistance",
-      type: "slider",
-      label: "Search distance",
-      value: maxDist,
-      onChange: (value) => {
-        dispatch(changeMaxDist(value));
-      },
-    },
-    {
-      name: "ageRange",
-      type: "slider",
-      label: "Age search range",
-      value: [minAge, maxAge],
-      onChange: (value) => {
-        dispatch(changeSearchAgeRange(value));
+      rules: {
+        helperText: "invalid email",
+        rule: {
+          minLength: 3,
+          maxLength: 40,
+          regex: /^([\w%+-.]+)@([\w-]+\.)+([\w]{2,})$/i,
+        },
       },
     },
     {
@@ -210,8 +129,21 @@ const Register = (props) => {
       type: "password",
       label: "Password",
       value: password,
+      required: true,
+      onValidate: (isValid) => {
+        dispatch(changePasswordValid(isValid));
+      },
       onChange: (e) => {
         dispatch(changePassword(e.target.value));
+      },
+      rules: {
+        helperText:
+          "Use at least one lower- and uppercase letter, number and symbol. Min length 4",
+        rule: {
+          minLength: 4,
+          maxLength: 20,
+          regex: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?]).{4,}$/,
+        },
       },
     },
     {
@@ -219,43 +151,59 @@ const Register = (props) => {
       type: "password",
       label: "Confirm",
       value: confirm,
+      required: true,
+      onValidate: (isValid) => {
+        dispatch(changeConfirmValid(isValid));
+      },
       onChange: (e) => {
         dispatch(changeConfirmPassword(e.target.value));
+      },
+      rules: {
+        helperText: "Confirm and password does not match",
+        rule: {
+          minLength: 3,
+          maxLength: 20,
+          regex: new RegExp(`^${password}$`),
+        },
       },
     },
   ];
 
-  return (
-    <Container>
-      <form className={classes.Form}>
-        <List>
-          {inputs.map((el) => (
-            <ListItem key={el.name}>
-              <Input {...el} />
-            </ListItem>
-          ))}
+  const buttons = [
+    {
+      variant: "contained",
+      type: "submit",
+      text: "Sign up",
+      disabled: !formValid,
+      onClick: (e) => {
+        onRegisterHandler(e);
+      },
+    },
+    {
+      text: "Already a member?",
+      onClick: onLoginHandler,
+    },
+  ];
 
-          <Button
-            className={classes.Button}
-            variant="contained"
-            color="primary"
-            size="large"
-            type="submit"
-            onClick={(e) => onRegisterHandler(e)}
-          >
-            Sign up
-          </Button>
-          <Button
-            className={classes.Button}
-            color="primary"
-            size="large"
-            onClick={() => onLoginHandler(history)}
-          >
-            Already a member?
-          </Button>
-        </List>
-      </form>
-    </Container>
+  return (
+    <Grid container justify="center" alignItems="center">
+      <Grid
+        item
+        xs={12}
+        sm={6}
+        container
+        direction="column"
+        justify="center"
+        alignItems="center"
+        className={classes.Grid}
+      >
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          <Form inputs={inputs} buttons={buttons} />
+        )}
+      </Grid>
+    </Grid>
   );
 };
 
