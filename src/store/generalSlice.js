@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { api } from "../axios";
+import { xssSanitize } from "../utils";
 import { resetUIState } from "./UISlice";
 
 const initialGeneralState = {
@@ -7,7 +8,7 @@ const initialGeneralState = {
   isLoading: false,
   id: "",
   email: "",
-  phone: "",
+  phone: "+7",
   username: "",
   birth_date: 0,
   gender: "",
@@ -67,7 +68,11 @@ export const {
 export const auth = (email, password, enqueueSnackbar) => async (dispatch) => {
   dispatch(startLoading());
   try {
-    const res = await api.post("/signin", { email, password });
+    const body = {
+      email: xssSanitize(email),
+      password: xssSanitize(password),
+    };
+    const res = await api.post("/signin", body);
     if (res.data.status) {
       dispatch(saveNewState(res.data.data));
       dispatch(authSuccess());
