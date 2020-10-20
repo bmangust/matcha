@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect, useDispatch } from "react-redux";
 import { api } from "../../axios";
+import { getLocationByIp } from "../../utils";
 import { useSnackbar } from "notistack";
 import { saveNewState } from "../../store/generalSlice";
 import Form from "../../components/Form/Form";
@@ -58,6 +59,7 @@ const UpdateInfo = (props) => {
 
   const saveUserInfo = async (e) => {
     e.preventDefault();
+    const location = await getLocationByIp();
     const body = {
       id: props.id,
       email: email,
@@ -71,6 +73,7 @@ const UpdateInfo = (props) => {
       look_for: lookFor,
       min_age: ageRange[0],
       max_age: ageRange[1],
+      position: location,
     };
     if (password.length) {
       body.password = password;
@@ -150,7 +153,7 @@ const UpdateInfo = (props) => {
         rule: {
           minLength: 5,
           maxLength: 12,
-          regex: /^\+7\d+$/,
+          regex: /^\d+$/,
         },
       },
     },
