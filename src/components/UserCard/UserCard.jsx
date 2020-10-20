@@ -16,6 +16,9 @@ import ChevronRightRoundedIcon from "@material-ui/icons/ChevronRight";
 import { FavoriteOutlined } from "@material-ui/icons";
 import defaultImage from "../../Images/default-avatar.png";
 import { media } from "../../axios";
+import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { sendVisit, sendLike, setHeader } from "../../store/UISlice";
 
 const useStyles = makeStyles({
   UserCard: {
@@ -79,10 +82,13 @@ const useStyles = makeStyles({
 
 const UserCard = (props) => {
   const classes = useStyles();
-  const { username, birth_date, images } = props;
+  const userId = useSelector((state) => state.general.id);
+  const { id, username, birth_date, images } = props;
   const [displayedImage, setDisplayedImage] = useState(0);
   const [imagesArray, setImagesArray] = useState([]);
   const tags = props.tags || ["No tags"];
+  const history = useHistory();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     console.log(images);
@@ -103,11 +109,23 @@ const UserCard = (props) => {
     }
   }, [images]);
 
+  const showUserProfile = (e) => {
+    e.stopPropagation();
+    dispatch(setHeader({ header: `${username}'s profile` }));
+    dispatch(sendVisit(userId, id));
+    history.push("/strangers/" + id);
+  };
+
+  const handleLike = (e) => {
+    e.stopPropagation();
+    dispatch(sendLike(userId, id));
+  };
+
   const age = new Date().getFullYear() - new Date(birth_date).getFullYear();
 
   return (
     <Grid item xs={12} sm={6} lg={4}>
-      <Card className={classes.UserCard}>
+      <Card className={classes.UserCard} onClick={(e) => showUserProfile(e)}>
         <div>
           <MobileStepper
             variant="dots"
@@ -138,7 +156,12 @@ const UserCard = (props) => {
             }
           />
 
-          <Fab color="secondary" className={classes.Like} size="small">
+          <Fab
+            color="secondary"
+            className={classes.Like}
+            size="small"
+            onClick={(e) => handleLike(e)}
+          >
             <FavoriteOutlined />
           </Fab>
 
