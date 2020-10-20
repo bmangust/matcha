@@ -85,18 +85,21 @@ const UserCard = (props) => {
   const tags = props.tags || ["No tags"];
 
   useEffect(() => {
+    console.log(images);
     if (images) {
       const promises = images.map((img) => media.get(img));
       const fetchedImages = [];
-      Promise.all(promises).then((imgs) => {
-        imgs.forEach((img) => {
-          console.log(img);
-          const file = URL.createObjectURL(img.data);
-          fetchedImages.push(file);
-        });
-        console.log(fetchedImages);
-        setImagesArray(() => fetchedImages);
-      });
+      Promise.all(promises)
+        .then((imgs) => {
+          imgs.forEach((img) => {
+            console.log(img);
+            const file = URL.createObjectURL(img.data);
+            fetchedImages.push(file);
+          });
+          console.log(fetchedImages);
+          setImagesArray(fetchedImages);
+        })
+        .catch((err) => console.log(err));
     }
   }, [images]);
 

@@ -1,46 +1,31 @@
-import {
-  Container,
-  List,
-  ListItem,
-  makeStyles,
-  Button,
-} from "@material-ui/core";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect, useDispatch } from "react-redux";
 import { api } from "../../axios";
 import { useSnackbar } from "notistack";
-import Input from "../../components/Input/Input";
 import { saveNewState } from "../../store/generalSlice";
-
-const useStyles = makeStyles({
-  UpdateInfo: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  Select: {
-    width: "30em",
-  },
-  ButtonListItem: {
-    justifyContent: "center",
-  },
-});
+import Form from "../../components/Form/Form";
 
 const UpdateInfo = (props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const classes = useStyles();
-  const [username, setUsername] = React.useState(props.username);
-  const [email, setEmail] = React.useState(props.email);
-  const [phone, setPhone] = React.useState(props.phone);
-  const [birthDate, setBirthdate] = React.useState(props.birthDate);
-  const [gender, setGender] = React.useState(props.gender);
-  const [lookFor, setLookFor] = React.useState(props.lookFor);
-  const [country, setCountry] = React.useState(props.country);
-  const [city, setCity] = React.useState(props.city);
-  const [maxDistance, setMaxDistance] = React.useState(props.maxDist);
-  const [ageRange, setAgeRange] = React.useState([props.minAge, props.maxAge]);
-  const [password, setPassword] = React.useState("");
+  const [username, setUsername] = useState(props.username);
+  const [email, setEmail] = useState(props.email);
+  const [phone, setPhone] = useState(props.phone);
+  const [birthDate, setBirthdate] = useState(props.birthDate);
+  const [gender, setGender] = useState(props.gender);
+  const [lookFor, setLookFor] = useState(props.lookFor);
+  const [country, setCountry] = useState(props.country);
+  const [city, setCity] = useState(props.city);
+  const [maxDistance, setMaxDistance] = useState(props.maxDist);
+  const [ageRange, setAgeRange] = useState([props.minAge, props.maxAge]);
+  const [password, setPassword] = useState("");
+
+  const [usernameValid, setUsernameValid] = useState(true);
+  const [emailValid, setEmailValid] = useState(true);
+  const [phoneValid, setPhoneValid] = useState(true);
+  const [countryValid, setCountryValid] = useState(true);
+  const [cityValid, setCityValid] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(true);
+  const [formValid, setFormValid] = useState(true);
   const dispatch = useDispatch();
 
   const changeBirthDate = (newDate) => {
@@ -53,14 +38,78 @@ const UpdateInfo = (props) => {
     if (date && !isNaN(date)) setBirthdate(date);
   };
 
+  useEffect(() => {
+    const formValid =
+      usernameValid &&
+      emailValid &&
+      phoneValid &&
+      countryValid &&
+      cityValid &&
+      passwordValid;
+    setFormValid(formValid);
+  }, [
+    usernameValid,
+    emailValid,
+    phoneValid,
+    countryValid,
+    cityValid,
+    passwordValid,
+  ]);
+
+  const saveUserInfo = async (e) => {
+    e.preventDefault();
+    const body = {
+      id: props.id,
+      email: email,
+      username: username,
+      birth_date: birthDate,
+      phone: phone,
+      gender: gender,
+      country: country,
+      city: city,
+      max_dist: maxDistance,
+      look_for: lookFor,
+      min_age: ageRange[0],
+      max_age: ageRange[1],
+    };
+    if (password.length) {
+      body.password = password;
+    }
+    console.log("[UpdateInfo] update user info");
+    console.log(body);
+    const response = await api.post("user", body);
+    console.log(response.data);
+
+    if (response.data.status) {
+      dispatch(saveNewState(body));
+      enqueueSnackbar("Successfully saved!", { variant: "success" });
+    } else {
+      console.log(response.data);
+      enqueueSnackbar("Server error", { variant: "error" });
+    }
+  };
+
   const inputs = [
     {
       name: "username",
       type: "text",
       label: "Username",
       value: username,
+      ignoreTouched: true,
       onChange: (e) => {
         setUsername(e.target.value);
+      },
+      onValidate: (isValid) => {
+        setUsernameValid(isValid);
+      },
+      rules: {
+        helperText:
+          "Use letters, numbers or symbols ., %, _, -, +. Min length 3",
+        rule: {
+          minLength: 3,
+          maxLength: 20,
+          regex: /^[\w%-+.]+$/,
+        },
       },
     },
     {
@@ -68,8 +117,20 @@ const UpdateInfo = (props) => {
       type: "email",
       label: "Email",
       value: email,
+      ignoreTouched: true,
       onChange: (e) => {
         setEmail(e.target.value);
+      },
+      onValidate: (isValid) => {
+        setEmailValid(isValid);
+      },
+      rules: {
+        helperText: "invalid email",
+        rule: {
+          minLength: 3,
+          maxLength: 40,
+          regex: /^([\w%+-.]+)@([\w-]+\.)+([\w]{2,})$/i,
+        },
       },
     },
     {
@@ -77,8 +138,20 @@ const UpdateInfo = (props) => {
       type: "text",
       label: "Phone",
       value: phone,
+      ignoreTouched: true,
       onChange: (e) => {
         setPhone(e.target.value);
+      },
+      onValidate: (isValid) => {
+        setPhoneValid(isValid);
+      },
+      rules: {
+        helperText: "invalid phone",
+        rule: {
+          minLength: 5,
+          maxLength: 12,
+          regex: /^\+7\d+$/,
+        },
       },
     },
     {
@@ -115,8 +188,20 @@ const UpdateInfo = (props) => {
       type: "text",
       label: "Country",
       value: country,
+      ignoreTouched: true,
       onChange: (e) => {
         setCountry(e.target.value);
+      },
+      onValidate: (isValid) => {
+        setCountryValid(isValid);
+      },
+      rules: {
+        helperText: "Use letters, numbers or symbols ., -. Min length 2",
+        rule: {
+          minLength: 2,
+          maxLength: 20,
+          regex: /^[\w-.]+$/,
+        },
       },
     },
     {
@@ -124,8 +209,20 @@ const UpdateInfo = (props) => {
       type: "text",
       label: "City",
       value: city,
+      ignoreTouched: true,
       onChange: (e) => {
         setCity(e.target.value);
+      },
+      onValidate: (isValid) => {
+        setCityValid(isValid);
+      },
+      rules: {
+        helperText: "Use letters, numbers or symbols ., -. Min length 2",
+        rule: {
+          minLength: 2,
+          maxLength: 20,
+          regex: /^[\w-.]+$/,
+        },
       },
     },
     {
@@ -151,61 +248,36 @@ const UpdateInfo = (props) => {
       type: "password",
       label: "Password",
       value: password,
+      ignoreTouched: true,
       onChange: (e) => {
         setPassword(e.target.value);
+      },
+      onValidate: (isValid) => {
+        setPasswordValid(isValid);
+      },
+      rules: {
+        helperText:
+          "Use at least one lower- and uppercase letter, number and symbol. Min length 4",
+        rule: {
+          minLength: 0,
+          maxLength: 20,
+          regex: /(^$)|(^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?]).{4,}$)/,
+        },
       },
     },
   ];
 
-  const saveUserInfo = async (e) => {
-    e.preventDefault();
-    const body = {
-      id: props.id,
-      email: email,
-      username: username,
-      birth_date: birthDate,
-      phone: phone,
-      gender: gender,
-      country: country,
-      city: city,
-      max_dist: maxDistance,
-      look_for: lookFor,
-      min_age: ageRange[0],
-      max_age: ageRange[1],
-    };
-    if (password.length) {
-      body.password = password;
-    }
-    console.log("[UpdateInfo] update user info");
-    console.log(body);
-    const response = await api.post("user", body);
-    console.log(response.data);
+  const buttons = [
+    {
+      type: "submit",
+      text: "Save",
+      size: "large",
+      disabled: !formValid,
+      onClick: saveUserInfo,
+    },
+  ];
 
-    if (response.data.status) {
-      dispatch(saveNewState(body));
-      enqueueSnackbar("Successfully saved!", { variant: "success" });
-    } else {
-      console.log(response.data);
-      enqueueSnackbar("Server error", { variant: "error" });
-    }
-  };
-
-  return (
-    <Container>
-      <List>
-        {inputs.map((el) => (
-          <ListItem key={el.name}>
-            <Input {...el} />
-          </ListItem>
-        ))}
-        <ListItem className={classes.ButtonListItem} key="save">
-          <Button size="large" type="submit" onClick={saveUserInfo}>
-            Save
-          </Button>
-        </ListItem>
-      </List>
-    </Container>
-  );
+  return <Form inputs={inputs} buttons={buttons} />;
 };
 
 const mapStateToProps = (state) => ({

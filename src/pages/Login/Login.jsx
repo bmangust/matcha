@@ -30,12 +30,10 @@ const Login = () => {
   const { isLoading } = useSelector((state) => state.general);
   const [formValid, setFormValid] = useState(true);
 
-  // useEffect(() => {
-  //   const formValid =
-  //     (emailValid && passwordValid) ||
-  //     (email.length > 0 && password.length > 0);
-  //   setFormValid(formValid);
-  // }, [emailValid, passwordValid]);
+  useEffect(() => {
+    const formValid = emailValid && passwordValid;
+    setFormValid(formValid);
+  }, [emailValid, passwordValid]);
 
   const onRegisterHandler = () => {
     history.push("register");
@@ -73,21 +71,21 @@ const Login = () => {
       label: "Password",
       value: password,
       required: true,
-      // onValidate: (isValid) => {
-      //   dispatch(changePasswordValid(isValid));
-      // },
+      onValidate: (isValid) => {
+        dispatch(changePasswordValid(isValid));
+      },
       onChange: (e) => {
         dispatch(changePassword(e.target.value));
       },
-      // rules: {
-      //   helperText:
-      //     "Use at least one lower- and uppercase letter, number and symbol. Min length 4",
-      //   rule: {
-      //     minLength: 4,
-      //     maxLength: 20,
-      //     regex: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?]).{4,}$/,
-      //   },
-      // },
+      rules: {
+        helperText:
+          "Use at least one lower- and uppercase letter, number and symbol. Min length 4",
+        rule: {
+          minLength: 4,
+          maxLength: 20,
+          regex: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?]).{4,}$/,
+        },
+      },
     },
   ];
 

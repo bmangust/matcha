@@ -10,11 +10,11 @@ import {
 import PropTypes from "prop-types";
 
 const useStyles = makeStyles({
-  Select: {
-    width: "30em",
-  },
   ButtonListItem: {
     justifyContent: "center",
+  },
+  Input: {
+    width: "100%",
   },
 });
 
@@ -43,7 +43,17 @@ const validate = (value, rule, touched) => {
 
 const Input = (props) => {
   const classes = useStyles();
-  const { type, label, name, values, value, onValidate, onChange, rules } = {
+  const {
+    type,
+    label,
+    name,
+    values,
+    value,
+    onValidate,
+    onChange,
+    rules,
+    ignoreTouched,
+  } = {
     ...props,
   };
   const [touched, setTouched] = useState(false);
@@ -55,11 +65,20 @@ const Input = (props) => {
     : { ...{ helperText: "", rule: null } };
 
   useEffect(() => {
-    let error = rule ? !validate(value, rule, touched) : false;
+    let error;
+    if (ignoreTouched) {
+      error = rule ? !validate(value, rule, true) : false;
+    } else {
+      error = rule ? !validate(value, rule, touched) : false;
+    }
     // update error message
     error ? setErrorText(helperText) : setErrorText("");
     // update inputValid state in Redux
-    onValidate && onValidate(touched && !error);
+    if (ignoreTouched) {
+      onValidate && onValidate(!error);
+    } else {
+      onValidate && onValidate(touched && !error);
+    }
     setError(error);
   }, [value, rule, touched, helperText, onValidate]);
 
@@ -76,9 +95,9 @@ const Input = (props) => {
           type={type}
           label={label}
           value={value}
+          className={classes.Input}
           onFocus={() => setTouched(true)}
           onChange={(e) => onChange(e)}
-          className={classes.Input}
         />
       );
     case "select":
@@ -86,9 +105,9 @@ const Input = (props) => {
         <TextField
           id={name}
           key={name}
-          className={classes.Select}
           label={label}
           value={value}
+          className={classes.Input}
           onChange={(e) => onChange(e)}
           select
         >
@@ -105,6 +124,7 @@ const Input = (props) => {
           id={name}
           type="date"
           label="Birth Date"
+          className={classes.Input}
           InputLabelProps={{ shrink: true }}
           value={getDate(value)}
           onChange={(e) => onChange(e)}
@@ -112,7 +132,7 @@ const Input = (props) => {
       );
     case "slider":
       return (
-        <Box className={classes.Select}>
+        <Box className={classes.Input}>
           <Typography id="range-slider" gutterBottom>
             {label}
           </Typography>

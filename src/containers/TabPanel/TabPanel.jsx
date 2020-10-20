@@ -6,6 +6,7 @@ function TabPanel(props) {
 
   return (
     <Box
+      style={{ width: "70%", textAlign: "center" }}
       role="tabpanel"
       hidden={value !== index}
       id={`full-width-tabpanel-${index}`}

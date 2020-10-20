@@ -1,4 +1,4 @@
-import { Tabs, Tab, Container, makeStyles } from "@material-ui/core";
+import { Tabs, Tab, Grid, makeStyles } from "@material-ui/core";
 import React from "react";
 import { connect } from "react-redux";
 import TabPanel from "../../containers/TabPanel/TabPanel";
@@ -23,9 +23,6 @@ const useStyles = makeStyles({
     minHeight: "100vh",
     padding: "30px",
     paddingBlockEnd: "40px",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
   },
 });
 
@@ -63,7 +60,14 @@ const Profile = (props) => {
   ));
 
   return (
-    <Container className={classes.Profile}>
+    <Grid
+      container
+      wrap="nowrap"
+      direction="column"
+      justify="flex-start"
+      alignItems="center"
+      className={classes.Profile}
+    >
       <AvatarContainer />
       <Tabs
         classes={{ root: classes.TabPanel, indicator: classes.indicator }}
@@ -73,7 +77,7 @@ const Profile = (props) => {
         {tabs}
       </Tabs>
       {tabPanels}
-    </Container>
+    </Grid>
   );
 };
 
