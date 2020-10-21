@@ -120,7 +120,13 @@ export const {
   changeSearchAgeRange,
 } = registerSlice.actions;
 
-export const register = (username, email, password) => async (dispatch) => {
+export const register = (
+  username,
+  email,
+  password,
+  enqueueSnackbar,
+  history
+) => async (dispatch) => {
   dispatch(startLoading());
   const body = {
     username: xssSanitize(username),
@@ -132,6 +138,12 @@ export const register = (username, email, password) => async (dispatch) => {
   console.log(response.data);
   if (response.data.status === true) {
     dispatch(onRegisterSuccess());
+    enqueueSnackbar("Account successfully created, now login", {
+      variant: "success",
+    });
+    history.push("/login");
+  } else {
+    enqueueSnackbar("Server error, please try again", { variant: "error" });
   }
   dispatch(stopLoading());
 };

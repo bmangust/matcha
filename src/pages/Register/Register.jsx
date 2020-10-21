@@ -52,7 +52,6 @@ const Register = () => {
     usernameValid,
     passwordValid,
     confirmValid,
-    registerSuccess,
   } = useSelector((state) => state.register);
   const [formValid, setFormValid] = useState(false);
   const { isLoading } = useSelector((state) => state.general);
@@ -69,15 +68,7 @@ const Register = () => {
 
   const onRegisterHandler = async (e) => {
     e.preventDefault();
-    await dispatch(register(username, email, password));
-    if (registerSuccess) {
-      enqueueSnackbar("Account successfully created, now login", {
-        variant: "success",
-      });
-      history.push("/login");
-    } else {
-      enqueueSnackbar("Server error, please try again", { variant: "error" });
-    }
+    dispatch(register(username, email, password, enqueueSnackbar, history));
   };
 
   const inputs = [
