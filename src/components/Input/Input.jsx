@@ -162,7 +162,11 @@ Input.propTypes = {
   label: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   values: PropTypes.array,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.array,
+  ]),
   onValidate: PropTypes.func,
   onChange: PropTypes.func.isRequired,
   rules: PropTypes.exact({

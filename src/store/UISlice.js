@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { api } from "../axios";
+import { capitalize } from "../utils";
 
 const initialUIState = {
   showBackButton: false,
@@ -40,11 +42,22 @@ export const {
   // setCompanion,
 } = UISlice.actions;
 
-export const handleBack = (history) => (dispatch) => {
+export const handleBack = (history, parent) => (dispatch) => {
   dispatch(hideBackButton());
-  dispatch(setHeader({ header: "Chat" }));
+  const header = capitalize(parent);
+  dispatch(setHeader({ header }));
   // dispatch(setCompanion({ companion: null }));
-  history.push("/chat");
+  parent === "strangers" ? history.push("/") : history.push(`/${parent}`);
+};
+
+export const sendVisit = (watchedId) => async (dispatch) => {
+  const res = await api.post(`/look`, { id: watchedId });
+  console.log(res);
+};
+
+export const sendLike = (watchedId) => async (dispatch) => {
+  const res = await api.post(`/like`, { id: watchedId });
+  console.log(res);
 };
 
 export default UISlice.reducer;

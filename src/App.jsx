@@ -20,10 +20,9 @@ function App() {
           <CssBaseline />
           {isAuth ? (
             <Switch>
+              <Redirect exact from="/strangers" to="/" />
+              <Redirect from="/login" to="/" />
               <Route path="/" component={Main} />
-              <Route path="/login">
-                <Redirect to="/" />
-              </Route>
             </Switch>
           ) : (
             <Switch>

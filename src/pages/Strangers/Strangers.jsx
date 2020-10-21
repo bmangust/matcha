@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import UserCard from "../../components/UserCard/UserCard";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
 import { api } from "../../axios";
+import { Route, Switch } from "react-router-dom";
+import UserProfile from "../../containers/UserProfile/UserProfile";
 
 const useStyles = makeStyles({
   Strangers: {
@@ -17,16 +19,13 @@ const Strangers = () => {
 
   const getUsers = async () => {
     const res = await api.get("strangers");
-    console.log(res.data);
     if (res.data.status) {
-      console.log(res.data.data);
       return res.data.data;
     }
     return null;
   };
 
   useEffect(() => {
-    console.log("[Strangers] loaded");
     getUsers().then((res) => setUsers(res));
   }, []);
 
@@ -36,12 +35,9 @@ const Strangers = () => {
       setCards(noUsers);
       return;
     }
-    console.log(users);
     const cards = users.map((el) => <UserCard {...el} key={el.id} />);
     setCards(cards);
   }, [users]);
-
-  console.log(users);
 
   return (
     <Grid
@@ -50,9 +46,25 @@ const Strangers = () => {
       alignItems="center"
       className={classes.Strangers}
     >
-      <Grid container item xs={10} spacing={3}>
-        {cards}
-      </Grid>
+      <Switch>
+        {users &&
+          users.map((el) => (
+            <Route
+              key={el.id}
+              path={`/strangers/:id`}
+              render={() => <UserProfile {...el} />}
+            />
+          ))}
+        <Route
+          path="/"
+          exact
+          render={() => (
+            <Grid container item xs={10} spacing={3}>
+              {cards}
+            </Grid>
+          )}
+        />
+      </Switch>
     </Grid>
   );
 };

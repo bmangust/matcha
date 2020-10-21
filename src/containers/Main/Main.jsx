@@ -106,10 +106,6 @@ const Main = (props) => {
     history.push(url);
   };
 
-  const handleBackButton = () => {
-    dispatch(handleBack(history));
-  };
-
   const renderedTabs = tabs.map((el) => {
     return (
       <Tab
@@ -143,11 +139,7 @@ const Main = (props) => {
           className={classes.Container}
         >
           <Grid className={classes.Header}>
-            <Header
-              showBackButton={true}
-              header={header || tabs[0].label}
-              handleBack={handleBackButton}
-            />
+            <Header header={header || tabs[0].label} />
           </Grid>
           <Switch>
             <Route path="/chat" component={Chat} />
