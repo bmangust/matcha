@@ -1,6 +1,5 @@
 import { Grid, Typography } from "@material-ui/core";
 import React from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
 
 const UserProfile = (props) => {
   const { id, name, birthDate, images } = { ...props };

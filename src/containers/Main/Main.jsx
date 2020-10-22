@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { Switch, Route, useHistory, withRouter, Link } from "react-router-dom";
 import { logout } from "../../store/generalSlice";
-import { handleBack, setSelectedTab } from "../../store/UISlice";
+import { setSelectedTab } from "../../store/UISlice";
 
 import {
   AppBar,
@@ -90,10 +90,11 @@ const tabs = [
 const Main = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const { header, selectedTab } = useSelector((state) => state.UI);
-  const isLoading = useSelector((state) => state.general.isLoading);
+  const { isLoading, looked_by } = useSelector((state) => state.general);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
+  const [notification, setNotification] = useState(null);
 
   const handleChange = async (e, url) => {
     if (url === "/logout") {
@@ -105,6 +106,10 @@ const Main = (props) => {
     dispatch(setSelectedTab({ selectedTab: tab }));
     history.push(url);
   };
+
+  useEffect(() => {
+    setNotification(new Set(looked_by));
+  }, [looked_by]);
 
   const renderedTabs = tabs.map((el) => {
     return (
@@ -139,7 +144,10 @@ const Main = (props) => {
           className={classes.Container}
         >
           <Grid className={classes.Header}>
-            <Header header={header || tabs[0].label} />
+            <Header
+              header={header || tabs[0].label}
+              notification={notification}
+            />
           </Grid>
           <Switch>
             <Route path="/chat" component={Chat} />

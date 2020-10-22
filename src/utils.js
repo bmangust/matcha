@@ -15,7 +15,7 @@ export const getLocationByIp = async () => {
   return await fetch("https://www.cloudflare.com/cdn-cgi/trace")
     .then((response) => response.text())
     .then((res) => {
-      const regex = /(?<=(ip=))([\d\.]+)/g;
+      const regex = /(?<=(ip=))([\d.]+)/g;
       const ip = res.match(regex)[0];
       return ip;
     })
