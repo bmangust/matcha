@@ -4,6 +4,7 @@ import { Grid, makeStyles, Typography } from "@material-ui/core";
 import { api } from "../../axios";
 import { Route, Switch } from "react-router-dom";
 import UserProfile from "../../containers/UserProfile/UserProfile";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles({
   Strangers: {
@@ -13,6 +14,7 @@ const useStyles = makeStyles({
 });
 
 const Strangers = () => {
+  const myId = useSelector((state) => state.general.id);
   const classes = useStyles();
   const [users, setUsers] = useState(null);
   const [cards, setCards] = useState(null);
@@ -35,9 +37,11 @@ const Strangers = () => {
       setCards(noUsers);
       return;
     }
-    const cards = users.map((el) => <UserCard {...el} key={el.id} />);
+    const cards = users.map((el) =>
+      el.id === myId ? null : <UserCard {...el} key={el.id} />
+    );
     setCards(cards);
-  }, [users]);
+  }, [users, myId]);
 
   return (
     <Grid
