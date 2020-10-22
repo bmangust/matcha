@@ -15,10 +15,11 @@ import ChevronLeftRoundedIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightRoundedIcon from "@material-ui/icons/ChevronRight";
 import { FavoriteOutlined } from "@material-ui/icons";
 import defaultImage from "../../Images/default-avatar.png";
-import { media } from "../../axios";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { sendVisit, sendLike, setHeader } from "../../store/UISlice";
+import { useFetchedImages } from "../../hooks/loadImages.hook";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles({
   UserCard: {
@@ -81,36 +82,31 @@ const useStyles = makeStyles({
 });
 
 const UserCard = (props) => {
+  const [
+    { fetchedImages, error },
+    fetchImages,
+    destroyImages,
+  ] = useFetchedImages();
   const classes = useStyles();
   const userId = useSelector((state) => state.general.id);
-  const { id, username, birth_date, images } = props;
+  const { id, username, birth_date, images, avatar } = props;
   const [displayedImage, setDisplayedImage] = useState(0);
-  const [imagesArray, setImagesArray] = useState([]);
   const tags = props.tags || ["No tags"];
   const history = useHistory();
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    console.log(images);
-    if (images) {
-      const promises = images.map((img) => media.get(img));
-      const fetchedImages = [];
-      Promise.all(promises)
-        .then((imgs) => {
-          imgs.forEach((img) => {
-            console.log(img);
-            const file = URL.createObjectURL(img.data);
-            fetchedImages.push(file);
-          });
-          console.log(fetchedImages);
-          setImagesArray(fetchedImages);
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [images]);
+    const imgs = avatar ? [avatar, ...images] : images;
+    fetchImages(imgs);
+    return () => destroyImages();
+  }, [images, avatar]);
+
+  useEffect(() => {
+    if (error) enqueueSnackbar(error, { variant: "error" });
+  }, [error]);
 
   const showUserProfile = (e) => {
-    e.stopPropagation();
     dispatch(setHeader({ header: `${username}'s profile` }));
     dispatch(sendVisit(userId, id));
     history.push("/strangers/" + id);
@@ -129,17 +125,20 @@ const UserCard = (props) => {
         <div>
           <MobileStepper
             variant="dots"
-            steps={imagesArray.length}
+            steps={fetchedImages.length}
             position="static"
             activeStep={displayedImage}
             className={classes.Stepper}
             nextButton={
               <Button
                 size="small"
-                onClick={() => setDisplayedImage((prev) => prev + 1)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDisplayedImage((prev) => prev + 1);
+                }}
                 disabled={
-                  imagesArray.length === 0 ||
-                  displayedImage === imagesArray.length - 1
+                  fetchedImages.length === 0 ||
+                  displayedImage === fetchedImages.length - 1
                 }
               >
                 <ChevronRightRoundedIcon />
@@ -148,8 +147,11 @@ const UserCard = (props) => {
             backButton={
               <Button
                 size="small"
-                onClick={() => setDisplayedImage((prev) => prev - 1)}
-                disabled={displayedImage === 0 || imagesArray.length === 0}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDisplayedImage((prev) => prev - 1);
+                }}
+                disabled={displayedImage === 0 || fetchedImages.length === 0}
               >
                 <ChevronLeftRoundedIcon />
               </Button>
@@ -167,7 +169,7 @@ const UserCard = (props) => {
 
           <CardMedia
             className={classes.media}
-            image={imagesArray[displayedImage] || defaultImage}
+            image={fetchedImages[displayedImage] || defaultImage}
           />
 
           <CardContent className={classes.Info}>
