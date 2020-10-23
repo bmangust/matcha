@@ -1,4 +1,4 @@
-import { useState, useCallback, useReducer } from "react";
+import { useCallback, useReducer } from "react";
 import { media } from "../axios";
 import PropTypes from "prop-types";
 
@@ -53,34 +53,28 @@ export const useFetchedImages = () => {
     const promises = images.map((img) => media.get(img));
     Promise.all(promises)
       .then((imgs) => {
-        console.log(imgs);
         const fetchedImages = imgs.map((img) => {
           const file = URL.createObjectURL(img.data);
           return file;
         });
-        console.log(fetchedImages);
         dispatch({ type: actionTypes.SUCCESS_LOADING, payload: fetchedImages });
       })
       .catch((err) => {
-        console.log(err);
         dispatch({ type: actionTypes.FAIL_LOADING, payload: err });
       });
   }, []);
 
   fetchImages.propTypes = {
-    images: PropTypes.array,
+    images: PropTypes.arrayOf(PropTypes.string),
   };
 
   const destroyImages = useCallback(() => {
-    state.fetchedImages.forEach((e) => URL.revokeObjectURL(e));
+    const images = [...state.fetchedImages];
     dispatch({ type: actionTypes.SUCCESS_LOADING, payload: [] });
+    images.forEach((e) => URL.revokeObjectURL(e));
   }, [state.fetchedImages]);
 
   const clearError = () => dispatch({ type: actionTypes.CLEAR_ERROR });
 
   return [state, fetchImages, destroyImages, clearError];
-};
-
-useFetchedImages.propTypes = {
-  values: PropTypes.arrayOf(PropTypes.string),
 };

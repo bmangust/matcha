@@ -14,10 +14,10 @@ import {
 } from "@material-ui/core";
 import { ChevronLeftRounded } from "@material-ui/icons";
 import NotificationsIcon from "@material-ui/icons/Notifications";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
-import { api, media } from "../../axios";
+import { useFetchUsers } from "../../hooks/loadUsers.hook";
 import { handleBack } from "../../store/UISlice";
 import { primaryColor } from "../../theme";
 
@@ -44,50 +44,28 @@ const Header = (props) => {
   const { header, notification } = {
     ...props,
   };
+  const [{ fetchedUsers }, fetchUsers] = useFetchUsers();
+  const [users, setUsers] = useState([]);
   const loc = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-  const [popup, setPopup] = useState(null);
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
 
-  const fetchUsers = useCallback((users) => {
-    console.log(users);
-    const promises = [...users].map((el) => api.get(`/data/${el}`));
-    const fetchedUsers = [];
-    Promise.allSettled(promises)
-      .then((values) => {
-        values.forEach(async (el) => {
-          if (el.status === "fulfilled") {
-            const data = el.value.data.data;
-            console.log(data);
-            const avatarId = data.avatar || (data.images && data.images[0]);
-            const avatar =
-              avatarId &&
-              (await media(avatarId)
-                .then((res) => URL.createObjectURL(res.data))
-                .catch((err) => {
-                  console.log(err);
-                  return null;
-                }));
-            const user = { id: data.id, username: data.username, avatar };
-            fetchedUsers.push(user);
-          }
-        });
-      })
-      .catch((err) => console.log(err));
-    return fetchedUsers;
-  }, []);
+  useEffect(() => {
+    fetchUsers(notification);
+  }, [notification]);
 
   useEffect(() => {
-    if (!notification) return;
-    const users = fetchUsers(notification);
-    console.log(users);
-    setPopup(users);
-  }, [notification, fetchUsers]);
+    setUsers(fetchedUsers);
+  }, [fetchedUsers]);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
+  };
+
+  const handleItemClik = (id) => {
+    history.push(`/strangers/${id}`);
   };
 
   const handleBackButton = () => {
@@ -174,9 +152,12 @@ const Header = (props) => {
                     id="menu-list-grow"
                     onKeyDown={handleListKeyDown}
                   >
-                    {popup &&
-                      popup.map((el) => (
-                        <MenuItem key={el.id}>
+                    {users.length > 0 ? (
+                      users.map((el) => (
+                        <MenuItem
+                          onClick={() => handleItemClik(el.id)}
+                          key={el.id}
+                        >
                           <Grid container alignItems="center">
                             <Avatar
                               className={classes.Avatar}
@@ -185,7 +166,10 @@ const Header = (props) => {
                             <Typography>{el.username}</Typography>
                           </Grid>
                         </MenuItem>
-                      ))}
+                      ))
+                    ) : (
+                      <Typography>No new users</Typography>
+                    )}
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
