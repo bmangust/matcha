@@ -1,4 +1,4 @@
-import { useCallback, useReducer } from "react";
+import { useReducer } from "react";
 import PropTypes from "prop-types";
 import { api, media } from "../axios";
 
@@ -40,6 +40,22 @@ const fetchUsersReducer = (state, action) => {
   }
 };
 
+const fetchImage = async (img) => {
+  if (img === null) return null;
+  try {
+    const fetchedImage = await media(img);
+    return URL.createObjectURL(fetchedImage.data);
+  } catch (error) {
+    return null;
+  }
+};
+
+export const fetchAvatar = async (user) => {
+  const avatarId = user.avatar || (user.images && user.images[0]);
+  const avatar = await fetchImage(avatarId);
+  return avatar;
+};
+
 export const useFetchUsers = () => {
   const [state, dispatch] = useReducer(fetchUsersReducer, {
     isLoading: false,
@@ -47,53 +63,36 @@ export const useFetchUsers = () => {
     fetchedUsers: [],
   });
 
-  const fetchImage = async (img) => {
-    if (img === null) return null;
+  const fetchUsers = (users) => {
+    if (!users) return;
+
+    const fetchUsersAsync = async (users) => {
+      const promises = [...users].map((el) => api.get(`/data/${el}`));
+      const resolvedPromises = await Promise.allSettled(promises);
+      const userPromises = resolvedPromises
+        .filter((el) => el.status === "fulfilled")
+        .map(async (el) => {
+          const user = { ...el.value.data.data };
+          const avatar = await fetchAvatar(user);
+          user.avatarImg = avatar;
+          return user;
+        });
+      const loadedUsers = await Promise.all(userPromises);
+      console.log(loadedUsers);
+      dispatch({
+        type: actionTypes.SUCCESS_LOADING,
+        payload: loadedUsers,
+      });
+    };
+
+    dispatch({ type: actionTypes.INIT_LOADING });
     try {
-      const fetchedImage = await media(img);
-      return URL.createObjectURL(fetchedImage.data);
-    } catch (error) {
-      return null;
+      fetchUsersAsync(users);
+    } catch (err) {
+      console.log(err);
+      dispatch({ type: actionTypes.FAIL_LOADING, payload: err });
     }
   };
-
-  const fetchAvatar = async (user) => {
-    const avatarId = user.avatar || (user.images && user.images[0]);
-    const avatar = await fetchImage(avatarId);
-    return avatar;
-  };
-
-  const fetchUsers = useCallback(
-    (users) => {
-      if (!users) return;
-      dispatch({ type: actionTypes.INIT_LOADING });
-      try {
-        const promises = [...users].map((el) => api.get(`/data/${el}`));
-        Promise.allSettled(promises)
-          .then((values) =>
-            values
-              .filter((el) => el.status === "fulfilled")
-              .map(async (el) => {
-                const user = { ...el.value.data.data };
-                const avatar = await fetchAvatar(user);
-                user.avatarImg = avatar;
-                return user;
-              })
-          )
-          .then(async (fetchedUsers) => {
-            const users = await Promise.all(fetchedUsers);
-            dispatch({
-              type: actionTypes.SUCCESS_LOADING,
-              payload: users,
-            });
-          });
-      } catch (err) {
-        console.log(err);
-        dispatch({ type: actionTypes.FAIL_LOADING, payload: err });
-      }
-    },
-    [fetchAvatar]
-  );
 
   fetchUsers.propTypes = {
     users: PropTypes.arrayOf(PropTypes.string),
@@ -101,5 +100,5 @@ export const useFetchUsers = () => {
 
   const clearError = () => dispatch({ type: actionTypes.CLEAR_ERROR });
 
-  return [state, fetchUsers, clearError, fetchAvatar];
+  return [state, fetchUsers, clearError];
 };

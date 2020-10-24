@@ -64,7 +64,7 @@ const Header = (props) => {
     setOpen((prevOpen) => !prevOpen);
   };
 
-  const handleItemClik = (id) => {
+  const handleItemClick = (id) => {
     const user = fetchedUsers.find((el) => el.id === id);
     dispatch(setCompanion({ companion: user }));
     history.push(`/strangers/${id}`);
@@ -159,7 +159,7 @@ const Header = (props) => {
                     {users.length > 0 ? (
                       users.map((el) => (
                         <MenuItem
-                          onClick={() => handleItemClik(el.id)}
+                          onClick={() => handleItemClick(el.id)}
                           key={el.id}
                         >
                           <Grid container alignItems="center">

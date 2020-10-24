@@ -16,7 +16,7 @@ const Gallery = (props) => {
   useEffect(() => {
     fetchImages(images);
     return () => destroyImages();
-  }, [images]);
+  }, []);
 
   return (
     <Grid container justify="center" spacing={1}>

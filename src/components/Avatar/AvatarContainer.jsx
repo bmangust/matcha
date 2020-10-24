@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 import PublishIcon from "@material-ui/icons/Publish";
-import { media, mediaUpload } from "../../axios";
+import { mediaUpload } from "../../axios";
 import { Avatar, Badge, Fab, makeStyles } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import defaultAvatar from "../../Images/default-avatar.png";
+import { fetchAvatar } from "../../hooks/loadUsers.hook";
 
 const useStyles = makeStyles({
   Avatar: {
@@ -15,7 +16,7 @@ const useStyles = makeStyles({
 
 const AvatarContainer = () => {
   const classes = useStyles();
-  const { avatar, images, id } = { ...useSelector((state) => state.general) };
+  const user = useSelector((state) => state.general);
   const { enqueueSnackbar } = useSnackbar();
   const [displayedAvatar, setDisplayedAvatar] = useState(defaultAvatar);
   const [fetchedAvatar, setFetchedAvatar] = useState(null);
@@ -39,16 +40,14 @@ const AvatarContainer = () => {
 
   // show uploaded user avatar
   useEffect(() => {
-    const userAvatar = avatar === "" ? images[0] : avatar;
-    if (userAvatar) {
-      if (displayedAvatar !== defaultAvatar) return;
-      media(userAvatar).then((img) => {
-        const file = URL.createObjectURL(img.data);
-        setFetchedAvatar(file);
-      });
-    }
+    if (fetchedAvatar) return;
+    const getAvatar = async () => {
+      const ava = await fetchAvatar(user);
+      setFetchedAvatar(ava);
+    };
+    getAvatar();
     return () => URL.revokeObjectURL(fetchedAvatar);
-  }, [avatar, images]);
+  }, [user, fetchedAvatar]);
 
   const changeAvatarHandler = async (e) => {
     if (!e.target.files || e.target.files.length === 0) {
@@ -59,7 +58,7 @@ const AvatarContainer = () => {
     if (image.size > 1000000) {
       enqueueSnackbar("The file is larger than 1MB", { variant: "error" });
     }
-    const res = await mediaUpload(id, image);
+    const res = await mediaUpload(user.id, image);
     setSelectedFile(image);
 
     if (res.data.status) {

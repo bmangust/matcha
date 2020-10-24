@@ -112,7 +112,7 @@ const Main = (props) => {
   useEffect(() => {
     const lookedBy = new Set(looked_by.filter((el) => el !== id));
     setNotification(lookedBy);
-  }, [looked_by]);
+  }, [looked_by, id]);
 
   const renderedTabs = tabs.map((el) => {
     return (
