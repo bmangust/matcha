@@ -165,7 +165,7 @@ const Header = (props) => {
                           <Grid container alignItems="center">
                             <Avatar
                               className={classes.Avatar}
-                              src={el.avatar || null}
+                              src={el.avatarImg || null}
                             />
                             <Typography>{el.username}</Typography>
                           </Grid>

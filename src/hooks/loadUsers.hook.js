@@ -74,9 +74,9 @@ export const useFetchUsers = () => {
             values
               .filter((el) => el.status === "fulfilled")
               .map(async (el) => {
-                const user = el.value.data.data;
+                const user = { ...el.value.data.data };
                 const avatar = await fetchAvatar(user);
-                user.avatar = avatar;
+                user.avatarImg = avatar;
                 return user;
               })
           )
