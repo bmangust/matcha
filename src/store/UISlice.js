@@ -22,14 +22,15 @@ const UISlice = createSlice({
     setSelectedTab(state, { payload }) {
       state.selectedTab = payload.selectedTab;
       state.header = payload.selectedTab.label;
+      state.companion = null;
     },
     setHeader(state, { payload }) {
       state.header = payload.header;
     },
     resetUIState: () => initialUIState,
-    // setCompanion(state, { payload }) {
-    //   state.companion = payload.companion;
-    // },
+    setCompanion(state, { payload }) {
+      state.companion = payload.companion;
+    },
   },
 });
 
@@ -39,14 +40,14 @@ export const {
   setSelectedTab,
   setHeader,
   resetUIState,
-  // setCompanion,
+  setCompanion,
 } = UISlice.actions;
 
 export const handleBack = (history, parent) => (dispatch) => {
   dispatch(hideBackButton());
   const header = capitalize(parent);
   dispatch(setHeader({ header }));
-  // dispatch(setCompanion({ companion: null }));
+  dispatch(setCompanion({ companion: null }));
   parent === "strangers" ? history.push("/") : history.push(`/${parent}`);
 };
 

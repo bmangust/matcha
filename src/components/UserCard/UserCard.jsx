@@ -17,7 +17,7 @@ import { FavoriteOutlined } from "@material-ui/icons";
 import defaultImage from "../../Images/default-avatar.png";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { sendVisit, sendLike, setHeader } from "../../store/UISlice";
+import { sendVisit, sendLike, setCompanion } from "../../store/UISlice";
 import { useFetchedImages } from "../../hooks/loadImages.hook";
 import { useSnackbar } from "notistack";
 
@@ -89,7 +89,7 @@ const UserCard = (props) => {
   ] = useFetchedImages();
   const classes = useStyles();
   const userId = useSelector((state) => state.general.id);
-  const { id, username, birth_date, images, avatar } = props;
+  const { id, username, birth_date, images, avatar } = { ...props.user };
   const [displayedImage, setDisplayedImage] = useState(0);
   const tags = props.tags || ["No tags"];
   const history = useHistory();
@@ -107,7 +107,7 @@ const UserCard = (props) => {
   }, [error]);
 
   const showUserProfile = (e) => {
-    dispatch(setHeader({ header: `${username}'s profile` }));
+    dispatch(setCompanion({ companion: props.user }));
     dispatch(sendVisit(userId, id));
     history.push("/strangers/" + id);
   };

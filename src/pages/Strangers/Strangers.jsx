@@ -27,19 +27,21 @@ const Strangers = () => {
     return null;
   };
 
+  // store fetched users in local state
   useEffect(() => {
-    getUsers().then((res) => setUsers(res));
-  }, []);
+    getUsers()
+      .then((res) => res.filter((el) => el.id !== myId))
+      .then((res) => setUsers(res));
+  }, [myId]);
 
+  // update view if users state was updated
   useEffect(() => {
     const noUsers = <Typography>No users to display</Typography>;
     if (!users) {
       setCards(noUsers);
       return;
     }
-    const cards = users.map((el) =>
-      el.id === myId ? null : <UserCard {...el} key={el.id} />
-    );
+    const cards = users.map((el) => <UserCard user={el} key={el.id} />);
     setCards(cards);
   }, [users, myId]);
 
@@ -56,7 +58,7 @@ const Strangers = () => {
             <Route
               key={el.id}
               path={`/strangers/:id`}
-              render={() => <UserProfile {...el} />}
+              render={() => <UserProfile user={el} />}
             />
           ))}
         <Route

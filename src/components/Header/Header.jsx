@@ -18,7 +18,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { useFetchUsers } from "../../hooks/loadUsers.hook";
-import { handleBack } from "../../store/UISlice";
+import { handleBack, setCompanion } from "../../store/UISlice";
 import { primaryColor } from "../../theme";
 
 const useStyles = makeStyles({
@@ -65,13 +65,17 @@ const Header = (props) => {
   };
 
   const handleItemClik = (id) => {
+    const user = fetchedUsers.find((el) => el.id === id);
+    dispatch(setCompanion({ companion: user }));
     history.push(`/strangers/${id}`);
+    setOpen(false);
   };
 
   const handleBackButton = () => {
     const parent = loc.pathname.split("/")[1];
     dispatch(handleBack(history, parent));
   };
+
   //show backbutton only if we're in submenu
   const showBackButton = loc.pathname.split("/").length > 2;
 

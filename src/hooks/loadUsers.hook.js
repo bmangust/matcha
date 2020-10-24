@@ -63,34 +63,37 @@ export const useFetchUsers = () => {
     return avatar;
   };
 
-  const fetchUsers = useCallback((users) => {
-    if (!users) return;
-    dispatch({ type: actionTypes.INIT_LOADING });
-    try {
-      const promises = [...users].map((el) => api.get(`/data/${el}`));
-      Promise.allSettled(promises)
-        .then((values) =>
-          values
-            .filter((el) => el.status === "fulfilled")
-            .map(async (el) => {
-              const user = el.value.data.data;
-              const avatar = await fetchAvatar(user);
-              user.avatar = avatar;
-              return user;
-            })
-        )
-        .then(async (fetchedUsers) => {
-          const users = await Promise.all(fetchedUsers);
-          dispatch({
-            type: actionTypes.SUCCESS_LOADING,
-            payload: users,
+  const fetchUsers = useCallback(
+    (users) => {
+      if (!users) return;
+      dispatch({ type: actionTypes.INIT_LOADING });
+      try {
+        const promises = [...users].map((el) => api.get(`/data/${el}`));
+        Promise.allSettled(promises)
+          .then((values) =>
+            values
+              .filter((el) => el.status === "fulfilled")
+              .map(async (el) => {
+                const user = el.value.data.data;
+                const avatar = await fetchAvatar(user);
+                user.avatar = avatar;
+                return user;
+              })
+          )
+          .then(async (fetchedUsers) => {
+            const users = await Promise.all(fetchedUsers);
+            dispatch({
+              type: actionTypes.SUCCESS_LOADING,
+              payload: users,
+            });
           });
-        });
-    } catch (err) {
-      console.log(err);
-      dispatch({ type: actionTypes.FAIL_LOADING, payload: err });
-    }
-  }, []);
+      } catch (err) {
+        console.log(err);
+        dispatch({ type: actionTypes.FAIL_LOADING, payload: err });
+      }
+    },
+    [fetchAvatar]
+  );
 
   fetchUsers.propTypes = {
     users: PropTypes.arrayOf(PropTypes.string),
@@ -98,5 +101,5 @@ export const useFetchUsers = () => {
 
   const clearError = () => dispatch({ type: actionTypes.CLEAR_ERROR });
 
-  return [state, fetchUsers, clearError];
+  return [state, fetchUsers, clearError, fetchAvatar];
 };

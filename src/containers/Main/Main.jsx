@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Switch, Route, useHistory, withRouter, Link } from "react-router-dom";
 import { logout } from "../../store/generalSlice";
-import { setSelectedTab } from "../../store/UISlice";
+import { setHeader, setSelectedTab } from "../../store/UISlice";
 
 import {
   AppBar,
@@ -89,7 +89,7 @@ const tabs = [
 
 const Main = (props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { header, selectedTab } = useSelector((state) => state.UI);
+  const { header, selectedTab, companion } = useSelector((state) => state.UI);
   const { isLoading, looked_by } = useSelector((state) => state.general);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -103,6 +103,7 @@ const Main = (props) => {
       return;
     }
     const tab = tabs.find((e) => e.url === url);
+    dispatch(setHeader({ header: tab.label }));
     dispatch(setSelectedTab({ selectedTab: tab }));
     history.push(url);
   };
@@ -145,7 +146,7 @@ const Main = (props) => {
         >
           <Grid className={classes.Header}>
             <Header
-              header={header || tabs[0].label}
+              header={companion?.username || header || tabs[0].label}
               notification={notification}
             />
           </Grid>
