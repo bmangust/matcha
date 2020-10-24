@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 import PublishIcon from "@material-ui/icons/Publish";
-import { mediaUpload } from "../../axios";
+import { media, mediaUpload } from "../../axios";
 import { Avatar, Badge, Fab, makeStyles } from "@material-ui/core";
 import { useSelector } from "react-redux";
+import defaultAvatar from "../../Images/default-avatar.png";
 
 const useStyles = makeStyles({
   Avatar: {
@@ -14,24 +15,40 @@ const useStyles = makeStyles({
 
 const AvatarContainer = () => {
   const classes = useStyles();
-  const id = useSelector((state) => state.general.id);
-  const initialAvatar = "https://avatarfiles.alphacoders.com/253/253160.jpg";
+  const { avatar, images, id } = { ...useSelector((state) => state.general) };
   const { enqueueSnackbar } = useSnackbar();
-  const [avatar, setAvatar] = React.useState(initialAvatar);
+  const [displayedAvatar, setDisplayedAvatar] = useState(defaultAvatar);
+  const [fetchedAvatar, setFetchedAvatar] = useState(null);
   const [selectedFile, setSelectedFile] = useState();
 
+  // show selected file
   useEffect(() => {
     if (!selectedFile) {
-      setAvatar(null);
+      console.log(fetchedAvatar, defaultAvatar);
+      const img = fetchedAvatar || defaultAvatar;
+      setDisplayedAvatar(img);
       return;
     }
 
     const objectUrl = URL.createObjectURL(selectedFile);
-    setAvatar(objectUrl);
+    setDisplayedAvatar(objectUrl);
 
     // free memory when ever this component is unmounted
     return () => URL.revokeObjectURL(objectUrl);
-  }, [selectedFile]);
+  }, [selectedFile, fetchedAvatar]);
+
+  // show uploaded user avatar
+  useEffect(() => {
+    const userAvatar = avatar === "" ? images[0] : avatar;
+    if (userAvatar) {
+      if (displayedAvatar !== defaultAvatar) return;
+      media(userAvatar).then((img) => {
+        const file = URL.createObjectURL(img.data);
+        setFetchedAvatar(file);
+      });
+    }
+    return () => URL.revokeObjectURL(fetchedAvatar);
+  }, [avatar, images]);
 
   const changeAvatarHandler = async (e) => {
     if (!e.target.files || e.target.files.length === 0) {
@@ -72,7 +89,7 @@ const AvatarContainer = () => {
         </Fab>
       }
     >
-      <Avatar className={classes.Avatar} src={avatar} />
+      <Avatar className={classes.Avatar} src={displayedAvatar} />
     </Badge>
   );
 };

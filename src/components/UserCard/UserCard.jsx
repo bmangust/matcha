@@ -63,7 +63,7 @@ const useStyles = makeStyles({
   Stepper: {
     backgroundColor: "#ffffff00",
   },
-  media: {
+  CardMedia: {
     height: 0,
     paddingTop: "100%",
   },
@@ -164,7 +164,7 @@ const UserCard = (props) => {
           </Fab>
 
           <CardMedia
-            className={classes.media}
+            className={classes.CardMedia}
             image={fetchedImages[displayedImage] || defaultImage}
           />
 
