@@ -1,19 +1,23 @@
-import { Grid, Typography } from "@material-ui/core";
 import React from "react";
+import { Grid, Typography } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import Gallery from "./Gallery/Gallery";
 
-const UserProfile = (props) => {
-  const { id, username, birthDate, images, avatar } = {
-    ...useSelector((state) => state.UI.companion),
-  };
+const UserProfile = () => {
+  const user = useSelector((state) => state.UI.companion);
+  const { id, username, birth_date, images, avatar } = { ...user };
+  const age = new Date().getFullYear() - new Date(birth_date).getFullYear();
+  const imgs = avatar ? [avatar, ...images] : images;
 
   return (
-    <Grid container direction="column" alignItems="center">
-      <Typography>{id}</Typography>
-      <Typography>{username}</Typography>
-      <Typography>{birthDate}</Typography>
-      {/* <Gallery images={[avatar, ...images]} /> */}
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      style={{ width: "100%" }}
+    >
+      <Typography variant="h5">{`Age: ${age}`}</Typography>
+      <Gallery images={imgs} />
     </Grid>
   );
 };

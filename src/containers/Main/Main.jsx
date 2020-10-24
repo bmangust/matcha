@@ -90,7 +90,7 @@ const tabs = [
 const Main = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const { header, selectedTab, companion } = useSelector((state) => state.UI);
-  const { isLoading, looked_by } = useSelector((state) => state.general);
+  const { id, isLoading, looked_by } = useSelector((state) => state.general);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
@@ -108,8 +108,10 @@ const Main = (props) => {
     history.push(url);
   };
 
+  // show only other users and remove duplicates
   useEffect(() => {
-    setNotification(new Set(looked_by));
+    const lookedBy = new Set(looked_by.filter((el) => el !== id));
+    setNotification(lookedBy);
   }, [looked_by]);
 
   const renderedTabs = tabs.map((el) => {

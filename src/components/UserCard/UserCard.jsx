@@ -35,10 +35,6 @@ const useStyles = makeStyles({
       },
     },
   },
-  UserCardContent: {
-    height: 0,
-    paddingTop: "100%",
-  },
   Info: {
     width: "105%",
     padding: "10px 30px 20px",
@@ -73,8 +69,8 @@ const useStyles = makeStyles({
   },
   Like: {
     position: "absolute",
-    bottom: "5px",
-    right: "5px",
+    bottom: "10px",
+    right: "10px",
     transition: "0.3s",
     opacity: 0,
     zIndex: 3,
