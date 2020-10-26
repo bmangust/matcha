@@ -103,8 +103,8 @@ const Header = (props) => {
   }, [open]);
 
   return (
-    <Grid container item spacing={1}>
-      <Grid item xs={1}>
+    <Grid container justify="space-around" item spacing={0}>
+      <Grid item xs={2}>
         {showBackButton ? (
           <Button variant="text" color="inherit" onClick={handleBackButton}>
             <ChevronLeftRounded
@@ -114,12 +114,12 @@ const Header = (props) => {
           </Button>
         ) : null}
       </Grid>
-      <Grid item xs={10}>
+      <Grid item xs={6}>
         <Typography variant="h4" className={classes.Header}>
           {header}
         </Typography>
       </Grid>
-      <Grid item xs={1}>
+      <Grid item xs={2}>
         <Button
           ref={anchorRef}
           variant="text"
