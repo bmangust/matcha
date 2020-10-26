@@ -5,6 +5,8 @@ import { api } from "../../axios";
 import { Route, Switch } from "react-router-dom";
 import UserProfile from "../../containers/UserProfile/UserProfile";
 import { useSelector } from "react-redux";
+import Filter from "./Filter/Filter";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles({
   Strangers: {
@@ -13,25 +15,53 @@ const useStyles = makeStyles({
   },
 });
 
+const addAge = (user) => {
+  const age = new Date().getFullYear() - new Date(user.birthDate).getFullYear();
+  return { ...user, age };
+};
+
+const getUsers = async () => {
+  const res = await api.get("strangers");
+  console.log(res.data);
+  if (res.data.status && res.data.data) {
+    return res.data.data.map((user) => addAge(user));
+  }
+  return [];
+};
+
 const Strangers = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const myId = useSelector((state) => state.general.id);
   const classes = useStyles();
   const [users, setUsers] = useState(null);
   const [cards, setCards] = useState(null);
 
-  const getUsers = async () => {
-    const res = await api.get("strangers");
-    if (res.data.status) {
-      return res.data.data;
-    }
-    return null;
+  const filter = {
+    age: {
+      minAge: 20,
+      maxAge: 30,
+    },
   };
 
   // store fetched users in local state
   useEffect(() => {
     getUsers()
+      //filter myId
       .then((res) => res.filter((el) => el.id !== myId))
-      .then((res) => setUsers(res));
+      // apply other filters
+      .then((res) => {
+        return res.filter(
+          (user) =>
+            user.age >= filter.age.minAge && user.age <= filter.age.maxAge
+        );
+      })
+      // save result
+      .then((res) => setUsers(res))
+      .catch((err) => {
+        console.log(err);
+        enqueueSnackbar("Server error", { variant: "error" });
+        setUsers(null);
+      });
   }, [myId]);
 
   // update view if users state was updated
@@ -67,6 +97,7 @@ const Strangers = () => {
           render={() => (
             <Grid container item xs={10} spacing={3}>
               {cards}
+              <Filter />
             </Grid>
           )}
         />
