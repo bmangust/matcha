@@ -36,16 +36,17 @@ const fetchUsersReducer = (state, action) => {
         error: null,
       };
     default:
-      throw new Error();
+      throw new Error("Wrong action type in loadUsers hook");
   }
 };
 
 const fetchImage = async (img) => {
   if (img === null) return null;
   try {
-    const fetchedImage = await media(img);
+    const fetchedImage = await media(`img/${img}`);
     return URL.createObjectURL(fetchedImage.data);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
@@ -67,22 +68,29 @@ export const useFetchUsers = () => {
     if (!users) return;
 
     const fetchUsersAsync = async (users) => {
-      const promises = [...users].map((el) => api.get(`/data/${el}`));
-      const resolvedPromises = await Promise.allSettled(promises);
-      const userPromises = resolvedPromises
-        .filter((el) => el.status === "fulfilled")
-        .map(async (el) => {
-          const user = { ...el.value.data.data };
-          const avatar = await fetchAvatar(user);
-          user.avatarImg = avatar;
-          return user;
+      try {
+        const promises = [...users].map((el) => api(`/data/${el}`));
+        const resolvedPromises = await Promise.allSettled(promises);
+        console.log(resolvedPromises);
+        const userPromises = resolvedPromises
+          .filter((el) => el.status === "fulfilled")
+          .map(async (el) => {
+            const user = { ...el.value.data.data };
+            const avatar = await fetchAvatar(user);
+            user.avatarImg = avatar;
+            return user;
+          });
+        const loadedUsers = await Promise.all(userPromises);
+        console.log(loadedUsers);
+        dispatch({
+          type: actionTypes.SUCCESS_LOADING,
+          payload: loadedUsers,
         });
-      const loadedUsers = await Promise.all(userPromises);
-      console.log(loadedUsers);
-      dispatch({
-        type: actionTypes.SUCCESS_LOADING,
-        payload: loadedUsers,
-      });
+      } catch (e) {
+        console.log(e);
+        throw new Error("Fetching users failed");
+      }
+      //   console.log(loadedUsers);
     };
 
     dispatch({ type: actionTypes.INIT_LOADING });

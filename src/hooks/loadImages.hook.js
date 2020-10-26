@@ -36,7 +36,7 @@ const fetchImagesReducer = (state, action) => {
         error: null,
       };
     default:
-      throw new Error();
+      throw new Error("Wrong action type in loadImages hook");
   }
 };
 
@@ -49,19 +49,31 @@ export const useFetchedImages = () => {
 
   const fetchImages = useCallback((images) => {
     if (!images) return;
-    dispatch({ type: actionTypes.INIT_LOADING });
-    const promises = images.map((img) => media.get(img));
-    Promise.all(promises)
-      .then((imgs) => {
-        const fetchedImages = imgs.map((img) => {
-          const file = URL.createObjectURL(img.data);
-          return file;
-        });
+
+    const fetchImagesAsync = async (images) => {
+      try {
+        const promises = images.map((img) => media(`img/${img}`));
+        const resolvedPromises = await Promise.allSettled(promises);
+        const fetchedImages = resolvedPromises
+          .filter((img) => img.status === "fulfilled")
+          .map((img) => {
+            console.log(img);
+            const file = URL.createObjectURL(img.value.data);
+            return file;
+          });
         dispatch({ type: actionTypes.SUCCESS_LOADING, payload: fetchedImages });
-      })
-      .catch((err) => {
-        dispatch({ type: actionTypes.FAIL_LOADING, payload: err });
-      });
+      } catch (e) {
+        console.log(e);
+        throw new Error("Fetching images failed");
+      }
+    };
+
+    dispatch({ type: actionTypes.INIT_LOADING });
+    try {
+      fetchImagesAsync(images);
+    } catch (err) {
+      dispatch({ type: actionTypes.FAIL_LOADING, payload: err });
+    }
   }, []);
 
   fetchImages.propTypes = {
