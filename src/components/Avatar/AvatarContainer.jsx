@@ -6,6 +6,7 @@ import { Avatar, Badge, Fab, makeStyles } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import defaultAvatar from "../../Images/default-avatar.png";
 import { fetchAvatar } from "../../hooks/loadUsers.hook";
+import { saveNewState } from "../../store/generalSlice";
 
 const useStyles = makeStyles({
   Avatar: {
@@ -58,10 +59,11 @@ const AvatarContainer = () => {
     if (image.size > 1000000) {
       enqueueSnackbar("The file is larger than 1MB", { variant: "error" });
     }
-    const res = await mediaUpload(user.id, image);
+    const res = await mediaUpload(user.id, image, true);
     setSelectedFile(image);
 
-    if (res.data.status) {
+    if (res.data.status && res.data.data) {
+      saveNewState({ images: [res.data.data.id] });
       enqueueSnackbar("The file was uploaded", { variant: "success" });
     } else {
       console.error(res.data);
