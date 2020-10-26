@@ -82,10 +82,11 @@ const UserCard = (props) => {
     { fetchedImages, error },
     fetchImages,
     destroyImages,
+    clearError,
   ] = useFetchedImages();
   const classes = useStyles();
   const userId = useSelector((state) => state.general.id);
-  const { id, username, birth_date, images, avatar } = { ...props.user };
+  const { id, username, images, avatar, age } = { ...props.user };
   const [displayedImage, setDisplayedImage] = useState(0);
   const tags = props.tags || ["No tags"];
   const history = useHistory();
@@ -93,14 +94,18 @@ const UserCard = (props) => {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
+    clearError();
     const imgs = avatar ? [avatar, ...images] : images;
     fetchImages(imgs);
     return () => destroyImages();
   }, [images, avatar]);
 
   useEffect(() => {
-    if (error) enqueueSnackbar(error, { variant: "error" });
-  }, [error]);
+    if (error) {
+      console.log(error);
+      enqueueSnackbar("Failed to load images", { variant: "error" });
+    }
+  }, [error, enqueueSnackbar]);
 
   const showUserProfile = (e) => {
     dispatch(setCompanion({ companion: props.user }));
@@ -112,8 +117,6 @@ const UserCard = (props) => {
     e.stopPropagation();
     dispatch(sendLike(userId, id));
   };
-
-  const age = new Date().getFullYear() - new Date(birth_date).getFullYear();
 
   return (
     <Grid item xs={12} sm={6} lg={4}>

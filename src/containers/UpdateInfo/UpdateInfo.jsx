@@ -1,23 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { connect, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { api } from "../../axios";
 import { getLocationByIp } from "../../utils";
 import { useSnackbar } from "notistack";
 import { saveNewState } from "../../store/generalSlice";
 import Form from "../../components/Form/Form";
 
-const UpdateInfo = (props) => {
+const UpdateInfo = () => {
+  const loadedInfo = useSelector((state) => state.general);
+  console.log(loadedInfo);
   const { enqueueSnackbar } = useSnackbar();
-  const [username, setUsername] = useState(props.username);
-  const [email, setEmail] = useState(props.email);
-  const [phone, setPhone] = useState(props.phone);
-  const [birthDate, setBirthdate] = useState(props.birthDate);
-  const [gender, setGender] = useState(props.gender);
-  const [lookFor, setLookFor] = useState(props.lookFor);
-  const [country, setCountry] = useState(props.country);
-  const [city, setCity] = useState(props.city);
-  const [maxDistance, setMaxDistance] = useState(props.maxDist);
-  const [ageRange, setAgeRange] = useState([props.minAge, props.maxAge]);
+
+  const [username, setUsername] = useState(loadedInfo.username);
+  const [email, setEmail] = useState(loadedInfo.email);
+  const [phone, setPhone] = useState(loadedInfo.phone);
+  const [birthDate, setBirthdate] = useState(loadedInfo.birthDate);
+  const [gender, setGender] = useState(loadedInfo.gender);
+  const [lookFor, setLookFor] = useState(loadedInfo.lookFor);
+  const [country, setCountry] = useState(loadedInfo.country);
+  const [city, setCity] = useState(loadedInfo.city);
+  const [maxDist, setMaxDistance] = useState(loadedInfo.maxDist);
+  const [ageRange, setAgeRange] = useState([
+    loadedInfo.minAge,
+    loadedInfo.maxAge,
+  ]);
   const [password, setPassword] = useState("");
 
   const [usernameValid, setUsernameValid] = useState(true);
@@ -61,27 +67,26 @@ const UpdateInfo = (props) => {
     e.preventDefault();
     const location = await getLocationByIp();
     const body = {
-      id: props.id,
-      email: email,
-      username: username,
-      birth_date: birthDate,
-      phone: phone,
-      gender: gender,
-      country: country,
-      city: city,
-      max_dist: maxDistance,
-      look_for: lookFor,
-      min_age: ageRange[0],
-      max_age: ageRange[1],
-      position: location,
+      id: loadedInfo.id,
+      email,
+      username,
+      birthDate,
+      phone,
+      gender,
+      country,
+      city,
+      maxDist,
+      lookFor,
+      minAge: ageRange[0],
+      maxAge: ageRange[1],
     };
+    if (location.status) body.position = location.data;
     if (password.length) {
       body.password = password;
     }
     console.log("[UpdateInfo] update user info");
     console.log(body);
     const response = await api.post("user", body);
-    console.log(response.data);
 
     if (response.data.status) {
       dispatch(saveNewState(body));
@@ -229,10 +234,10 @@ const UpdateInfo = (props) => {
       },
     },
     {
-      name: "maxDistance",
+      name: "maxDist",
       type: "slider",
       label: "Search distance",
-      value: maxDistance,
+      value: maxDist,
       onChange: (value) => {
         setMaxDistance(value);
       },
@@ -283,21 +288,4 @@ const UpdateInfo = (props) => {
   return <Form inputs={inputs} buttons={buttons} />;
 };
 
-const mapStateToProps = (state) => ({
-  id: state.general.id,
-  email: state.general.email,
-  username: state.general.username,
-  phone: state.general.phone,
-  // firstName: state.general.firstName,
-  // lastName: state.general.lastName,
-  birthDate: state.general.birth_date,
-  gender: state.general.gender,
-  country: state.general.country,
-  city: state.general.city,
-  maxDist: state.general.max_dist,
-  lookFor: state.general.look_for,
-  minAge: state.general.min_age,
-  maxAge: state.general.max_age,
-});
-
-export default connect(mapStateToProps)(UpdateInfo);
+export default UpdateInfo;

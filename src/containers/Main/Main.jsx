@@ -48,6 +48,7 @@ const useStyles = makeStyles({
   Container: {
     backgroundColor: backgroundColor.background,
     maxWidth: "100vw",
+    width: "100%",
   },
   Header: {
     paddingTop: "30px",
@@ -90,7 +91,7 @@ const tabs = [
 const Main = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const { header, selectedTab, companion } = useSelector((state) => state.UI);
-  const { id, isLoading, looked_by } = useSelector((state) => state.general);
+  const { id, isLoading, lookedBy } = useSelector((state) => state.general);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
@@ -110,9 +111,9 @@ const Main = (props) => {
 
   // show only other users and remove duplicates
   useEffect(() => {
-    const lookedBy = new Set(looked_by.filter((el) => el !== id));
-    setNotification(lookedBy);
-  }, [looked_by, id]);
+    const lookedBySet = new Set(lookedBy.filter((el) => el !== id));
+    setNotification(lookedBySet);
+  }, [lookedBy, id]);
 
   const renderedTabs = tabs.map((el) => {
     return (

@@ -10,17 +10,17 @@ const initialGeneralState = {
   email: "",
   phone: "+7",
   username: "",
-  birth_date: 0,
+  birthDate: 0,
   gender: "",
   country: "",
   city: "",
-  max_dist: 0,
-  look_for: "",
-  min_age: 0,
-  max_age: 0,
+  maxDist: 0,
+  lookFor: "",
+  minAge: 0,
+  maxAge: 0,
   images: null,
   avatar: null,
-  liked_by: [],
+  likedBy: [],
   matches: [],
   position: { lat: 0, lon: 0 },
 };
@@ -44,13 +44,13 @@ const generalSlice = createSlice({
       state.isLoading = false;
     },
     resetGeneralState: () => initialGeneralState,
-    saveNewState(state, action) {
-      Object.keys(action.payload).forEach((key) => {
+    saveNewState(state, { payload }) {
+      Object.keys(payload).forEach((key) => {
         if (key === "position") {
-          state.position.lat = action.payload.position.lat;
-          state.position.lon = action.payload.position.lon;
+          state.position.lat = payload.position.lat;
+          state.position.lon = payload.position.lon;
         }
-        state[key] = action.payload[key];
+        state[key] = payload[key];
       });
     },
   },

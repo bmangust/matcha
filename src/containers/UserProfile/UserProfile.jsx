@@ -5,8 +5,7 @@ import Gallery from "./Gallery/Gallery";
 
 const UserProfile = () => {
   const user = useSelector((state) => state.UI.companion);
-  const { birth_date, images, avatar } = { ...user };
-  const age = new Date().getFullYear() - new Date(birth_date).getFullYear();
+  const { birthDate, images, avatar, age } = { ...user };
   const imgs = avatar ? [avatar, ...images] : images;
 
   return (
