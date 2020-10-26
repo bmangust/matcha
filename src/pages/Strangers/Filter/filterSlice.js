@@ -2,7 +2,7 @@ const { createSlice } = require("@reduxjs/toolkit");
 
 const inititalFilterState = {
   username: "",
-  age: [0, 100],
+  age: { minAge: 0, maxAge: 100 },
 };
 
 const filterSlice = createSlice({
@@ -13,7 +13,8 @@ const filterSlice = createSlice({
       state.username = payload;
     },
     changeSearchAgeRange(state, { payload }) {
-      state.age = payload;
+      console.log(payload);
+      state.age = { ...state.age, ...payload };
     },
   },
 });

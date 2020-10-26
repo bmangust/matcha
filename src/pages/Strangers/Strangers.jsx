@@ -13,6 +13,9 @@ const useStyles = makeStyles({
     fontSize: "2rem",
     paddingBottom: "60px",
   },
+  CardContainer: {
+    paddingBottom: "90px",
+  },
 });
 
 const addAge = (user) => {
@@ -32,16 +35,10 @@ const getUsers = async () => {
 const Strangers = () => {
   const { enqueueSnackbar } = useSnackbar();
   const myId = useSelector((state) => state.general.id);
+  const filter = useSelector((state) => state.filter);
   const classes = useStyles();
   const [users, setUsers] = useState(null);
   const [cards, setCards] = useState(null);
-
-  const filter = {
-    age: {
-      minAge: 20,
-      maxAge: 30,
-    },
-  };
 
   // store fetched users in local state
   useEffect(() => {
@@ -62,7 +59,7 @@ const Strangers = () => {
         enqueueSnackbar("Server error", { variant: "error" });
         setUsers(null);
       });
-  }, [myId]);
+  }, [myId, filter, enqueueSnackbar]);
 
   // update view if users state was updated
   useEffect(() => {
@@ -95,7 +92,13 @@ const Strangers = () => {
           path="/"
           exact
           render={() => (
-            <Grid container item xs={10} spacing={3}>
+            <Grid
+              className={classes.CardContainer}
+              container
+              item
+              xs={10}
+              spacing={3}
+            >
               {cards}
               <Filter />
             </Grid>

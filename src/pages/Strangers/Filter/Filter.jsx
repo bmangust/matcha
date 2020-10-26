@@ -10,11 +10,21 @@ const useStyles = makeStyles({
     position: "fixed",
     left: 0,
     bottom: "39px",
+    zIndex: 6,
   },
   Paper: {
     padding: "20px",
+    width: "70vw",
   },
-  Header: {},
+  Inputs: {
+    width: "100%",
+    margin: "10px 0",
+  },
+  Header: {
+    fontSize: "1.5 rem",
+    fontWeight: 700,
+    textTransform: "uppercase",
+  },
 });
 
 const Filter = (props) => {
@@ -33,33 +43,20 @@ const Filter = (props) => {
       type: "text",
       label: "Username",
       value: username,
-      required: true,
       onChange: (e) => {
         dispatch(changeUsername(e.target.value));
       },
-      //   onValidate: (isValid) => {
-      //     dispatch(changeUsernameValid(isValid));
-      //   },
-      //   rules: {
-      //     helperText:
-      //       "Use letters, numbers or symbols ., %, _, -, +. Min length 3",
-      //     rule: {
-      //       minLength: 3,
-      //       maxLength: 20,
-      //       regex: /^[\w%-+.]+$/,
-      //     },
-      //   },
     },
     {
-      name: "ageRange",
-      type: "slider",
+      name: "AgeRange",
+      type: "doubleSelector",
       label: "Age search range",
       value: age,
-      onChange: (value) => {
-        dispatch(changeSearchAgeRange(value));
-      },
+      onChange: (value) => dispatch(changeSearchAgeRange(value)),
     },
   ];
+
+  console.log(age);
 
   return (
     <Grid
@@ -71,17 +68,23 @@ const Filter = (props) => {
       self="flex-end"
     >
       <Paper className={classes.Paper}>
-        <Grid container>
-          <Grid container justify="space-between" item>
-            <Typography component="span">Filter</Typography>
-            <Button onClick={updateShowFilter} size="small">
+        <Grid container direction="column" alignItems="center">
+          <Grid container justify="space-evenly" alignItems="center" item>
+            <Typography
+              className={classes.Header}
+              component="span"
+              color="secondary"
+            >
+              Filter
+            </Typography>
+            <Button onClick={updateShowFilter} size="small" color="secondary">
               {showFilter ? <ExpandLessRounded /> : <ExpandMoreRounded />}
             </Button>
           </Grid>
-          <Grid className={classes.Inputs} container item direction="column">
+          <Grid container item direction="column" alignItems="center">
             {showFilter &&
               inputs.map(({ name, type, label, value, onChange }) => (
-                <Grid key={label} item xs={10}>
+                <Grid className={classes.Inputs} key={label} item>
                   <Input
                     name={name}
                     type={type}

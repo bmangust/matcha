@@ -6,6 +6,7 @@ import {
   Slider,
   Typography,
   makeStyles,
+  Grid,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 
@@ -15,6 +16,10 @@ const useStyles = makeStyles({
   },
   Input: {
     width: "100%",
+  },
+  SmallSelector: {
+    minWidth: "100px",
+    padding: "10px",
   },
 });
 
@@ -144,6 +149,33 @@ const Input = (props) => {
           />
         </Box>
       );
+    case "doubleSelector":
+      return (
+        <Box key={name} className={classes.Input}>
+          <Grid container justify="space-evenly" alignItems="center">
+            <Grid item xs={3}>
+              <TextField
+                id={"min" + name}
+                type="number"
+                value={value.minAge}
+                label="Minimum age"
+                className={classes.SmallSelector}
+                onChange={(e) => onChange({ minAge: +e.target.value })}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                id={"max" + name}
+                type="number"
+                value={value.maxAge}
+                label="Maximum age"
+                className={classes.SmallSelector}
+                onChange={(e) => onChange({ maxAge: +e.target.value })}
+              />
+            </Grid>
+          </Grid>
+        </Box>
+      );
     default:
       return null;
   }
@@ -158,6 +190,7 @@ Input.propTypes = {
     "select",
     "date",
     "slider",
+    "doubleSelector",
   ]).isRequired,
   label: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
@@ -166,6 +199,10 @@ Input.propTypes = {
     PropTypes.string,
     PropTypes.number,
     PropTypes.array,
+    PropTypes.exact({
+      minAge: PropTypes.number,
+      maxAge: PropTypes.number,
+    }),
   ]),
   onValidate: PropTypes.func,
   onChange: PropTypes.func.isRequired,
