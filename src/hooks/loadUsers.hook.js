@@ -52,7 +52,7 @@ const fetchImage = async (img) => {
 };
 
 export const fetchAvatar = async (user) => {
-  const avatarId = user.avatar || (user.images && user.images[0]);
+  const avatarId = user.avatar;
   const avatar = await fetchImage(avatarId);
   return avatar;
 };
@@ -90,7 +90,6 @@ export const useFetchUsers = () => {
         console.log(e);
         throw new Error("Fetching users failed");
       }
-      //   console.log(loadedUsers);
     };
 
     dispatch({ type: actionTypes.INIT_LOADING });

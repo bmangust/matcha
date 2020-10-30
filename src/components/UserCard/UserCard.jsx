@@ -95,10 +95,9 @@ const UserCard = (props) => {
 
   useEffect(() => {
     clearError();
-    const imgs = avatar ? [avatar, ...images] : images;
-    fetchImages(imgs);
+    fetchImages(images);
     return () => destroyImages();
-  }, [images, avatar]);
+  }, [images]);
 
   useEffect(() => {
     if (error) {
@@ -109,13 +108,13 @@ const UserCard = (props) => {
 
   const showUserProfile = (e) => {
     dispatch(setCompanion({ companion: props.user }));
-    dispatch(sendVisit(userId, id));
+    dispatch(sendVisit(id));
     history.push("/strangers/" + id);
   };
 
   const handleLike = (e) => {
     e.stopPropagation();
-    dispatch(sendLike(userId, id));
+    dispatch(sendLike(id));
   };
 
   return (

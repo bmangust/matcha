@@ -24,7 +24,7 @@ const Gallery = (props) => {
   useEffect(() => {
     fetchImages(images);
     return () => destroyImages();
-  }, []);
+  }, [images]);
 
   const setAvatar = async (imageId) => {
     console.log(imageId);

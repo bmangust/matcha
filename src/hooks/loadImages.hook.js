@@ -63,16 +63,15 @@ export const useFetchedImages = () => {
           });
         dispatch({ type: actionTypes.SUCCESS_LOADING, payload: fetchedImages });
       } catch (e) {
-        console.log(e);
-        throw new Error("Fetching images failed");
+        dispatch({ type: actionTypes.FAIL_LOADING, payload: e });
       }
     };
 
     dispatch({ type: actionTypes.INIT_LOADING });
     try {
       fetchImagesAsync(images);
-    } catch (err) {
-      dispatch({ type: actionTypes.FAIL_LOADING, payload: err });
+    } catch (e) {
+      dispatch({ type: actionTypes.FAIL_LOADING, payload: e });
     }
   }, []);
 

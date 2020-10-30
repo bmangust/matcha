@@ -5,8 +5,7 @@ import Gallery from "./Gallery/Gallery";
 
 const UserProfile = () => {
   const user = useSelector((state) => state.UI.companion);
-  const { birthDate, images, avatar, age } = { ...user };
-  const imgs = avatar ? [avatar, ...images] : images;
+  const { images, age } = { ...user };
 
   return (
     <Grid
@@ -16,7 +15,7 @@ const UserProfile = () => {
       style={{ width: "100%" }}
     >
       <Typography variant="h5">{`Age: ${age}`}</Typography>
-      <Gallery images={imgs} />
+      <Gallery images={images} />
     </Grid>
   );
 };

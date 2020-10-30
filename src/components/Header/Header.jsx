@@ -20,6 +20,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { useFetchUsers } from "../../hooks/loadUsers.hook";
 import { handleBack, setCompanion } from "../../store/UISlice";
 import { primaryColor } from "../../theme";
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles({
   Header: {
@@ -51,6 +52,8 @@ const Header = (props) => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
+
+  console.log(props);
 
   useEffect(() => {
     fetchUsers(notification);
@@ -183,6 +186,19 @@ const Header = (props) => {
       </Grid>
     </Grid>
   );
+};
+
+Header.propTypes = {
+  header: PropTypes.string,
+  notification: PropTypes.oneOfType([
+    PropTypes.instanceOf(Set),
+    // PropTypes.shape({
+    //   id: PropTypes.string,
+    //   avatarImg: PropTypes.string,
+    //   username: PropTypes.string,
+    // }),
+    PropTypes.oneOf([null]),
+  ]),
 };
 
 export default Header;
