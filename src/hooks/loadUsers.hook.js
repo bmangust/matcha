@@ -41,7 +41,7 @@ const fetchUsersReducer = (state, action) => {
 };
 
 const fetchImage = async (img) => {
-  if (img === null) return null;
+  if (img === null || img === "") return null;
   try {
     const fetchedImage = await media(`img/${img}`);
     return URL.createObjectURL(fetchedImage.data);
