@@ -56,8 +56,6 @@ const Filter = (props) => {
     },
   ];
 
-  console.log(age);
-
   return (
     <Grid
       className={classes.Filter}

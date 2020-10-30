@@ -13,12 +13,14 @@ const filterSlice = createSlice({
       state.username = payload;
     },
     changeSearchAgeRange(state, { payload }) {
-      console.log(payload);
       state.age = { ...state.age, ...payload };
+    },
+    resetFilter(state) {
+      state = { ...inititalFilterState };
     },
   },
 });
 
-export const { changeUsername, changeSearchAgeRange } = filterSlice.actions;
+export const { changeUsername, changeSearchAgeRange, resetFilter } = filterSlice.actions;
 
 export default filterSlice.reducer;

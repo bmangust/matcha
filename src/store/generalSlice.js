@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { api } from "../axios";
 import { xssSanitize } from "../utils";
 import { resetUIState } from "./UISlice";
+import { resetFilter } from "../pages/Strangers/Filter/filterSlice";
 
 const initialGeneralState = {
   isAuth: false,
@@ -94,6 +95,7 @@ export const logout = (enqueueSnackbar) => async (dispatch) => {
   if (res.data.status) {
     dispatch(resetGeneralState());
     dispatch(resetUIState());
+    dispatch(resetFilter());
     enqueueSnackbar("Successful logout", { variant: "success" });
   } else {
     dispatch(stopLoading());
