@@ -62,6 +62,12 @@ const useStyles = makeStyles({
   },
   Stepper: {
     backgroundColor: "#ffffff00",
+    position: "absolute",
+    width: "100%",
+  },
+  StepperButton: {
+    backgroundColor: "#ffffff00",
+    textShadow: "0,0,10,#00000055",
   },
   CardMedia: {
     height: 0,
@@ -117,44 +123,54 @@ const UserCard = (props) => {
     dispatch(sendLike(id));
   };
 
+  const LeftButtonDisabled =
+    fetchedImages.length === 0 || displayedImage === fetchedImages.length - 1;
+  const RightButtonDisabled =
+    displayedImage === 0 || fetchedImages.length === 0;
+
   return (
     <Grid item xs={12} sm={6} lg={4}>
       <Card className={classes.UserCard} onClick={(e) => showUserProfile(e)}>
         <div>
-          <MobileStepper
-            variant="dots"
-            steps={fetchedImages.length}
-            position="static"
-            activeStep={displayedImage}
-            className={classes.Stepper}
-            nextButton={
-              <Button
-                size="small"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setDisplayedImage((prev) => prev + 1);
-                }}
-                disabled={
-                  fetchedImages.length === 0 ||
-                  displayedImage === fetchedImages.length - 1
-                }
-              >
-                <ChevronRightRoundedIcon />
-              </Button>
-            }
-            backButton={
-              <Button
-                size="small"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setDisplayedImage((prev) => prev - 1);
-                }}
-                disabled={displayedImage === 0 || fetchedImages.length === 0}
-              >
-                <ChevronLeftRoundedIcon />
-              </Button>
-            }
-          />
+          {fetchedImages.length > 1 && (
+            <MobileStepper
+              variant="dots"
+              steps={0}
+              position="static"
+              activeStep={displayedImage}
+              className={classes.Stepper}
+              nextButton={
+                LeftButtonDisabled ? null : (
+                  <Button
+                    className={classes.StepperButton}
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDisplayedImage((prev) => prev + 1);
+                    }}
+                    // disabled={}
+                  >
+                    <ChevronRightRoundedIcon />
+                  </Button>
+                )
+              }
+              backButton={
+                RightButtonDisabled ? null : (
+                  <Button
+                    className={classes.StepperButton}
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDisplayedImage((prev) => prev - 1);
+                    }}
+                    // disabled={}
+                  >
+                    <ChevronLeftRoundedIcon />
+                  </Button>
+                )
+              }
+            />
+          )}
 
           <Fab
             color="secondary"
