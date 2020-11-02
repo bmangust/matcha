@@ -76,7 +76,7 @@ const Filter = (props) => {
               Filter
             </Typography>
             <Button onClick={updateShowFilter} size="small" color="secondary">
-              {showFilter ? <ExpandLessRounded /> : <ExpandMoreRounded />}
+              {showFilter ? <ExpandMoreRounded /> : <ExpandLessRounded />}
             </Button>
           </Grid>
           <Grid container item direction="column" alignItems="center">
