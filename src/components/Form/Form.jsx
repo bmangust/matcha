@@ -31,9 +31,9 @@ const Form = (props) => {
             <Input {...el} />
           </ListItem>
         ))}
-        <ListItem className={classes.Buttons}>
-          {buttons &&
-            buttons.map(({ variant, type, text, onClick, ...others }) => (
+        {buttons && (
+          <ListItem className={classes.Buttons}>
+            {buttons.map(({ variant, type, text, onClick, ...others }) => (
               <Button
                 key={text}
                 className={classes.Button}
@@ -45,7 +45,8 @@ const Form = (props) => {
                 {text}
               </Button>
             ))}
-        </ListItem>
+          </ListItem>
+        )}
       </List>
     </form>
   );
