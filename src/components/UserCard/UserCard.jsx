@@ -16,7 +16,7 @@ import ChevronRightRoundedIcon from "@material-ui/icons/ChevronRight";
 import { FavoriteOutlined } from "@material-ui/icons";
 import defaultImage from "../../Images/default-avatar.png";
 import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { sendVisit, sendLike, setCompanion } from "../../store/UISlice";
 import { useFetchedImages } from "../../hooks/loadImages.hook";
 import { useSnackbar } from "notistack";
@@ -91,8 +91,7 @@ const UserCard = (props) => {
     clearError,
   ] = useFetchedImages();
   const classes = useStyles();
-  const userId = useSelector((state) => state.general.id);
-  const { id, username, images, avatar, age } = { ...props.user };
+  const { id, username, images, age } = { ...props.user };
   const [displayedImage, setDisplayedImage] = useState(0);
   const tags = props.tags || ["No tags"];
   const history = useHistory();
@@ -102,7 +101,9 @@ const UserCard = (props) => {
   useEffect(() => {
     clearError();
     fetchImages(images);
-    return () => destroyImages();
+    return () => {
+      destroyImages();
+    };
   }, [images]);
 
   useEffect(() => {
@@ -148,7 +149,6 @@ const UserCard = (props) => {
                       e.stopPropagation();
                       setDisplayedImage((prev) => prev + 1);
                     }}
-                    // disabled={}
                   >
                     <ChevronRightRoundedIcon />
                   </Button>
@@ -163,7 +163,6 @@ const UserCard = (props) => {
                       e.stopPropagation();
                       setDisplayedImage((prev) => prev - 1);
                     }}
-                    // disabled={}
                   >
                     <ChevronLeftRoundedIcon />
                   </Button>

@@ -10,6 +10,7 @@ import Register from "./pages/Register/Register";
 import Main from "./containers/Main/Main";
 import { SnackbarProvider } from "notistack";
 import { useSelector } from "react-redux";
+import AdditionalInfo from "./pages/AdditionalInfo/AdditionalInfo";
 
 function App() {
   const { isAuth } = useSelector((state) => state.general);
@@ -22,6 +23,7 @@ function App() {
             <Switch>
               <Redirect exact from="/strangers" to="/" />
               <Redirect from="/login" to="/" />
+              <Route path="/add" component={AdditionalInfo} exact />
               <Route path="/" component={Main} />
             </Switch>
           ) : (

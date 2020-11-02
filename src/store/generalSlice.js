@@ -3,6 +3,7 @@ import { api } from "../axios";
 import { xssSanitize } from "../utils";
 import { resetUIState } from "./UISlice";
 import { resetFilter } from "../pages/Strangers/Filter/filterSlice";
+import { setAdditionalState } from "../pages/AdditionalInfo/additionalSlice";
 
 const initialGeneralState = {
   isAuth: false,
@@ -76,6 +77,7 @@ export const auth = (email, password, enqueueSnackbar) => async (dispatch) => {
     const res = await api.post("/signin", body);
     if (res.data.status) {
       dispatch(saveNewState(res.data.data));
+      dispatch(setAdditionalState(res.data.data));
       dispatch(authSuccess());
     } else {
       dispatch(resetGeneralState());

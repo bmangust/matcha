@@ -14,7 +14,7 @@ const UpdateInfo = () => {
   const [username, setUsername] = useState(loadedInfo.username);
   const [email, setEmail] = useState(loadedInfo.email);
   const [phone, setPhone] = useState(loadedInfo.phone);
-  const [birthDate, setBirthdate] = useState(loadedInfo.birthDate);
+  const [birthDate, setBirthDate] = useState(loadedInfo.birthDate);
   const [gender, setGender] = useState(loadedInfo.gender);
   const [lookFor, setLookFor] = useState(loadedInfo.lookFor);
   const [country, setCountry] = useState(loadedInfo.country);
@@ -42,7 +42,7 @@ const UpdateInfo = () => {
     } else {
       date = new Date(newDate).getTime();
     }
-    if (date && !isNaN(date)) setBirthdate(date);
+    if (date && !isNaN(date)) setBirthDate(date);
   };
 
   useEffect(() => {
@@ -156,9 +156,9 @@ const UpdateInfo = () => {
       rules: {
         helperText: "invalid phone",
         rule: {
-          minLength: 5,
+          minLength: 0,
           maxLength: 12,
-          regex: /^\d+$/,
+          regex: /^$|^\+\d+$/,
         },
       },
     },

@@ -4,6 +4,7 @@ import loginReducer from "../pages/Login/loginSlice";
 import registerReducer from "../pages/Register/registerSlice";
 import uiReducer from "./UISlice";
 import filterReducer from "../pages/Strangers/Filter/filterSlice";
+import additionalReducer from "../pages/AdditionalInfo/additionalSlice";
 
 export default combineReducers({
   general: generalReducer,
@@ -11,4 +12,5 @@ export default combineReducers({
   register: registerReducer,
   UI: uiReducer,
   filter: filterReducer,
+  additional: additionalReducer,
 });
