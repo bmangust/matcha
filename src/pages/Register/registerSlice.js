@@ -8,7 +8,6 @@ const initialRegisterState = {
   username: "",
   password: "",
   confirm: "",
-  phone: "+7",
   emailValid: false,
   usernameValid: false,
   passwordValid: false,
@@ -21,17 +20,17 @@ const registerSlice = createSlice({
   name: "register",
   initialState: initialRegisterState,
   reducers: {
-    changeEmail(state, action) {
-      state.email = action.payload;
+    changeEmail(state, { payload }) {
+      state.email = payload;
     },
-    changeUsername(state, action) {
-      state.username = action.payload;
+    changeUsername(state, { payload }) {
+      state.username = payload;
     },
-    changePassword(state, action) {
-      state.password = action.payload;
+    changePassword(state, { payload }) {
+      state.password = payload;
     },
-    changeConfirmPassword(state, action) {
-      state.confirm = action.payload;
+    changeConfirmPassword(state, { payload }) {
+      state.confirm = payload;
     },
 
     changeEmailValid(state, { payload }) {
@@ -46,50 +45,12 @@ const registerSlice = createSlice({
     changeConfirmValid(state, { payload }) {
       state.confirmValid = payload;
     },
-    changePhoneValid(state, { payload }) {
-      state.phoneValid = payload;
-    },
+
     onRegisterSuccess(state) {
       state.registerSuccess = true;
     },
     onRegisterFail(state) {
       state.registerSuccess = false;
-    },
-
-    // changeFirstName(state, action) {
-    //   state.firstName = action.payload;
-    // },
-    // changeLastName(state, action) {
-    //   state.lastName = action.payload;
-    // },
-    changeBirthDate(state, action) {
-      let date = new Date(action.payload).getTime();
-      if (!isNaN(date)) state.birthDate = date;
-    },
-    changePhone(state, action) {
-      state.phone = action.payload;
-    },
-    changeGender(state, action) {
-      state.gender = action.payload;
-    },
-    changeCountry(state, action) {
-      state.country = action.payload;
-    },
-    changeCity(state, action) {
-      state.city = action.payload;
-    },
-    changeMaxDist(state, action) {
-      state.maxDist = +action.payload;
-    },
-    changeLookFor(state, action) {
-      state.lookFor = action.payload;
-    },
-    changeSearchAgeRange(state, action) {
-      state.minAge = action.payload[0];
-      state.maxAge = action.payload[1];
-    },
-    changeMaxAge(state, action) {
-      state.maxAge = action.payload;
     },
   },
 });
@@ -107,17 +68,6 @@ export const {
   changePhoneValid,
   onRegisterSuccess,
   onRegisterFail,
-
-  // changeFirstName,
-  // changeLastName,
-  changePhone,
-  changeBirthDate,
-  changeGender,
-  changeCountry,
-  changeCity,
-  changeMaxDist,
-  changeLookFor,
-  changeSearchAgeRange,
 } = registerSlice.actions;
 
 export const register = (
