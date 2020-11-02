@@ -1,6 +1,7 @@
 import axios from "axios";
+export const CancelToken = axios.CancelToken;
 
-export const api = axios.create({
+const api = axios.create({
   baseURL: `/api/main/`,
   withCredentials: true,
   headers: {
@@ -8,14 +9,30 @@ export const api = axios.create({
   },
 });
 
-export const media = axios.create({
+const media = axios.create({
   baseURL: "/api/media/",
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
   responseType: "blob",
+  validateStatus: false,
 });
 
-export const mediaUpload = async (id, file, isAvatar = false) => {
+// media.interceptors.response.use(
+//   function (response) {
+//     // Any status code that lie within the range of 2xx cause this function to trigger
+//     // Do something with response data
+//     // console.log(response);
+//     return response;
+//   },
+//   function (error) {
+//     // console.log(error);
+//     // Any status codes that falls outside the range of 2xx cause this function to trigger
+//     // Do something with response error
+//     return Promise.reject(null);
+//   }
+// );
+
+const mediaUpload = async (id, file, isAvatar = false) => {
   let formData = new FormData();
   formData.append("id", id);
   formData.append("isAvatar", isAvatar);
@@ -27,3 +44,4 @@ export const mediaUpload = async (id, file, isAvatar = false) => {
   });
   return res;
 };
+export { api, media, mediaUpload };

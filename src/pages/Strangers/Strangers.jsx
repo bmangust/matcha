@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import UserCard from "../../components/UserCard/UserCard";
-import { Grid, makeStyles, Typography } from "@material-ui/core";
-import { api } from "../../axios";
-import { Route, Switch } from "react-router-dom";
+import { Button, Grid, makeStyles, Typography } from "@material-ui/core";
+import { api, CancelToken } from "../../axios";
+import { Route, Switch, useHistory } from "react-router-dom";
 import UserProfile from "../../containers/UserProfile/UserProfile";
 import { useSelector } from "react-redux";
 import Filter from "./Filter/Filter";
 import { useSnackbar } from "notistack";
+import Axios from "axios";
 
 const useStyles = makeStyles({
   Strangers: {
@@ -18,13 +19,15 @@ const useStyles = makeStyles({
   },
 });
 
+const source = CancelToken.source();
+
 const addAge = (user) => {
   const age = new Date().getFullYear() - new Date(user.birthDate).getFullYear();
   return { ...user, age };
 };
 
 const getUsers = async () => {
-  const res = await api.get("strangers");
+  const res = await api.get("strangers", { cancelToken: source.token });
   console.log(res.data);
   if (res.data.status && res.data.data) {
     return res.data.data.map((user) => addAge(user));
@@ -39,6 +42,9 @@ const Strangers = () => {
   const classes = useStyles();
   const [users, setUsers] = useState(null);
   const [cards, setCards] = useState(null);
+  const [isMounted, setIsMounted] = useState(true);
+
+  const history = useHistory();
 
   // store fetched users in local state
   useEffect(() => {
@@ -52,14 +58,29 @@ const Strangers = () => {
             user.age >= filter.age.minAge && user.age <= filter.age.maxAge
         );
       })
+      .then((res) => {
+        return filter.username.length > 0
+          ? res.filter((user) =>
+              user.username
+                .toLowerCase()
+                .includes(filter.username.toLowerCase())
+            )
+          : res;
+      })
       // save result
-      .then((res) => setUsers(res))
+      .then((res) => isMounted && setUsers(res))
       .catch((err) => {
-        console.log(err);
-        enqueueSnackbar("Server error", { variant: "error" });
+        if (Axios.isCancel(err)) {
+          console.log("Request cancelled", err);
+        } else {
+          console.log(err);
+          enqueueSnackbar("Server error", { variant: "error" });
+        }
         setUsers(null);
       });
-  }, [myId, filter, enqueueSnackbar]);
+    return () => setIsMounted(false);
+    // return () => setUsers(null);
+  }, [myId, filter, enqueueSnackbar, isMounted]);
 
   // update view if users state was updated
   useEffect(() => {
@@ -105,6 +126,7 @@ const Strangers = () => {
           )}
         />
       </Switch>
+      <Button onClick={() => history.push("/add")}>Add</Button>
     </Grid>
   );
 };
