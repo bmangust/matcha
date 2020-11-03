@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { api } from "../axios";
 import { xssSanitize } from "../utils";
-import { resetUIState } from "./UISlice";
+import { resetUIState, setIsInfoMissing } from "./UISlice";
 import { resetFilter } from "../pages/Strangers/Filter/filterSlice";
 import { setAdditionalState } from "../pages/AdditionalInfo/additionalSlice";
 
@@ -10,7 +10,9 @@ const initialGeneralState = {
   isLoading: false,
   id: "",
   email: "",
-  phone: "+7",
+  phone: "",
+  name: "",
+  surname: "",
   username: "",
   birthDate: 0,
   gender: "",
@@ -46,7 +48,7 @@ const generalSlice = createSlice({
       state.isLoading = false;
     },
     resetGeneralState: () => initialGeneralState,
-    saveNewState(state, { payload }) {
+    setNewState(state, { payload }) {
       Object.keys(payload).forEach((key) => {
         if (key === "position") {
           state.position.lat = payload.position.lat;
@@ -64,8 +66,36 @@ export const {
   authSuccess,
   authFail,
   resetGeneralState,
-  saveNewState,
+  setNewState,
 } = generalSlice.actions;
+
+const checkInfo = (info) => {
+  let isInfoMissing = false;
+  let isAgeRangeMissing = false;
+  Object.keys(info).forEach((key) => {
+    // check if ageRange is default
+    console.log(
+      "[checkInfo] " + key,
+      info[key],
+      initialGeneralState[key],
+      isInfoMissing
+    );
+    if (key === "minAge" || key === "maxAge") {
+      isAgeRangeMissing =
+        info["maxAge"] === initialGeneralState["maxAge"] &&
+        info["minAge"] === initialGeneralState["minAge"];
+    }
+    isInfoMissing = isInfoMissing || info[key] === initialGeneralState[key];
+  });
+  console.log("[checkInfo result]", isInfoMissing, isAgeRangeMissing);
+  return isInfoMissing || isAgeRangeMissing;
+};
+
+export const saveNewState = (payload) => (dispatch) => {
+  let isInfoMissing = checkInfo(payload);
+  dispatch(setIsInfoMissing(isInfoMissing));
+  dispatch(setNewState(payload));
+};
 
 export const auth = (email, password, enqueueSnackbar) => async (dispatch) => {
   dispatch(startLoading());

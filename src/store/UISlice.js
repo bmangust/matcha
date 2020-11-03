@@ -7,6 +7,7 @@ const initialUIState = {
   header: null,
   selectedTab: null,
   companion: null,
+  isInfoMissing: false,
 };
 
 const UISlice = createSlice({
@@ -31,6 +32,9 @@ const UISlice = createSlice({
     setCompanion(state, { payload }) {
       state.companion = payload.companion;
     },
+    setIsInfoMissing(state, { payload }) {
+      state.isInfoMissing = payload;
+    },
   },
 });
 
@@ -41,6 +45,7 @@ export const {
   setHeader,
   resetUIState,
   setCompanion,
+  setIsInfoMissing,
 } = UISlice.actions;
 
 export const handleBack = (history, parent) => (dispatch) => {
