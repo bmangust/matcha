@@ -32,7 +32,7 @@ const Step2 = () => {
         rule: {
           minLength: 0,
           maxLength: 12,
-          regex: /^$|^\+\d+$/,
+          regex: /^$|^\+?\d+$/,
         },
       },
     },

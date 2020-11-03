@@ -12,7 +12,7 @@ const initialAdditionalState = {
   username: "",
   birthDate: 0,
   gender: "",
-  phone: "+7",
+  phone: "",
   country: "",
   city: "",
   maxDist: 0,

@@ -8,7 +8,6 @@ import Form from "../../components/Form/Form";
 
 const UpdateInfo = () => {
   const loadedInfo = useSelector((state) => state.general);
-  console.log(loadedInfo);
   const { enqueueSnackbar } = useSnackbar();
 
   const [username, setUsername] = useState(loadedInfo.username);
@@ -84,8 +83,8 @@ const UpdateInfo = () => {
     if (password.length) {
       body.password = password;
     }
-    console.log("[UpdateInfo] update user info");
-    console.log(body);
+    // console.log("[UpdateInfo] update user info");
+    // console.log(body);
     const response = await api.post("user", body);
 
     if (response.data.status) {
@@ -158,7 +157,7 @@ const UpdateInfo = () => {
         rule: {
           minLength: 0,
           maxLength: 12,
-          regex: /^$|^\+\d+$/,
+          regex: /^$|^\+?\d+$/,
         },
       },
     },
