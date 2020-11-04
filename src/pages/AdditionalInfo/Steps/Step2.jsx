@@ -20,7 +20,7 @@ const Step2 = () => {
       type: "text",
       label: "Phone",
       value: phone,
-      ignoreTouched: true,
+      ignoreUntouched: true,
       onChange: (e) => {
         dispatch(changePhone(e.target.value));
       },

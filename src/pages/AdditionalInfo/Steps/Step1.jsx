@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Form from "../../../components/Form/Form";
 import {
   changeBirthDate,
-  changeFirstName,
-  changeFirstNameValid,
+  changeName,
+  changeNameValid,
   changeGender,
-  changeLastName,
-  changeLastNameValid,
+  changeSurname,
+  changeSurnameValid,
 } from "../additionalSlice";
 
 const Step1 = () => {
@@ -23,10 +23,10 @@ const Step1 = () => {
       label: "First name",
       value: name,
       onChange: (e) => {
-        dispatch(changeFirstName(e.target.value));
+        dispatch(changeName(e.target.value));
       },
       onValidate: (isValid) => {
-        dispatch(changeFirstNameValid(isValid));
+        dispatch(changeNameValid(isValid));
       },
       rules: {
         helperText: "Use letters, numbers or symbols ., -. Min length 2",
@@ -43,10 +43,10 @@ const Step1 = () => {
       label: "Last name",
       value: surname,
       onChange: (e) => {
-        dispatch(changeLastName(e.target.value));
+        dispatch(changeSurname(e.target.value));
       },
       onValidate: (isValid) => {
-        dispatch(changeLastNameValid(isValid));
+        dispatch(changeSurnameValid(isValid));
       },
       rules: {
         helperText: "Use letters, numbers or symbols ., -. Min length 2",

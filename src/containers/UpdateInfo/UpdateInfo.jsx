@@ -5,48 +5,64 @@ import { getLocationByIp } from "../../utils";
 import { useSnackbar } from "notistack";
 import { saveNewState } from "../../store/generalSlice";
 import Form from "../../components/Form/Form";
+import {
+  changeEmail,
+  changeUsername,
+  changeName,
+  changeSurname,
+  changeBirthDate,
+  changeGender,
+  changePhone,
+  changeCountry,
+  changeCity,
+  changeMaxDist,
+  changeLookFor,
+  changeSearchAgeRange,
+  changeEmailValid,
+  changeUsernameValid,
+  changeNameValid,
+  changeSurnameValid,
+  changePhoneValid,
+  changeCountryValid,
+  changeCityValid,
+} from "../../pages/AdditionalInfo/additionalSlice";
 
 const UpdateInfo = () => {
-  const loadedInfo = useSelector((state) => state.general);
+  const {
+    id,
+    email,
+    username,
+    name,
+    surname,
+    birthDate,
+    phone,
+    gender,
+    country,
+    city,
+    maxDist,
+    lookFor,
+    minAge,
+    maxAge,
+    usernameValid,
+    nameValid,
+    surnameValid,
+    emailValid,
+    phoneValid,
+    countryValid,
+    cityValid,
+  } = useSelector((state) => state.additional);
+  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [username, setUsername] = useState(loadedInfo.username);
-  const [email, setEmail] = useState(loadedInfo.email);
-  const [phone, setPhone] = useState(loadedInfo.phone);
-  const [birthDate, setBirthDate] = useState(loadedInfo.birthDate);
-  const [gender, setGender] = useState(loadedInfo.gender);
-  const [lookFor, setLookFor] = useState(loadedInfo.lookFor);
-  const [country, setCountry] = useState(loadedInfo.country);
-  const [city, setCity] = useState(loadedInfo.city);
-  const [maxDist, setMaxDistance] = useState(loadedInfo.maxDist);
-  const [ageRange, setAgeRange] = useState([
-    loadedInfo.minAge,
-    loadedInfo.maxAge,
-  ]);
   const [password, setPassword] = useState("");
-
-  const [usernameValid, setUsernameValid] = useState(true);
-  const [emailValid, setEmailValid] = useState(true);
-  const [phoneValid, setPhoneValid] = useState(true);
-  const [countryValid, setCountryValid] = useState(true);
-  const [cityValid, setCityValid] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
   const [formValid, setFormValid] = useState(true);
-  const dispatch = useDispatch();
-
-  const changeBirthDate = (newDate) => {
-    let date = null;
-    if (typeof newDate === "string" && newDate.indexOf("-") === -1) {
-      date = new Date(+newDate).getTime();
-    } else {
-      date = new Date(newDate).getTime();
-    }
-    if (date && !isNaN(date)) setBirthDate(date);
-  };
 
   useEffect(() => {
     const formValid =
       usernameValid &&
+      nameValid &&
+      surnameValid &&
       emailValid &&
       phoneValid &&
       countryValid &&
@@ -55,6 +71,8 @@ const UpdateInfo = () => {
     setFormValid(formValid);
   }, [
     usernameValid,
+    nameValid,
+    surnameValid,
     emailValid,
     phoneValid,
     countryValid,
@@ -66,9 +84,11 @@ const UpdateInfo = () => {
     e.preventDefault();
     const location = await getLocationByIp();
     const body = {
-      id: loadedInfo.id,
+      id,
       email,
       username,
+      name,
+      surname,
       birthDate,
       phone,
       gender,
@@ -76,8 +96,8 @@ const UpdateInfo = () => {
       city,
       maxDist,
       lookFor,
-      minAge: ageRange[0],
-      maxAge: ageRange[1],
+      minAge,
+      maxAge,
     };
     if (location.status) body.position = location.data;
     if (password.length) {
@@ -102,12 +122,12 @@ const UpdateInfo = () => {
       type: "text",
       label: "Username",
       value: username,
-      ignoreTouched: true,
+      ignoreUntouched: true,
       onChange: (e) => {
-        setUsername(e.target.value);
+        dispatch(changeUsername(e.target.value));
       },
       onValidate: (isValid) => {
-        setUsernameValid(isValid);
+        dispatch(changeUsernameValid(isValid));
       },
       rules: {
         helperText:
@@ -124,12 +144,12 @@ const UpdateInfo = () => {
       type: "email",
       label: "Email",
       value: email,
-      ignoreTouched: true,
+      ignoreUntouched: true,
       onChange: (e) => {
-        setEmail(e.target.value);
+        dispatch(changeEmail(e.target.value));
       },
       onValidate: (isValid) => {
-        setEmailValid(isValid);
+        dispatch(changeEmailValid(isValid));
       },
       rules: {
         helperText: "invalid email",
@@ -141,16 +161,56 @@ const UpdateInfo = () => {
       },
     },
     {
+      name: "name",
+      type: "text",
+      label: "First name",
+      value: name,
+      onChange: (e) => {
+        dispatch(changeName(e.target.value));
+      },
+      onValidate: (isValid) => {
+        dispatch(changeNameValid(isValid));
+      },
+      rules: {
+        helperText: "Use letters, numbers or symbols ., -. Min length 2",
+        rule: {
+          minLength: 2,
+          maxLength: 20,
+          regex: /^[\w-.]+$/,
+        },
+      },
+    },
+    {
+      name: "surname",
+      type: "text",
+      label: "Last name",
+      value: surname,
+      onChange: (e) => {
+        dispatch(changeSurname(e.target.value));
+      },
+      onValidate: (isValid) => {
+        dispatch(changeSurnameValid(isValid));
+      },
+      rules: {
+        helperText: "Use letters, numbers or symbols ., -. Min length 2",
+        rule: {
+          minLength: 2,
+          maxLength: 20,
+          regex: /^[\w-.]+$/,
+        },
+      },
+    },
+    {
       name: "phone",
       type: "text",
       label: "Phone",
       value: phone,
-      ignoreTouched: true,
+      ignoreUntouched: true,
       onChange: (e) => {
-        setPhone(e.target.value);
+        dispatch(changePhone(e.target.value));
       },
       onValidate: (isValid) => {
-        setPhoneValid(isValid);
+        dispatch(changePhoneValid(isValid));
       },
       rules: {
         helperText: "invalid phone",
@@ -167,7 +227,7 @@ const UpdateInfo = () => {
       label: "Birth date",
       value: birthDate,
       onChange: (e) => {
-        changeBirthDate(e.target.value);
+        dispatch(changeBirthDate(e.target.value));
       },
     },
     {
@@ -177,7 +237,7 @@ const UpdateInfo = () => {
       values: ["male", "female"],
       value: gender,
       onChange: (e) => {
-        setGender(e.target.value);
+        dispatch(changeGender(e.target.value));
       },
     },
     {
@@ -187,7 +247,7 @@ const UpdateInfo = () => {
       values: ["male", "female", "both"],
       value: lookFor,
       onChange: (e) => {
-        setLookFor(e.target.value);
+        dispatch(changeLookFor(e.target.value));
       },
     },
     {
@@ -195,12 +255,12 @@ const UpdateInfo = () => {
       type: "text",
       label: "Country",
       value: country,
-      ignoreTouched: true,
+      ignoreUntouched: true,
       onChange: (e) => {
-        setCountry(e.target.value);
+        dispatch(changeCountry(e.target.value));
       },
       onValidate: (isValid) => {
-        setCountryValid(isValid);
+        dispatch(changeCountryValid(isValid));
       },
       rules: {
         helperText: "Use letters, numbers or symbols ., -. Min length 2",
@@ -216,12 +276,12 @@ const UpdateInfo = () => {
       type: "text",
       label: "City",
       value: city,
-      ignoreTouched: true,
+      ignoreUntouched: true,
       onChange: (e) => {
-        setCity(e.target.value);
+        dispatch(changeCity(e.target.value));
       },
       onValidate: (isValid) => {
-        setCityValid(isValid);
+        dispatch(changeCityValid(isValid));
       },
       rules: {
         helperText: "Use letters, numbers or symbols ., -. Min length 2",
@@ -238,16 +298,16 @@ const UpdateInfo = () => {
       label: "Search distance",
       value: maxDist,
       onChange: (value) => {
-        setMaxDistance(value);
+        dispatch(changeMaxDist(value));
       },
     },
     {
       name: "ageRange",
       type: "slider",
       label: "Age search range",
-      value: ageRange,
+      value: [minAge, maxAge],
       onChange: (value) => {
-        setAgeRange(value);
+        dispatch(changeSearchAgeRange(value));
       },
     },
     {
@@ -255,7 +315,7 @@ const UpdateInfo = () => {
       type: "password",
       label: "Password",
       value: password,
-      ignoreTouched: true,
+      ignoreUntouched: true,
       onChange: (e) => {
         setPassword(e.target.value);
       },

@@ -111,7 +111,7 @@ const Main = (props) => {
 
   // show only other users and remove duplicates
   useEffect(() => {
-    console.log(lookedBy);
+    // console.log(lookedBy);
     const lookedBySet = lookedBy
       ? new Set(lookedBy.filter((el) => el !== id))
       : new Set();

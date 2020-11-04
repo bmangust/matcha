@@ -7,6 +7,7 @@ const { createSlice } = require("@reduxjs/toolkit");
 
 const initialAdditionalState = {
   id: "",
+  email: "",
   name: "",
   surname: "",
   username: "",
@@ -20,8 +21,10 @@ const initialAdditionalState = {
   minAge: 0,
   maxAge: 100,
 
+  emailValid: false,
+  usernameValid: false,
   nameValid: false,
-  surameValid: false,
+  surnameValid: false,
   countryValid: false,
   cityValid: false,
 
@@ -38,10 +41,16 @@ const additionalSlice = createSlice({
       });
     },
     resetAdditionalState: () => initialAdditionalState,
-    changeFirstName(state, { payload }) {
+    changeEmail(state, { payload }) {
+      state.email = payload;
+    },
+    changeUsername(state, { payload }) {
+      state.username = payload;
+    },
+    changeName(state, { payload }) {
       state.name = payload;
     },
-    changeLastName(state, { payload }) {
+    changeSurname(state, { payload }) {
       state.surname = payload;
     },
     changeBirthDate(state, { payload }) {
@@ -70,14 +79,23 @@ const additionalSlice = createSlice({
       state.minAge = payload[0];
       state.maxAge = payload[1];
     },
+    changeMinAge(state, { payload }) {
+      state.minAge = payload;
+    },
     changeMaxAge(state, { payload }) {
       state.maxAge = payload;
     },
 
-    changeFirstNameValid(state, { payload }) {
+    changeEmailValid(state, { payload }) {
+      state.emailValid = payload;
+    },
+    changeUsernameValid(state, { payload }) {
+      state.usernameValid = payload;
+    },
+    changeNameValid(state, { payload }) {
       state.nameValid = payload;
     },
-    changeLastNameValid(state, { payload }) {
+    changeSurnameValid(state, { payload }) {
       state.surnameValid = payload;
     },
     changePhoneValid(state, { payload }) {
@@ -102,8 +120,10 @@ export const {
   setAdditionalState,
   resetAdditionalState,
 
-  changeFirstName,
-  changeLastName,
+  changeEmail,
+  changeUsername,
+  changeName,
+  changeSurname,
   changeBirthDate,
   changeGender,
   changePhone,
@@ -113,8 +133,10 @@ export const {
   changeLookFor,
   changeSearchAgeRange,
 
-  changeFirstNameValid,
-  changeLastNameValid,
+  changeEmailValid,
+  changeUsernameValid,
+  changeNameValid,
+  changeSurnameValid,
   changePhoneValid,
   changeCountryValid,
   changeCityValid,

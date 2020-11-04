@@ -74,12 +74,6 @@ const checkInfo = (info) => {
   let isAgeRangeMissing = false;
   Object.keys(info).forEach((key) => {
     // check if ageRange is default
-    console.log(
-      "[checkInfo] " + key,
-      info[key],
-      initialGeneralState[key],
-      isInfoMissing
-    );
     if (key === "minAge" || key === "maxAge") {
       isAgeRangeMissing =
         info["maxAge"] === initialGeneralState["maxAge"] &&
@@ -87,7 +81,6 @@ const checkInfo = (info) => {
     }
     isInfoMissing = isInfoMissing || info[key] === initialGeneralState[key];
   });
-  console.log("[checkInfo result]", isInfoMissing, isAgeRangeMissing);
   return isInfoMissing || isAgeRangeMissing;
 };
 

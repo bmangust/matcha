@@ -38,6 +38,12 @@ const getDate = (timestamp) => {
   return formattedDate;
 };
 
+/**
+ * checks *value* based on *rule* if input was *touched*
+ * @param {string} value checked value
+ * @param {regex} rule rule to match value
+ * @param {boolean} touched flag to check if input was already focused
+ */
 const validate = (value, rule, touched) => {
   return touched
     ? value.length >= rule.minLength &&
@@ -57,7 +63,7 @@ const Input = (props) => {
     onValidate,
     onChange,
     rules,
-    ignoreTouched,
+    ignoreUntouched, //defaults to false if not passed explictly
   } = {
     ...props,
   };
@@ -71,19 +77,12 @@ const Input = (props) => {
 
   useEffect(() => {
     let error;
-    if (ignoreTouched) {
-      error = rule ? !validate(value, rule, true) : false;
-    } else {
-      error = rule ? !validate(value, rule, touched) : false;
-    }
+    // check *touched* only if *ignoreUntouched* is false
+    error = rule ? !validate(value, rule, ignoreUntouched || touched) : false;
     // update error message
     error ? setErrorText(helperText) : setErrorText("");
     // update inputValid state in Redux
-    if (ignoreTouched) {
-      onValidate && onValidate(!error);
-    } else {
-      onValidate && onValidate(touched && !error);
-    }
+    onValidate && onValidate((ignoreUntouched || touched) && !error);
     setError(error);
   }, [value, rule, touched, helperText, onValidate]);
 
@@ -172,6 +171,7 @@ const Input = (props) => {
                 className={classes.SmallSelector}
                 onChange={(e) => onChange({ maxAge: +e.target.value })}
               />
+              ageRange
             </Grid>
           </Grid>
         </Box>
