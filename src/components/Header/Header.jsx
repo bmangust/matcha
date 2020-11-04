@@ -53,11 +53,9 @@ const Header = (props) => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
 
-  console.log(props);
-
   useEffect(() => {
     fetchUsers(notification);
-  }, [notification]);
+  }, [notification, fetchUsers]);
 
   useEffect(() => {
     setUsers(fetchedUsers);

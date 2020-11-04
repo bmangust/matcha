@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useCallback, useReducer } from "react";
 import PropTypes from "prop-types";
 import { api, media } from "../axios";
 
@@ -64,7 +64,7 @@ export const useFetchUsers = () => {
     fetchedUsers: [],
   });
 
-  const fetchUsers = (users) => {
+  const fetchUsers = useCallback((users) => {
     if (!users) return;
 
     const fetchUsersAsync = async (users) => {
@@ -99,7 +99,7 @@ export const useFetchUsers = () => {
       console.log(err);
       dispatch({ type: actionTypes.FAIL_LOADING, payload: err });
     }
-  };
+  }, []);
 
   fetchUsers.propTypes = {
     users: PropTypes.arrayOf(PropTypes.string),
