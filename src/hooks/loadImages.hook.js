@@ -53,6 +53,26 @@ const fetchImagesReducer = (state, action) => {
   }
 };
 
+// ACTION CREATORS
+const successLoading = (payload) => ({
+  type: actionTypes.SUCCESS_LOADING,
+  payload,
+});
+const failLoading = (message) => ({
+  type: actionTypes.FAIL_LOADING,
+  payload: message,
+});
+
+/**
+ * Destroys array of *images* from memory
+ * @param {object[]} images array of images to destroy
+ */
+const clearOnUnmount = (images) => {
+  if (!images) return;
+  // const images = [...imgs];
+  images.forEach((e) => URL.revokeObjectURL(e));
+};
+
 export const useFetchedImages = () => {
   const [state, dispatch] = useReducer(fetchImagesReducer, {
     isLoading: false,
@@ -62,64 +82,56 @@ export const useFetchedImages = () => {
   });
   const source = CancelToken.source();
 
-  const fetchImages = useCallback((images) => {
-    if (!images) return;
+  const fetchImages = useCallback(
+    (images) => {
+      if (!images) return;
 
-    const fetchImagesAsync = async (images) => {
-      // try {
-      const promises = images.map((img) =>
-        media(`img/${img}`, { cancelToken: source.token })
-      );
-      const resolvedPromises = await Promise.allSettled(promises);
-      const fetchedImages = resolvedPromises
-        .filter((img) => img.status === "fulfilled")
-        .map((img) => {
-          // console.log(img);
-          const file = URL.createObjectURL(img.value.data);
-          return file;
-        });
-      if (state.isMounted) {
-        dispatch({
-          type: actionTypes.SUCCESS_LOADING,
-          payload: fetchedImages,
-        });
-      } else {
-        clearOnUnmount();
-      }
-      // } catch (e) {
-      //   dispatch({ type: actionTypes.FAIL_LOADING, payload: e });
-      // }
-    };
+      const fetchImagesAsync = async (images) => {
+        try {
+          const promises = images.map((img) =>
+            media(`img/${img}`, { cancelToken: source.token })
+          );
+          const resolvedPromises = await Promise.allSettled(promises);
+          const fetchedImages = resolvedPromises
+            .filter((img) => img.status === "fulfilled")
+            .map((img) => {
+              // console.log(img);
+              const file = URL.createObjectURL(img.value.data);
+              return file;
+            });
+          if (!state.isMounted) {
+            clearOnUnmount(state.fetchedImages);
+            dispatch(successLoading([]));
+          } else {
+            dispatch(successLoading(fetchedImages));
+          }
+        } catch (e) {
+          if (Axios.isCancel(e)) {
+            console.log("Request cancelled");
+            dispatch(successLoading([]));
+          } else {
+            dispatch(failLoading(e));
+          }
+        }
+      };
 
-    dispatch({ type: actionTypes.INIT_LOADING });
-    try {
+      dispatch({ type: actionTypes.INIT_LOADING });
       fetchImagesAsync(images);
-    } catch (e) {
-      if (Axios.isCancel(e)) {
-        console.log("Request cancelled");
-      } else {
-        dispatch({ type: actionTypes.FAIL_LOADING, payload: e });
-      }
-    }
-  }, []);
+    },
+    [source.token, state.fetchedImages, state.isMounted]
+  );
 
   fetchImages.propTypes = {
     images: PropTypes.arrayOf(PropTypes.string),
   };
 
-  const clearOnUnmount = useCallback(() => {
-    const images = [...state.fetchedImages];
-    dispatch({ type: actionTypes.SUCCESS_LOADING, payload: [] });
-    images.forEach((e) => URL.revokeObjectURL(e));
-  }, [state.fetchedImages]);
-
-  const destroyImages = () => {
+  const destroyImages = useCallback(() => {
     if (state.isMounted) {
       clearOnUnmount();
     }
     source.cancel();
     dispatch({ type: actionTypes.UNMOUNT });
-  };
+  }, [state.isMounted, source.cancel]);
 
   const clearError = () => dispatch({ type: actionTypes.CLEAR_ERROR });
 
