@@ -14,6 +14,7 @@ const initialGeneralState = {
   name: "",
   surname: "",
   username: "",
+  bio: "",
   birthDate: 0,
   gender: "",
   country: "",
@@ -79,6 +80,7 @@ export const getSelfInfo = () => async (dispatch) => {
   dispatch(startLoading());
   if (res.data.status) {
     const user = await Promise.resolve(prepareUsers([res.data.data])[0]);
+    console.log(user);
     dispatch(authSuccess());
     dispatch(saveNewState(user));
     dispatch(setAdditionalState(user));

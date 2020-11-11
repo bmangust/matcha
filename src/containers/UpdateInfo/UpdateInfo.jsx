@@ -11,6 +11,7 @@ import {
   changeSurname,
   changeBirthDate,
   changeGender,
+  changeBio,
   changePhone,
   changeCountry,
   changeCity,
@@ -21,6 +22,7 @@ import {
   changeUsernameValid,
   changeNameValid,
   changeSurnameValid,
+  changeBioValid,
   changePhoneValid,
   changeCountryValid,
   changeCityValid,
@@ -35,6 +37,7 @@ const UpdateInfo = () => {
     name,
     surname,
     birthDate,
+    bio,
     phone,
     gender,
     country,
@@ -89,6 +92,7 @@ const UpdateInfo = () => {
       username,
       name,
       surname,
+      bio,
       birthDate,
       phone,
       gender,
@@ -165,6 +169,7 @@ const UpdateInfo = () => {
       type: "text",
       label: "First name",
       value: name,
+      ignoreUntouched: true,
       onChange: (e) => {
         dispatch(changeName(e.target.value));
       },
@@ -185,6 +190,7 @@ const UpdateInfo = () => {
       type: "text",
       label: "Last name",
       value: surname,
+      ignoreUntouched: true,
       onChange: (e) => {
         dispatch(changeSurname(e.target.value));
       },
@@ -329,6 +335,27 @@ const UpdateInfo = () => {
           minLength: 0,
           maxLength: 20,
           regex: /^$|^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?]).{4,}$/,
+        },
+      },
+    },
+    {
+      name: "bio",
+      type: "text",
+      label: "Bio",
+      value: bio,
+      ignoreUntouched: true,
+      onChange: (e) => {
+        dispatch(changeBio(e.target.value));
+      },
+      onValidate: (isValid) => {
+        changeBioValid(isValid);
+      },
+      rules: {
+        helperText: "Write some info about yourself",
+        rule: {
+          minLength: 2,
+          maxLength: 256,
+          regex: /^.+$/,
         },
       },
     },

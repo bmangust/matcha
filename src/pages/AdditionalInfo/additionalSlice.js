@@ -11,6 +11,7 @@ const initialAdditionalState = {
   name: "",
   surname: "",
   username: "",
+  bio: "",
   birthDate: 0,
   gender: "",
   phone: "",
@@ -25,6 +26,7 @@ const initialAdditionalState = {
   usernameValid: false,
   nameValid: false,
   surnameValid: false,
+  bioValid: false,
   countryValid: false,
   cityValid: false,
 
@@ -52,6 +54,9 @@ const additionalSlice = createSlice({
     },
     changeSurname(state, { payload }) {
       state.surname = payload;
+    },
+    changeBio(state, { payload }) {
+      state.bio = payload;
     },
     changeBirthDate(state, { payload }) {
       let date = new Date(payload).getTime();
@@ -98,6 +103,9 @@ const additionalSlice = createSlice({
     changeSurnameValid(state, { payload }) {
       state.surnameValid = payload;
     },
+    changeBioValid(state, { payload }) {
+      state.bioValid = payload;
+    },
     changePhoneValid(state, { payload }) {
       state.phoneValid = payload;
     },
@@ -124,6 +132,7 @@ export const {
   changeUsername,
   changeName,
   changeSurname,
+  changeBio,
   changeBirthDate,
   changeGender,
   changePhone,
@@ -137,6 +146,7 @@ export const {
   changeUsernameValid,
   changeNameValid,
   changeSurnameValid,
+  changeBioValid,
   changePhoneValid,
   changeCountryValid,
   changeCityValid,
@@ -150,6 +160,7 @@ export const updateInfo = (
     username,
     name,
     surname,
+    bio,
     birthDate,
     phone,
     gender,
@@ -170,6 +181,7 @@ export const updateInfo = (
     username,
     name: xssSanitize(name),
     surname: xssSanitize(surname),
+    bio: xssSanitize(bio),
     phone,
     birthDate,
     gender,
