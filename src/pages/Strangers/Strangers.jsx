@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import UserCard from "../../components/UserCard/UserCard";
-import { Button, Grid, makeStyles, Typography } from "@material-ui/core";
+import { Grid, makeStyles, Typography } from "@material-ui/core";
 import { api, CancelToken } from "../../axios";
 import { Route, Switch, useHistory } from "react-router-dom";
 import UserProfile from "../../containers/UserProfile/UserProfile";
-import { useSelector } from "react-redux";
-import Filter from "./Filter/Filter";
+import { useDispatch, useSelector } from "react-redux";
+import Filter from "../../components/Filter/Filter";
 import { useSnackbar } from "notistack";
 import Axios from "axios";
+import { loadStrangers, loadUsers } from "../../store/usersSlice";
 
 const useStyles = makeStyles({
   Strangers: {
@@ -27,10 +28,14 @@ const addAge = (user) => {
 };
 
 const getUsers = async () => {
-  const res = await api.get("strangers", { cancelToken: source.token });
-  console.log(res.data);
-  if (res.data.status && res.data.data) {
-    return res.data.data.map((user) => addAge(user));
+  try {
+    const res = await api.get("strangers", { cancelToken: source.token });
+    console.log(res.data);
+    if (res.data.status && res.data.data) {
+      return res.data.data.map((user) => addAge(user));
+    }
+  } catch (e) {
+    console.log(e);
   }
   return [];
 };
@@ -38,60 +43,38 @@ const getUsers = async () => {
 const Strangers = () => {
   const { enqueueSnackbar } = useSnackbar();
   const myId = useSelector((state) => state.general.id);
+  const allUsers = useSelector((state) => state.users.users);
+  const strangers = useSelector((state) => state.users.strangers);
   const filter = useSelector((state) => state.filter);
   const classes = useStyles();
-  const [users, setUsers] = useState(null);
-  const [cards, setCards] = useState(null);
-  const [isMounted, setIsMounted] = useState(true);
+  const dispatch = useDispatch();
 
-  const history = useHistory();
-
+  useEffect(() => {
+    dispatch(loadStrangers(enqueueSnackbar));
+  }, []);
   // store fetched users in local state
   useEffect(() => {
-    getUsers()
-      //filter myId
-      .then((res) => res.filter((el) => el.id !== myId))
-      // apply other filters
-      .then((res) => {
-        return res.filter(
-          (user) =>
-            user.age >= filter.age.minAge && user.age <= filter.age.maxAge
-        );
-      })
-      .then((res) => {
-        return filter.username.length > 0
-          ? res.filter((user) =>
-              user.username
-                .toLowerCase()
-                .includes(filter.username.toLowerCase())
-            )
-          : res;
-      })
-      // save result
-      .then((res) => isMounted && setUsers(res))
-      .catch((err) => {
-        if (Axios.isCancel(err)) {
-          console.log("Request cancelled", err);
-        } else {
-          console.log(err);
-          enqueueSnackbar("Server error", { variant: "error" });
-        }
-        setUsers(null);
-      });
-    return () => setIsMounted(false);
-    // return () => setUsers(null);
-  }, [myId, filter, enqueueSnackbar, isMounted]);
+    //filter myId
+    let filterdUsers = allUsers
+      .filter((el) => el.id !== myId)
+      .filter(
+        (user) => user.age >= filter.age.minAge && user.age <= filter.age.maxAge
+      );
+    filterdUsers =
+      filter.username.length > 0
+        ? filterdUsers.filter((user) =>
+            user.username.toLowerCase().includes(filter.username.toLowerCase())
+          )
+        : filterdUsers;
+    console.log(filterdUsers);
+  }, [myId, filter]);
 
-  // update view if users state was updated
-  useEffect(() => {
-    const noUsers = <Typography>No users to display</Typography>;
-    if (!users) {
-      setCards(noUsers);
-      return;
-    }
-    const cards = users.map((el) => <UserCard user={el} key={el.id} />);
-    setCards(cards);
-  }, [users, myId]);
+  const cards =
+    strangers && strangers.legnth ? (
+      strangers.map((el) => <UserCard user={el} key={el.id} />)
+    ) : (
+      <Typography>No users to display</Typography>
+    );
 
   return (
     <Grid
@@ -101,8 +84,8 @@ const Strangers = () => {
       className={classes.Strangers}
     >
       <Switch>
-        {users &&
-          users.map((el) => (
+        {allUsers &&
+          allUsers.map((el) => (
             <Route
               key={el.id}
               path={`/strangers/:id`}
@@ -126,7 +109,6 @@ const Strangers = () => {
           )}
         />
       </Switch>
-      <Button onClick={() => history.push("/add")}>Add</Button>
     </Grid>
   );
 };

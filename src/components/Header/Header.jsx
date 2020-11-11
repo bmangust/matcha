@@ -15,12 +15,13 @@ import {
 import { ChevronLeftRounded } from "@material-ui/icons";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
-import { useFetchUsers } from "../../hooks/loadUsers.hook";
 import { handleBack, setCompanion } from "../../store/UISlice";
 import { primaryColor } from "../../theme";
 import PropTypes from "prop-types";
+import { loadUsers } from "../../store/usersSlice";
+import defaultAvatar from "../../Images/default-avatar.png";
 
 const useStyles = makeStyles({
   Header: {
@@ -45,7 +46,7 @@ const Header = (props) => {
   const { header, notification } = {
     ...props,
   };
-  const [{ fetchedUsers }, fetchUsers] = useFetchUsers();
+  const allUsers = useSelector((state) => state.users.users);
   const [users, setUsers] = useState([]);
   const loc = useLocation();
   const history = useHistory();
@@ -54,19 +55,25 @@ const Header = (props) => {
   const anchorRef = useRef(null);
 
   useEffect(() => {
-    fetchUsers(notification);
-  }, [notification, fetchUsers]);
+    console.log(notification);
+    dispatch(loadUsers(notification));
+  }, [notification]);
 
   useEffect(() => {
-    setUsers(fetchedUsers);
-  }, [fetchedUsers]);
+    if (!notification) return;
+    const users = allUsers.filter((user) =>
+      [...notification].includes(user.id)
+    );
+    if (users) setUsers(users);
+  }, [allUsers, notification]);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
 
   const handleItemClick = (id) => {
-    const user = fetchedUsers.find((el) => el.id === id);
+    if (!users.length) return;
+    const user = users.find((el) => el.id === id);
     dispatch(setCompanion({ companion: user }));
     history.push(`/strangers/${id}`);
     setOpen(false);
@@ -166,14 +173,14 @@ const Header = (props) => {
                           <Grid container alignItems="center">
                             <Avatar
                               className={classes.Avatar}
-                              src={el.avatarImg || null}
+                              src={el.avatar.image || defaultAvatar}
                             />
                             <Typography>{el.username}</Typography>
                           </Grid>
                         </MenuItem>
                       ))
                     ) : (
-                      <Typography>No new users</Typography>
+                      <Typography>No new notifications</Typography>
                     )}
                   </MenuList>
                 </ClickAwayListener>

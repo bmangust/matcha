@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { makeStyles, CircularProgress, Grid } from "@material-ui/core";
+import { makeStyles, CircularProgress, Grid, Button } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -12,12 +12,20 @@ import {
 } from "./loginSlice";
 import { auth } from "../../store/generalSlice";
 import Form from "../../components/Form/Form";
+import { api } from "../../axios";
 
 const useStyles = makeStyles({
   Grid: {
     height: "100vh",
   },
 });
+
+const getUser = async () => {
+  const res = await api(
+    `data/4567e1e306df5dd2ab333d9d499a1ab2f9071275e21f7d61265af04668b97789`
+  );
+  console.log(res.data);
+};
 
 const Login = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -123,6 +131,7 @@ const Login = () => {
         ) : (
           <Form inputs={inputs} buttons={buttons} />
         )}
+        <Button onClick={getUser}>user</Button>
       </Grid>
     </Grid>
   );

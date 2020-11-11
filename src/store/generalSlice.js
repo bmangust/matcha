@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { api } from "../axios";
-import { xssSanitize } from "../utils";
+import { prepareUsers, xssSanitize } from "../utils";
 import { resetUIState, setIsInfoMissing } from "./UISlice";
-import { resetFilter } from "../pages/Strangers/Filter/filterSlice";
+import { resetFilter } from "../components/Filter/filterSlice";
 import { setAdditionalState } from "../pages/AdditionalInfo/additionalSlice";
+import { loadStrangers } from "./usersSlice";
 
 const initialGeneralState = {
   isAuth: false,
@@ -53,6 +54,11 @@ const generalSlice = createSlice({
         if (key === "position") {
           state.position.lat = payload.position.lat;
           state.position.lon = payload.position.lon;
+        } else if (key === "images") {
+          state.images =
+            state.images && state.images.length > 0
+              ? [...state.images, ...payload[key]]
+              : [...payload[key]];
         }
         state[key] = payload[key];
       });
@@ -69,18 +75,50 @@ export const {
   setNewState,
 } = generalSlice.actions;
 
+export const getSelfInfo = () => async (dispatch) => {
+  const res = await api("account");
+  dispatch(startLoading());
+  console.log(res.data);
+  if (res.data.status) {
+    const user = await Promise.resolve(prepareUsers([res.data.data])[0]);
+    console.log(user);
+    dispatch(authSuccess());
+    dispatch(saveNewState(user));
+    dispatch(setAdditionalState(user));
+    dispatch(loadStrangers());
+  } else {
+    dispatch(authFail());
+    dispatch(resetGeneralState());
+  }
+};
+
 const checkInfo = (info) => {
   let isInfoMissing = false;
   let isAgeRangeMissing = false;
   Object.keys(info).forEach((key) => {
+    // skip these keys
+    if (
+      [
+        "tags",
+        "position",
+        "lookedBy",
+        "likedBy",
+        "matches",
+        "avatar",
+        "images",
+      ].indexOf(key) !== -1
+    )
+      return;
     // check if ageRange is default
     if (key === "minAge" || key === "maxAge") {
       isAgeRangeMissing =
         info["maxAge"] === initialGeneralState["maxAge"] &&
         info["minAge"] === initialGeneralState["minAge"];
+    } else {
+      isInfoMissing = isInfoMissing || info[key] === initialGeneralState[key];
     }
-    isInfoMissing = isInfoMissing || info[key] === initialGeneralState[key];
   });
+  console.log(isInfoMissing, isAgeRangeMissing);
   return isInfoMissing || isAgeRangeMissing;
 };
 

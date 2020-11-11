@@ -1,3 +1,6 @@
+import { CancelToken, media } from "./axios";
+import Axios from "axios";
+
 export const xssSanitize = (value) => {
   var lt = /</g,
     gt = />/g,
@@ -31,7 +34,51 @@ export const getLocationByIp = async () => {
     return { status: false, data: e };
   }
 };
+const source = CancelToken.source();
 
 export const capitalize = (str) => {
   return str[0].toUpperCase() + str.slice(1);
+};
+
+export const loadImages = async (user) => {
+  const images = user.images;
+  if (!images || images.length === 0) return;
+
+  // console.log("fetching images for user: ", user);
+  // console.log("images: ", images);
+  try {
+    const promises = images.map((img) =>
+      media(`img/${img}`, { cancelToken: source.token })
+    );
+    const resolvedPromises = await Promise.allSettled(promises);
+    // console.log("image promises", resolvedPromises);
+    const fetchedImages = resolvedPromises
+      .filter((img) => img.status === "fulfilled")
+      .map((img) => {
+        console.log(img);
+        const file = URL.createObjectURL(img.value.data);
+        const image = { id: img.value.config.url.split("/")[1], image: file };
+        // console.log("image", image);
+        return image;
+      });
+    // console.log("fetchedImages", fetchedImages);
+    const updatedUser = { ...user, images: fetchedImages };
+    updatedUser.avatar = updatedUser.images.find(
+      (img) => img.id === user.avatar
+    );
+    return updatedUser;
+  } catch (e) {
+    if (Axios.isCancel(e)) {
+      console.log("Request cancelled");
+    }
+  }
+};
+
+export const addAge = (user) => {
+  const age = new Date().getFullYear() - new Date(user.birthDate).getFullYear();
+  return { ...user, age };
+};
+
+export const prepareUsers = (users) => {
+  return users.map((user) => addAge(user)).map((user) => loadImages(user));
 };
