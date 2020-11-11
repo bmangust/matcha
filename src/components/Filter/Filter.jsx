@@ -1,7 +1,7 @@
 import { Button, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Input from "../../../components/Input/Input";
+import Input from "../Input/Input";
 import { changeUsername, changeSearchAgeRange } from "./filterSlice";
 import { ExpandLessRounded, ExpandMoreRounded } from "@material-ui/icons";
 
