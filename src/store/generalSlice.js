@@ -4,7 +4,6 @@ import { prepareUsers, xssSanitize } from "../utils";
 import { resetUIState, setIsInfoMissing } from "./UISlice";
 import { resetFilter } from "../components/Filter/filterSlice";
 import { setAdditionalState } from "../pages/AdditionalInfo/additionalSlice";
-import { loadStrangers } from "./usersSlice";
 
 const initialGeneralState = {
   isAuth: false,
@@ -85,7 +84,6 @@ export const getSelfInfo = () => async (dispatch) => {
     dispatch(authSuccess());
     dispatch(saveNewState(user));
     dispatch(setAdditionalState(user));
-    dispatch(loadStrangers());
   } else {
     dispatch(authFail());
     dispatch(resetGeneralState());
@@ -128,7 +126,7 @@ export const saveNewState = (payload) => (dispatch) => {
   dispatch(setNewState(payload));
 };
 
-export const auth = (email, password, enqueueSnackbar) => async (dispatch) => {
+export const auth = (email, password, showNotif) => async (dispatch) => {
   dispatch(startLoading());
   try {
     const body = {
@@ -142,16 +140,16 @@ export const auth = (email, password, enqueueSnackbar) => async (dispatch) => {
       dispatch(authSuccess());
     } else {
       dispatch(resetGeneralState());
-      enqueueSnackbar("Email or password is wrong", { variant: "error" });
+      showNotif("Email or password is wrong", "error");
     }
   } catch (err) {
     console.log(err);
     dispatch(authFail());
-    enqueueSnackbar("Server error", { variant: "error" });
+    showNotif("Server error", "error");
   }
 };
 
-export const logout = (enqueueSnackbar) => async (dispatch) => {
+export const logout = (showNotif) => async (dispatch) => {
   dispatch(startLoading());
   const res = await api.delete("/signout");
   console.log(res);
@@ -159,10 +157,10 @@ export const logout = (enqueueSnackbar) => async (dispatch) => {
     dispatch(resetGeneralState());
     dispatch(resetUIState());
     dispatch(resetFilter());
-    enqueueSnackbar("Successful logout", { variant: "success" });
+    showNotif("Successful logout");
   } else {
     dispatch(stopLoading());
-    enqueueSnackbar("Server error", { variant: "error" });
+    showNotif("Server error", "error");
   }
 };
 
