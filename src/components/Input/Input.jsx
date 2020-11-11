@@ -171,7 +171,6 @@ const Input = (props) => {
                 className={classes.SmallSelector}
                 onChange={(e) => onChange({ maxAge: +e.target.value })}
               />
-              ageRange
             </Grid>
           </Grid>
         </Box>
