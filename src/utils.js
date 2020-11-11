@@ -55,7 +55,7 @@ export const loadImages = async (user) => {
     const fetchedImages = resolvedPromises
       .filter((img) => img.status === "fulfilled")
       .map((img) => {
-        console.log(img);
+        // console.log(img);
         const file = URL.createObjectURL(img.value.data);
         const image = { id: img.value.config.url.split("/")[1], image: file };
         // console.log("image", image);

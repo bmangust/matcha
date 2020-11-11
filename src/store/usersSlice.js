@@ -20,7 +20,7 @@ const usersSlice = createSlice({
       state.isLoading = false;
     },
     addUsers(state, { payload }) {
-      console.log(payload);
+      // console.log(payload);
       if (!payload.length) return;
       const users = payload;
       users.forEach((user) => {
@@ -49,12 +49,13 @@ const getStrangers = async (showNotif) => {
   try {
     const res = await api.get("strangers", { cancelToken: source.token });
     if (res.data.status && res.data.data) {
-      console.log("[userSlice] starngers", res.data.data);
+      // console.log("[userSlice] starngers", res.data.data);
       return res.data.data;
     } else {
       showNotif(res.data.data, "error");
     }
   } catch (e) {
+    showNotif("Server error", "error");
     console.log(e);
   }
   return [];
@@ -62,13 +63,13 @@ const getStrangers = async (showNotif) => {
 
 const getUncashedUsers = (users, getState) => {
   const allUsers = getState().users.users;
-  console.log("[getUncashedUsers] filter", users);
+  // console.log("[getUncashedUsers] filter", users);
   const uncashed = users.filter((user) => {
-    console.log(user);
+    // console.log(user);
     const found = allUsers.find((el) => el.id === user.id);
     return found;
   });
-  console.log(uncashed);
+  // console.log(uncashed);
   return uncashed;
 };
 

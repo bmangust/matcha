@@ -30,7 +30,7 @@ function App() {
 
   useEffect(() => {
     dispatch(getSelfInfo());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (isLoading) {

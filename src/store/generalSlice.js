@@ -77,10 +77,8 @@ export const {
 export const getSelfInfo = () => async (dispatch) => {
   const res = await api("account");
   dispatch(startLoading());
-  console.log(res.data);
   if (res.data.status) {
     const user = await Promise.resolve(prepareUsers([res.data.data])[0]);
-    console.log(user);
     dispatch(authSuccess());
     dispatch(saveNewState(user));
     dispatch(setAdditionalState(user));
@@ -116,7 +114,7 @@ const checkInfo = (info) => {
       isInfoMissing = isInfoMissing || info[key] === initialGeneralState[key];
     }
   });
-  console.log(isInfoMissing, isAgeRangeMissing);
+  // console.log(isInfoMissing, isAgeRangeMissing);
   return isInfoMissing || isAgeRangeMissing;
 };
 
@@ -152,7 +150,6 @@ export const auth = (email, password, showNotif) => async (dispatch) => {
 export const logout = (showNotif) => async (dispatch) => {
   dispatch(startLoading());
   const res = await api.delete("/signout");
-  console.log(res);
   if (res.data.status) {
     dispatch(resetGeneralState());
     dispatch(resetUIState());

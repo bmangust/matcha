@@ -5,6 +5,7 @@ import { Avatar, Badge, Fab, makeStyles } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import defaultAvatar from "../../Images/default-avatar.png";
 import { saveNewState } from "../../store/generalSlice";
+import { useNotifications } from "../../hooks/useNotifications";
 
 const useStyles = makeStyles({
   Avatar: {

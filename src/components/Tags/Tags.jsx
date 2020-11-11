@@ -1,4 +1,4 @@
-import { Chip, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
+import { Chip, Grid, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
 
 const useStyles = makeStyles({

@@ -56,7 +56,6 @@ const Header = (props) => {
   const anchorRef = useRef(null);
 
   useEffect(() => {
-    console.log(notification);
     dispatch(loadUsers(notification));
   }, [notification]);
 

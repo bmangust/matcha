@@ -1,5 +1,5 @@
 import React from "react";
-import { Chip, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
+import { Chip, Grid, makeStyles, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles({
   Item: {
@@ -34,9 +34,6 @@ const Bio = ({ bio }) => {
         <Typography className={classes.Header}>Bio:</Typography>
         <Grid className={classes.fullWidth}>
           <Chip className={classes.Item} label={bio} variant="outlined" />
-          {/* <Paper className={classes.Item}>
-            <Typography>{bio}</Typography>
-          </Paper> */}
         </Grid>
       </Grid>
     </Grid>
