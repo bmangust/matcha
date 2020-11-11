@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, memo } from "react";
 import {
   Card,
   CardMedia,
@@ -18,8 +18,6 @@ import defaultImage from "../../Images/default-avatar.png";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { sendVisit, sendLike, setCompanion } from "../../store/UISlice";
-import { useFetchedImages } from "../../hooks/loadImages.hook";
-import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles({
   UserCard: {
@@ -50,7 +48,7 @@ const useStyles = makeStyles({
       fontSize: "1.5rem",
     },
   },
-  Interests: {
+  Tags: {
     lineHeight: "0.5rem",
     "& span": {
       fontSize: "1rem",
@@ -84,34 +82,12 @@ const useStyles = makeStyles({
 });
 
 const UserCard = (props) => {
-  const [
-    { fetchedImages, error },
-    fetchImages,
-    destroyImages,
-    clearError,
-  ] = useFetchedImages();
   const classes = useStyles();
-  const { id, username, images, age } = { ...props.user };
   const [displayedImage, setDisplayedImage] = useState(0);
-  const tags = props.tags || ["No tags"];
+  const { id, username, images, age } = { ...props.user };
+  const tags = props.user.tags || ["No tags"];
   const history = useHistory();
   const dispatch = useDispatch();
-  const { enqueueSnackbar } = useSnackbar();
-
-  useEffect(() => {
-    clearError();
-    fetchImages(images);
-    return () => {
-      destroyImages();
-    };
-  }, [images]);
-
-  useEffect(() => {
-    if (error) {
-      console.log(error);
-      enqueueSnackbar("Failed to load images", { variant: "error" });
-    }
-  }, [error, enqueueSnackbar]);
 
   const showUserProfile = (e) => {
     dispatch(setCompanion({ companion: props.user }));
@@ -125,15 +101,14 @@ const UserCard = (props) => {
   };
 
   const LeftButtonDisabled =
-    fetchedImages.length === 0 || displayedImage === fetchedImages.length - 1;
-  const RightButtonDisabled =
-    displayedImage === 0 || fetchedImages.length === 0;
+    images.length === 0 || displayedImage === images.length - 1;
+  const RightButtonDisabled = displayedImage === 0 || images.length === 0;
 
   return (
     <Grid item xs={12} sm={6} lg={4}>
       <Card className={classes.UserCard} onClick={(e) => showUserProfile(e)}>
         <div>
-          {fetchedImages.length > 1 && (
+          {images.length > 1 && (
             <MobileStepper
               variant="dots"
               steps={0}
@@ -182,7 +157,7 @@ const UserCard = (props) => {
 
           <CardMedia
             className={classes.CardMedia}
-            image={fetchedImages[displayedImage] || defaultImage}
+            image={images[displayedImage].image || defaultImage}
           />
 
           <CardContent className={classes.Info}>
@@ -191,7 +166,7 @@ const UserCard = (props) => {
                 {username}, {age}
               </Typography>
             </Container>
-            <div className={classes.Interests}>
+            <div className={classes.Tags}>
               {tags.map((el) => (
                 <span key={el}>{el}</span>
               ))}
@@ -203,4 +178,4 @@ const UserCard = (props) => {
   );
 };
 
-export default UserCard;
+export default memo(UserCard);
