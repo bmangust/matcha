@@ -16,8 +16,7 @@ const useStyles = makeStyles({
 
 const AvatarContainer = () => {
   const classes = useStyles();
-  const user = useSelector((state) => state.general);
-  const avatar = user.avatar;
+  const { id, images, avatar } = useSelector((state) => state.general);
   const showNotif = useNotifications();
   const [displayedAvatar, setDisplayedAvatar] = useState(null);
 
@@ -29,13 +28,13 @@ const AvatarContainer = () => {
     if (image.size > 1000000) {
       showNotif("The file is larger than 1MB", "error");
     }
-    const res = await mediaUpload(user.id, image);
+    const res = await mediaUpload(id, image);
     const objectUrl = URL.createObjectURL(image);
     const avatar = { id: res.data.data.id, image: objectUrl };
     setDisplayedAvatar(avatar);
 
     if (res.data.status && res.data.data) {
-      saveNewState({ images: [avatar] });
+      saveNewState({ images: [...images, avatar] });
       showNotif("The file was uploaded");
     } else {
       console.error(res.data);
