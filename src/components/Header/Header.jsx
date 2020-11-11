@@ -28,6 +28,7 @@ const useStyles = makeStyles({
     textAlign: "center",
     fontFamily: "Righteous",
     color: primaryColor.dark,
+    fontSize: "2rem",
   },
   Popper: {
     zIndex: 5,
@@ -111,7 +112,7 @@ const Header = (props) => {
   }, [open]);
 
   return (
-    <Grid container justify="space-around" item spacing={0}>
+    <Grid container justify="space-around" alignItems="center" item>
       <Grid item xs={2}>
         {showBackButton ? (
           <Button variant="text" color="inherit" onClick={handleBackButton}>
@@ -123,7 +124,7 @@ const Header = (props) => {
         ) : null}
       </Grid>
       <Grid item xs={6}>
-        <Typography variant="h4" className={classes.Header}>
+        <Typography variant="h1" className={classes.Header}>
           {header}
         </Typography>
       </Grid>
