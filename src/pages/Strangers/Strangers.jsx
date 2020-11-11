@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import UserCard from "../../components/UserCard/UserCard";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
-import { api, CancelToken } from "../../axios";
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import UserProfile from "../../containers/UserProfile/UserProfile";
 import { useDispatch, useSelector } from "react-redux";
 import Filter from "../../components/Filter/Filter";
-import { useSnackbar } from "notistack";
-import Axios from "axios";
-import { loadStrangers, loadUsers } from "../../store/usersSlice";
+import { useNotifications } from "../../hooks/useNotifications";
+import { loadStrangers } from "../../store/usersSlice";
 
 const useStyles = makeStyles({
   Strangers: {
@@ -18,63 +16,47 @@ const useStyles = makeStyles({
   CardContainer: {
     paddingBottom: "90px",
   },
+  Text: {
+    marginTop: "1rem",
+    width: "100%",
+    textAlign: "center",
+  },
 });
 
-const source = CancelToken.source();
-
-const addAge = (user) => {
-  const age = new Date().getFullYear() - new Date(user.birthDate).getFullYear();
-  return { ...user, age };
-};
-
-const getUsers = async () => {
-  try {
-    const res = await api.get("strangers", { cancelToken: source.token });
-    console.log(res.data);
-    if (res.data.status && res.data.data) {
-      return res.data.data.map((user) => addAge(user));
-    }
-  } catch (e) {
-    console.log(e);
-  }
-  return [];
-};
-
 const Strangers = () => {
-  const { enqueueSnackbar } = useSnackbar();
-  const myId = useSelector((state) => state.general.id);
+  const showNotif = useNotifications();
   const allUsers = useSelector((state) => state.users.users);
   const strangers = useSelector((state) => state.users.strangers);
   const filter = useSelector((state) => state.filter);
+  const [cards, setCards] = useState(null);
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  // load strangers on component mount
   useEffect(() => {
-    dispatch(loadStrangers(enqueueSnackbar));
+    dispatch(loadStrangers(showNotif));
   }, []);
-  // store fetched users in local state
+
+  // filter users
   useEffect(() => {
-    //filter myId
-    let filterdUsers = allUsers
-      .filter((el) => el.id !== myId)
-      .filter(
-        (user) => user.age >= filter.age.minAge && user.age <= filter.age.maxAge
-      );
-    filterdUsers =
+    let filteredUsers = strangers.filter(
+      (user) => user.age >= filter.age.minAge && user.age <= filter.age.maxAge
+    );
+    filteredUsers =
       filter.username.length > 0
-        ? filterdUsers.filter((user) =>
+        ? filteredUsers.filter((user) =>
             user.username.toLowerCase().includes(filter.username.toLowerCase())
           )
-        : filterdUsers;
-    console.log(filterdUsers);
-  }, [myId, filter]);
+        : filteredUsers;
 
-  const cards =
-    strangers && strangers.legnth ? (
-      strangers.map((el) => <UserCard user={el} key={el.id} />)
-    ) : (
-      <Typography>No users to display</Typography>
-    );
+    const cards =
+      filteredUsers && filteredUsers.length ? (
+        filteredUsers.map((el) => <UserCard user={el} key={el.id} />)
+      ) : (
+        <Typography className={classes.Text}>No users to display</Typography>
+      );
+    setCards(cards);
+  }, [filter]);
 
   return (
     <Grid
