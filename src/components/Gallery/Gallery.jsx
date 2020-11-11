@@ -1,8 +1,7 @@
 import { Card, CardMedia, Grid, makeStyles } from "@material-ui/core";
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { media } from "../../axios";
-import { useFetchImages } from "../../hooks/loadImages.hook";
 import { saveNewState } from "../../store/generalSlice";
 
 const useStyles = makeStyles({
@@ -16,15 +15,6 @@ const Gallery = (props) => {
   const dispatch = useDispatch();
   let images = useSelector((state) => state.general.images);
   if (props.images) images = props.images;
-  // const [{ fetchedImages }, fetchImages, destroyImages] = useFetchImages();
-
-  // console.log(props);
-  // console.log(images);
-
-  // useEffect(() => {
-  //   fetchImages(images);
-  //   return () => destroyImages();
-  // }, [images]);
 
   const setAvatar = async (image) => {
     console.log(image);
@@ -36,8 +26,8 @@ const Gallery = (props) => {
   return (
     <Grid container justify="center" spacing={1}>
       {images.length > 0 &&
-        images.map((el, index) => (
-          <Grid item xs={8} sm={4} key={images[index]}>
+        images.map((el) => (
+          <Grid item xs={8} sm={4} key={el.id}>
             <Card>
               <CardMedia
                 onClick={() => setAvatar(el)}

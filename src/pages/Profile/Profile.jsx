@@ -5,7 +5,7 @@ import TabPanel from "../../containers/TabPanel/TabPanel";
 import AvatarContainer from "../../components/Avatar/AvatarContainer";
 import { backgroundColor, primaryColor } from "../../theme";
 import UpdateInfo from "../../containers/UpdateInfo/UpdateInfo";
-import Gallery from "../../containers/UserProfile/Gallery/Gallery";
+import Gallery from "../../components/Gallery/Gallery";
 
 const useStyles = makeStyles({
   indicator: {
