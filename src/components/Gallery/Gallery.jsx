@@ -15,8 +15,11 @@ const Gallery = (props) => {
   const dispatch = useDispatch();
   let images = useSelector((state) => state.general.images);
   if (props.images) images = props.images;
+  console.log(images);
 
   const setAvatar = async (image) => {
+    // let avatar changing only when Gallery is rendered with images from general redux slice
+    if (props.images) return;
     console.log(image);
     const res = await media.put("avatar", { imageId: image.id });
     dispatch(saveNewState({ avatar: image }));
