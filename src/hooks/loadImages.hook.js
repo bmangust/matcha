@@ -73,7 +73,7 @@ const clearOnUnmount = (images) => {
   images.forEach((e) => URL.revokeObjectURL(e));
 };
 
-export const useFetchedImages = () => {
+export const useFetchImages = () => {
   const [state, dispatch] = useReducer(fetchImagesReducer, {
     isLoading: false,
     error: null,

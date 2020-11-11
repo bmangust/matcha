@@ -64,14 +64,21 @@ export const useFetchUsers = () => {
     fetchedUsers: [],
   });
 
-  const fetchUsers = useCallback((users) => {
+  /**
+   *  fetch users' info (full or short)
+   * @param {array} user array of users' ids
+   * @param {boolean} full flag to request full user info
+   */
+  const fetchUsers = useCallback((users, full = false) => {
     if (!users) return;
 
-    const fetchUsersAsync = async (users) => {
+    const fetchUsersAsync = async (users, full) => {
       try {
-        const promises = [...users].map((el) => api(`/data/${el}`));
+        const promises = [...users].map((el) =>
+          api(`/data/${el}`, { params: { full } })
+        );
         const resolvedPromises = await Promise.allSettled(promises);
-        console.log(resolvedPromises);
+        // console.log(resolvedPromises);
         const userPromises = resolvedPromises
           .filter((el) => el.status === "fulfilled")
           .map(async (el) => {
@@ -94,7 +101,7 @@ export const useFetchUsers = () => {
 
     dispatch({ type: actionTypes.INIT_LOADING });
     try {
-      fetchUsersAsync(users);
+      fetchUsersAsync(users, full);
     } catch (err) {
       console.log(err);
       dispatch({ type: actionTypes.FAIL_LOADING, payload: err });
@@ -103,6 +110,7 @@ export const useFetchUsers = () => {
 
   fetchUsers.propTypes = {
     users: PropTypes.arrayOf(PropTypes.string),
+    full: PropTypes.bool,
   };
 
   const clearError = () => dispatch({ type: actionTypes.CLEAR_ERROR });
