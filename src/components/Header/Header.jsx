@@ -57,7 +57,7 @@ const Header = (props) => {
 
   useEffect(() => {
     dispatch(loadUsers(notification));
-  }, [notification]);
+  }, [dispatch, notification]);
 
   useEffect(() => {
     if (!notification) return;

@@ -35,7 +35,7 @@ const Strangers = () => {
   // load strangers on component mount
   useEffect(() => {
     dispatch(loadStrangers(showNotif));
-  }, []);
+  }, [dispatch]);
 
   // filter users
   useEffect(() => {
@@ -56,7 +56,7 @@ const Strangers = () => {
         <Typography className={classes.Text}>No users to display</Typography>
       );
     setCards(cards);
-  }, [filter]);
+  }, [filter, classes.Text, strangers]);
 
   return (
     <Grid
