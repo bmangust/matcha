@@ -1,11 +1,10 @@
 import React from "react";
-import { Grid, makeStyles, Paper, Typography } from "@material-ui/core";
+import { Chip, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles({
   Item: {
     padding: "10px 15px",
-    margin: "0 10px",
-    fontSize: "1rem",
+    width: "100%",
   },
   Header: {
     fontSize: "1.3rem",
@@ -15,6 +14,9 @@ const useStyles = makeStyles({
   Container: {
     width: "100%",
     padding: "0.5rem 0",
+  },
+  fullWidth: {
+    width: "100%",
   },
 });
 
@@ -30,10 +32,11 @@ const Bio = ({ bio }) => {
         item
       >
         <Typography className={classes.Header}>Bio:</Typography>
-        <Grid>
-          <Paper className={classes.Item}>
+        <Grid className={classes.fullWidth}>
+          <Chip className={classes.Item} label={bio} variant="outlined" />
+          {/* <Paper className={classes.Item}>
             <Typography>{bio}</Typography>
-          </Paper>
+          </Paper> */}
         </Grid>
       </Grid>
     </Grid>
