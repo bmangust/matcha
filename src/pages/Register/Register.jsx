@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useSnackbar } from "notistack";
 import { makeStyles, Grid, CircularProgress } from "@material-ui/core";
 import {
   changeEmail,
@@ -15,6 +14,7 @@ import {
 } from "./registerSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Form from "../../components/Form/Form";
+import { useNotifications } from "../../hooks/useNotifications";
 
 const useStyles = makeStyles({
   Grid: {
@@ -38,7 +38,7 @@ const useStyles = makeStyles({
 });
 
 const Register = () => {
-  const { enqueueSnackbar } = useSnackbar();
+  const showNotif = useNotifications();
   const dispatch = useDispatch();
   const classes = useStyles();
   const history = useHistory();
@@ -68,7 +68,7 @@ const Register = () => {
 
   const onRegisterHandler = async (e) => {
     e.preventDefault();
-    dispatch(register(username, email, password, enqueueSnackbar, history));
+    dispatch(register(username, email, password, showNotif, history));
   };
 
   const inputs = [

@@ -45,13 +45,14 @@ const usersSlice = createSlice({
 
 const source = CancelToken.source();
 
-const getStrangers = async () => {
+const getStrangers = async (showNotif) => {
   try {
     const res = await api.get("strangers", { cancelToken: source.token });
     if (res.data.status && res.data.data) {
       console.log("[userSlice] starngers", res.data.data);
       return res.data.data;
     } else {
+      showNotif(res.data.data, "error");
     }
   } catch (e) {
     console.log(e);
@@ -71,13 +72,9 @@ const getUncashedUsers = (users, getState) => {
   return uncashed;
 };
 
-export const loadStrangers = (enqueueSnackbar) => async (
-  dispatch,
-  getState
-) => {
-  console.log("Started loadStrangers");
+export const loadStrangers = (showNotif) => async (dispatch, getState) => {
   dispatch(startLoading());
-  const strangers = await getStrangers(enqueueSnackbar);
+  const strangers = await getStrangers(showNotif);
   dispatch(setStrangers(strangers));
 
   const uncashed = getUncashedUsers(strangers, getState);

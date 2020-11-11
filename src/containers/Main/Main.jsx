@@ -21,8 +21,7 @@ import Strangers from "../../pages/Strangers/Strangers";
 import Profile from "../../pages/Profile/Profile";
 import Header from "../../components/Header/Header";
 import Chat from "../Chat/Chat";
-
-import { useSnackbar } from "notistack";
+import { useNotifications } from "../../hooks/useNotifications";
 
 const useStyles = makeStyles({
   selectedTab: {
@@ -89,7 +88,7 @@ const tabs = [
 ];
 
 const Main = (props) => {
-  const { enqueueSnackbar } = useSnackbar();
+  const showNotif = useNotifications();
   const { header, selectedTab, companion } = useSelector((state) => state.UI);
   const { id, isLoading, lookedBy } = useSelector((state) => state.general);
   const dispatch = useDispatch();
@@ -99,7 +98,7 @@ const Main = (props) => {
 
   const handleChange = async (e, url) => {
     if (url === "/logout") {
-      dispatch(logout(enqueueSnackbar));
+      dispatch(logout(showNotif));
       history.push("/login");
       return;
     }

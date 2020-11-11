@@ -74,7 +74,7 @@ export const register = (
   username,
   email,
   password,
-  enqueueSnackbar,
+  showNotif,
   history
 ) => async (dispatch) => {
   dispatch(startLoading());
@@ -88,12 +88,10 @@ export const register = (
   console.log(response.data);
   if (response.data.status === true) {
     dispatch(onRegisterSuccess());
-    enqueueSnackbar("Account successfully created, now login", {
-      variant: "success",
-    });
+    showNotif("Account successfully created, now login");
     history.push("/login");
   } else {
-    enqueueSnackbar("Server error, please try again", { variant: "error" });
+    showNotif("Server error, please try again", "error");
   }
   dispatch(stopLoading());
 };

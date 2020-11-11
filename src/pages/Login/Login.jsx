@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useSnackbar } from "notistack";
 import { makeStyles, CircularProgress, Grid, Button } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -13,6 +12,7 @@ import {
 import { auth } from "../../store/generalSlice";
 import Form from "../../components/Form/Form";
 import { api } from "../../axios";
+import { useNotifications } from "../../hooks/useNotifications";
 
 const useStyles = makeStyles({
   Grid: {
@@ -28,7 +28,7 @@ const getUser = async () => {
 };
 
 const Login = () => {
-  const { enqueueSnackbar } = useSnackbar();
+  const showNotif = useNotifications();
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -49,7 +49,7 @@ const Login = () => {
 
   const onLoginHandler = async (e) => {
     e.preventDefault();
-    dispatch(auth(email, password, enqueueSnackbar));
+    dispatch(auth(email, password, showNotif));
   };
 
   const inputs = [

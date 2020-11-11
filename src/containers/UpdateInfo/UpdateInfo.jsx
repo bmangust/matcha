@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "../../axios";
 import { getLocationByIp } from "../../utils";
-import { useSnackbar } from "notistack";
 import { saveNewState } from "../../store/generalSlice";
 import Form from "../../components/Form/Form";
 import {
@@ -26,6 +25,7 @@ import {
   changeCountryValid,
   changeCityValid,
 } from "../../pages/AdditionalInfo/additionalSlice";
+import { useNotifications } from "../../hooks/useNotifications";
 
 const UpdateInfo = () => {
   const {
@@ -52,7 +52,7 @@ const UpdateInfo = () => {
     cityValid,
   } = useSelector((state) => state.additional);
   const dispatch = useDispatch();
-  const { enqueueSnackbar } = useSnackbar();
+  const showNotif = useNotifications();
 
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
@@ -109,10 +109,10 @@ const UpdateInfo = () => {
 
     if (response.data.status) {
       dispatch(saveNewState(body));
-      enqueueSnackbar("Successfully saved!", { variant: "success" });
+      showNotif("Successfully saved!");
     } else {
       console.log(response.data);
-      enqueueSnackbar("Server error", { variant: "error" });
+      showNotif("Server error", "error");
     }
   };
 

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useSnackbar } from "notistack";
 import PublishIcon from "@material-ui/icons/Publish";
 import { mediaUpload } from "../../axios";
 import { Avatar, Badge, Fab, makeStyles } from "@material-ui/core";
@@ -18,7 +17,7 @@ const AvatarContainer = () => {
   const classes = useStyles();
   const user = useSelector((state) => state.general);
   const avatar = user.avatar;
-  const { enqueueSnackbar } = useSnackbar();
+  const showNotif = useNotifications();
   const [displayedAvatar, setDisplayedAvatar] = useState(null);
 
   const changeAvatarHandler = async (e) => {
@@ -27,7 +26,7 @@ const AvatarContainer = () => {
     }
     const image = e.target.files[0];
     if (image.size > 1000000) {
-      enqueueSnackbar("The file is larger than 1MB", { variant: "error" });
+      showNotif("The file is larger than 1MB", "error");
     }
     const res = await mediaUpload(user.id, image);
     const objectUrl = URL.createObjectURL(image);
@@ -36,10 +35,10 @@ const AvatarContainer = () => {
 
     if (res.data.status && res.data.data) {
       saveNewState({ images: [avatar] });
-      enqueueSnackbar("The file was uploaded", { variant: "success" });
+      showNotif("The file was uploaded");
     } else {
       console.error(res.data);
-      enqueueSnackbar("Server error", { variant: "error" });
+      showNotif("Server error", "error");
     }
   };
 
