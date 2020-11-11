@@ -48,7 +48,10 @@ const generalSlice = createSlice({
       state.isAuth = false;
       state.isLoading = false;
     },
-    resetGeneralState: () => initialGeneralState,
+    resetGeneralState: (state) => {
+      state.images.forEach((el) => URL.revokeObjectURL(el.image));
+      return initialGeneralState;
+    },
     setNewState(state, { payload }) {
       Object.keys(payload).forEach((key) => {
         if (key === "position") {
@@ -80,7 +83,6 @@ export const getSelfInfo = () => async (dispatch) => {
   dispatch(startLoading());
   if (res.data.status) {
     const user = await Promise.resolve(prepareUsers([res.data.data])[0]);
-    console.log(user);
     dispatch(authSuccess());
     dispatch(saveNewState(user));
     dispatch(setAdditionalState(user));
@@ -135,8 +137,10 @@ export const auth = (email, password, showNotif) => async (dispatch) => {
     };
     const res = await api.post("/signin", body);
     if (res.data.status) {
-      dispatch(saveNewState(res.data.data));
-      dispatch(setAdditionalState(res.data.data));
+      const user = await Promise.resolve(prepareUsers([res.data.data])[0]);
+      console.log(user);
+      dispatch(saveNewState(user));
+      dispatch(setAdditionalState(user));
       dispatch(authSuccess());
     } else {
       dispatch(resetGeneralState());

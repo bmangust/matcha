@@ -71,6 +71,7 @@ export const loadImages = async (user) => {
     if (Axios.isCancel(e)) {
       console.log("Request cancelled");
     }
+    return user;
   }
 };
 
