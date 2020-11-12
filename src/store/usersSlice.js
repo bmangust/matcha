@@ -24,7 +24,10 @@ const usersSlice = createSlice({
       if (!payload.length) return;
       const users = payload;
       users.forEach((user) => {
-        if (!state.users.find((el) => el.id === user.id)) {
+        if (
+          Object.keys(user).length !== 0 &&
+          !state.users.find((el) => el.id === user.id)
+        ) {
           state.users.push(user);
         }
       });
@@ -63,6 +66,7 @@ const getStrangers = async (showNotif) => {
 
 const getUncashedUsers = (users, getState) => {
   const allUsers = getState().users.users;
+  if (allUsers.length === 0) return users;
   // console.log("[getUncashedUsers] filter", users);
   const uncashed = users.filter((user) => {
     // console.log(user);
@@ -76,43 +80,44 @@ const getUncashedUsers = (users, getState) => {
 export const loadStrangers = (showNotif) => async (dispatch, getState) => {
   dispatch(startLoading());
   const strangers = await getStrangers(showNotif);
-  dispatch(setStrangers(strangers));
+  console.log(strangers);
 
+  // load unly those, who was not loaded before
   const uncashed = getUncashedUsers(strangers, getState);
-  if (uncashed.length > 0) {
-    dispatch(addUsers(prepareUsers(uncashed)));
-  } else {
-    dispatch(addUsers(prepareUsers(strangers)));
-  }
+  let preparedUsers = await Promise.all(prepareUsers(uncashed));
+  dispatch(addUsers(preparedUsers));
+
+  // map fetched strangers to those we've already prepared
+  const allUsers = getState().users.users;
+  const preparedStrangers = strangers
+    .map((user) => allUsers.find((u) => u.id === user.id))
+    .filter((el) => el !== null);
+  console.log(preparedStrangers);
+  dispatch(setStrangers(preparedStrangers));
+
   dispatch(successLoading());
 };
 
-export const loadUsers = (users, full = true) => async (dispatch, getState) => {
+export const loadUsers = (users) => async (dispatch, getState) => {
   const loadedUsers = getState().users.users;
-  // console.log("loadedUsers", loadedUsers);
+  // console.log("loadUsers", users, loadedUsers);
   if (!users) return;
-  dispatch(startLoading());
   // filter already loaded users
-  const notYetLoaded = [...users].filter(
-    (user) => !loadedUsers.find((el) => el.id === user.id)
-  );
+  const notYetLoaded =
+    loadedUsers.length > 0
+      ? [...users].filter((user) => !loadedUsers.find((el) => el.id === user))
+      : [...users];
+  // console.log(notYetLoaded);
   try {
-    const promises = notYetLoaded.map((el) =>
-      api(`/data/${el}`, { params: { full } })
-    );
-    const resolvedPromises = await Promise.allSettled(promises);
+    const promises = notYetLoaded.map((el) => api(`/data/${el}`));
+    let resolvedPromises = await Promise.allSettled(promises);
     // console.log(resolvedPromises);
     const userPromises = resolvedPromises
       .filter((el) => el.status === "fulfilled")
-      .map(async (el) => {
-        const user = await loadImages(el.value.data.data);
-        // console.log("updated user: ", user);
-        return user;
-      });
+      .map(async (el) => await loadImages(el.value.data.data));
     const loadedUsers = await Promise.all(userPromises);
     const preparedUsers = loadedUsers.map((user) => addAge(user));
     // console.log("loadedUsers", loadedUsers);
-    dispatch(successLoading());
     dispatch(addUsers(preparedUsers));
   } catch (e) {
     console.log(e);

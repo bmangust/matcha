@@ -29,6 +29,7 @@ const Strangers = () => {
   const strangers = useSelector((state) => state.users.strangers);
   const filter = useSelector((state) => state.filter);
   const [cards, setCards] = useState(null);
+  const [routes, setRoutes] = useState(null);
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -37,7 +38,7 @@ const Strangers = () => {
     dispatch(loadStrangers(showNotif));
   }, [dispatch]);
 
-  // filter users
+  // filter users and set cards
   useEffect(() => {
     let filteredUsers = strangers.filter(
       (user) => user.age >= filter.age.minAge && user.age <= filter.age.maxAge
@@ -58,6 +59,19 @@ const Strangers = () => {
     setCards(cards);
   }, [filter, classes.Text, strangers]);
 
+  useEffect(() => {
+    const routes =
+      allUsers &&
+      allUsers.map((el) => (
+        <Route
+          key={el.id}
+          path={`/strangers/:id`}
+          render={() => <UserProfile user={el} />}
+        />
+      ));
+    setRoutes(routes);
+  }, [allUsers]);
+
   return (
     <Grid
       container
@@ -66,14 +80,7 @@ const Strangers = () => {
       className={classes.Strangers}
     >
       <Switch>
-        {allUsers &&
-          allUsers.map((el) => (
-            <Route
-              key={el.id}
-              path={`/strangers/:id`}
-              render={() => <UserProfile user={el} />}
-            />
-          ))}
+        {routes}
         <Route
           path="/"
           exact
