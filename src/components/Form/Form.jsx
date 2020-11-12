@@ -27,7 +27,7 @@ const Form = (props) => {
     <form className={classes.Form}>
       <List className={classes.List}>
         {inputs.map((el) => (
-          <ListItem key={el.name}>
+          <ListItem key={el.name || el.type}>
             <Input {...el} />
           </ListItem>
         ))}

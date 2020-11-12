@@ -108,7 +108,7 @@ const Main = (props) => {
     history.push(url);
   };
 
-  // show only other users and remove duplicates
+  // filter out myself and remove duplicates
   useEffect(() => {
     // console.log(lookedBy);
     const lookedBySet = lookedBy

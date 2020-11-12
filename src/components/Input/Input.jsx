@@ -9,6 +9,7 @@ import {
   Grid,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
+import TagInput from "../TagInput/TagInput";
 
 const useStyles = makeStyles({
   ButtonListItem: {
@@ -175,6 +176,10 @@ const Input = (props) => {
           </Grid>
         </Box>
       );
+    case "autocomplete":
+      return (
+        <TagInput className={classes.Input} tags={values} onChange={onChange} />
+      );
     default:
       return null;
   }
@@ -190,9 +195,10 @@ Input.propTypes = {
     "date",
     "slider",
     "doubleSelector",
+    "autocomplete",
   ]).isRequired,
-  label: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  name: PropTypes.string,
   values: PropTypes.array,
   value: PropTypes.oneOfType([
     PropTypes.string,

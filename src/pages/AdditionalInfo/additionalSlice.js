@@ -21,6 +21,7 @@ const initialAdditionalState = {
   lookFor: "",
   minAge: 0,
   maxAge: 100,
+  tags: null,
 
   emailValid: false,
   usernameValid: false,
@@ -90,6 +91,10 @@ const additionalSlice = createSlice({
     changeMaxAge(state, { payload }) {
       state.maxAge = payload;
     },
+    changeTags(state, { payload: { value } }) {
+      console.log(value);
+      state.tags = value;
+    },
 
     changeEmailValid(state, { payload }) {
       state.emailValid = payload;
@@ -141,6 +146,7 @@ export const {
   changeMaxDist,
   changeLookFor,
   changeSearchAgeRange,
+  changeTags,
 
   changeEmailValid,
   changeUsernameValid,
@@ -170,6 +176,7 @@ export const updateInfo = (
     lookFor,
     minAge,
     maxAge,
+    tags,
   },
   showNotif,
   history
@@ -200,18 +207,30 @@ export const updateInfo = (
   }
   console.log("[AdditionalInfoSlice] update user info");
   console.log(body);
-  const response = await api.post("user", body);
+  let message;
+  try {
+    const response = await api.post("user", body);
+    if (tags && tags.length) {
+      const tagsResponse = await api.put("tag", { tags: [...tags] });
+      console.log(tagsResponse);
+    }
 
-  console.log(response.data.data);
-  if (response.data.status) {
-    dispatch(saveNewState(body));
-    dispatch(onUpdateSuccess());
-    showNotif("Successfully saved!");
-  } else {
-    console.log(response.data);
-    dispatch(onUpdateFail());
-    showNotif("Server error", "error");
+    console.log(response.data.data);
+    if (response.data.status) {
+      dispatch(saveNewState(body));
+      dispatch(onUpdateSuccess());
+      showNotif("Successfully saved!");
+      dispatch(stopLoading());
+      return;
+    } else {
+      message = response.data;
+    }
+  } catch (e) {
+    message = e;
   }
+  dispatch(onUpdateFail());
+  console.log(message);
+  showNotif("Server error", "error");
   // history.push('/');
   dispatch(stopLoading());
 };

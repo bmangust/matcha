@@ -18,6 +18,7 @@ import {
   changeMaxDist,
   changeLookFor,
   changeSearchAgeRange,
+  changeTags,
   changeEmailValid,
   changeUsernameValid,
   changeNameValid,
@@ -26,6 +27,7 @@ import {
   changePhoneValid,
   changeCountryValid,
   changeCityValid,
+  updateInfo,
 } from "../../pages/AdditionalInfo/additionalSlice";
 import { useNotifications } from "../../hooks/useNotifications";
 
@@ -53,6 +55,7 @@ const UpdateInfo = () => {
     phoneValid,
     countryValid,
     cityValid,
+    tags,
   } = useSelector((state) => state.additional);
   const dispatch = useDispatch();
   const showNotif = useNotifications();
@@ -85,7 +88,6 @@ const UpdateInfo = () => {
 
   const saveUserInfo = async (e) => {
     e.preventDefault();
-    const location = await getLocationByIp();
     const body = {
       id,
       email,
@@ -102,22 +104,24 @@ const UpdateInfo = () => {
       lookFor,
       minAge,
       maxAge,
+      tags,
     };
-    if (location.status) body.position = location.data;
-    if (password.length) {
-      body.password = password;
-    }
-    // console.log("[UpdateInfo] update user info");
-    // console.log(body);
-    const response = await api.post("user", body);
+    dispatch(updateInfo(body, showNotif));
+    // if (location.status) body.position = location.data;
+    // if (password.length) {
+    //   body.password = password;
+    // }
+    // // console.log("[UpdateInfo] update user info");
+    // // console.log(body);
+    // const response = await api.post("user", body);
 
-    if (response.data.status) {
-      dispatch(saveNewState(body));
-      showNotif("Successfully saved!");
-    } else {
-      console.log(response.data);
-      showNotif("Server error", "error");
-    }
+    // if (response.data.status) {
+    //   dispatch(saveNewState(body));
+    //   showNotif("Successfully saved!");
+    // } else {
+    //   console.log(response.data);
+    //   showNotif("Server error", "error");
+    // }
   };
 
   const inputs = [
@@ -358,6 +362,11 @@ const UpdateInfo = () => {
           regex: /^.+$/,
         },
       },
+    },
+    {
+      type: "autocomplete",
+      values: [],
+      onChange: (values) => dispatch(changeTags(values)),
     },
   ];
 

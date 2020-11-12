@@ -1,28 +1,25 @@
 import { Grid, makeStyles, TextField } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import React, { useEffect, useState } from "react";
-import { api } from "../../axios";
+import { useTags } from "../../hooks/useTags.hook";
 
-const fetchedTags = ["snow", "summer", "cake"];
+const useStyles = makeStyles({
+  Container: {
+    width: "100%",
+  },
+});
 
-const TagInput = ({ tags }) => {
-  const [allTags, setAllTags] = useState(null);
+const TagInput = (props) => {
+  const classes = useStyles();
+  const { tags } = useTags();
+  const [allTags, setAllTags] = useState([]);
 
   useEffect(() => {
-    const getTags = async () => {
-      //   const res = await api("tags");
-      //   console.log(res.data.data);
-      //   if (res.data.status) {
-      //     return res.data.data;
-      //   }
-      //   return [];
-      setAllTags(fetchedTags);
-    };
-    getTags();
-  }, []);
+    setAllTags(tags);
+  }, [tags]);
 
   return (
-    <Grid>
+    <Grid className={classes.Container}>
       {allTags && (
         <Autocomplete
           multiple
@@ -30,14 +27,15 @@ const TagInput = ({ tags }) => {
           id="tags-outlined"
           options={allTags}
           getOptionLabel={(option) => option}
-          defaultValue={tags}
+          defaultValue={props.tags}
+          onChange={(e, value, reason) => props.onChange({ value })}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField
               {...params}
               variant="outlined"
               label="Tags"
-              placeholder="Tags"
+              placeholder="Enter tag and press enter"
             />
           )}
         />
