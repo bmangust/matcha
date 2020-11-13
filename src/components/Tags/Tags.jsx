@@ -29,14 +29,18 @@ const Tags = ({ tags }) => {
       >
         <Typography className={classes.Header}>Interests:</Typography>
         <Grid>
-          {tags.map((el) => (
-            <Chip
-              className={classes.Item}
-              variant="outlined"
-              key={el}
-              label={el}
-            />
-          ))}
+          {tags ? (
+            tags.map((el) => (
+              <Chip
+                className={classes.Item}
+                variant="outlined"
+                key={el}
+                label={el}
+              />
+            ))
+          ) : (
+            <Typography>No tags yet</Typography>
+          )}
         </Grid>
       </Grid>
     </Grid>

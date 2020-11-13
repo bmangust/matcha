@@ -24,12 +24,11 @@ const useStyles = makeStyles({
 const UserProfile = (props) => {
   const classes = useStyles();
   const user = useSelector((state) => state.UI.companion);
-  const { images, avatar, name, surname, country, city, age, bio } = {
+  const { images, avatar, name, surname, country, city, age, bio, tags } = {
     ...user,
   };
   const defaultBio = "UFO flew here and dropped this message here";
 
-  const tags = ["horses", "sweets", "sea"];
   return (
     <Grid
       container
@@ -56,7 +55,7 @@ const UserProfile = (props) => {
           className={classes.Typography}
         >{`${age} years old`}</Typography>
         <Divider className={classes.FullWidth} />
-        {tags && <Tags tags={tags} />}
+        <Tags tags={tags} />
         <Divider className={classes.FullWidth} />
         <Bio bio={bio || defaultBio} />
         <Gallery images={images} />
