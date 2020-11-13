@@ -11,13 +11,17 @@ import {
   Typography,
   Fab,
 } from "@material-ui/core";
-import ChevronLeftRoundedIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightRoundedIcon from "@material-ui/icons/ChevronRight";
-import { FavoriteOutlined } from "@material-ui/icons";
+import {
+  FavoriteOutlined,
+  RemoveCircleOutlineRounded,
+  ChevronLeftRounded,
+  ChevronRightRounded,
+} from "@material-ui/icons";
 import defaultImage from "../../Images/default-avatar.png";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { sendVisit, sendLike, setCompanion } from "../../store/UISlice";
+import { banUser } from "../../hooks/useBan.hook";
 
 const useStyles = makeStyles({
   UserCard: {
@@ -29,6 +33,9 @@ const useStyles = makeStyles({
         transform: "translateY(-80px)",
       },
       "& $Like": {
+        opacity: 1,
+      },
+      "& $Ban": {
         opacity: 1,
       },
     },
@@ -79,6 +86,14 @@ const useStyles = makeStyles({
     opacity: 0,
     zIndex: 3,
   },
+  Ban: {
+    position: "absolute",
+    bottom: "10px",
+    right: "70px",
+    transition: "0.3s",
+    opacity: 0,
+    zIndex: 4,
+  },
 });
 
 const UserCard = (props) => {
@@ -100,13 +115,28 @@ const UserCard = (props) => {
     dispatch(sendLike(id));
   };
 
+  const handleBan = (e) => {
+    e.stopPropagation();
+    banUser(id);
+  };
+
+  const handleNextImage = (e) => {
+    e.stopPropagation();
+    setDisplayedImage((prev) => prev + 1);
+  };
+
+  const handlePrevImage = (e) => {
+    e.stopPropagation();
+    setDisplayedImage((prev) => prev - 1);
+  };
+
   const LeftButtonDisabled =
     images.length === 0 || displayedImage === images.length - 1;
   const RightButtonDisabled = displayedImage === 0 || images.length === 0;
 
   return (
     <Grid item xs={12} sm={6} lg={4}>
-      <Card className={classes.UserCard} onClick={(e) => showUserProfile(e)}>
+      <Card className={classes.UserCard} onClick={showUserProfile}>
         <div>
           {images.length > 1 && (
             <MobileStepper
@@ -120,12 +150,9 @@ const UserCard = (props) => {
                   <Button
                     className={classes.StepperButton}
                     size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDisplayedImage((prev) => prev + 1);
-                    }}
+                    onClick={handleNextImage}
                   >
-                    <ChevronRightRoundedIcon />
+                    <ChevronRightRounded />
                   </Button>
                 )
               }
@@ -134,12 +161,9 @@ const UserCard = (props) => {
                   <Button
                     className={classes.StepperButton}
                     size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDisplayedImage((prev) => prev - 1);
-                    }}
+                    onClick={handlePrevImage}
                   >
-                    <ChevronLeftRoundedIcon />
+                    <ChevronLeftRounded />
                   </Button>
                 )
               }
@@ -153,6 +177,15 @@ const UserCard = (props) => {
             onClick={(e) => handleLike(e)}
           >
             <FavoriteOutlined />
+          </Fab>
+
+          <Fab
+            color="secondary"
+            className={classes.Ban}
+            size="small"
+            onClick={(e) => handleBan(e)}
+          >
+            <RemoveCircleOutlineRounded />
           </Fab>
 
           <CardMedia

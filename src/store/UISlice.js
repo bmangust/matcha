@@ -58,12 +58,12 @@ export const handleBack = (history, parent) => (dispatch) => {
 
 export const sendVisit = (watchedId) => async (dispatch) => {
   const res = await api.post(`/look`, { id: watchedId });
-  console.log(res);
+  // console.log(res);
 };
 
 export const sendLike = (watchedId) => async (dispatch) => {
   const res = await api.post(`/like`, { id: watchedId });
-  console.log(res);
+  // console.log(res);
 };
 
 export default UISlice.reducer;

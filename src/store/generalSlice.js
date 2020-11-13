@@ -106,6 +106,7 @@ const checkInfo = (info) => {
         "matches",
         "avatar",
         "images",
+        "bio",
       ].indexOf(key) !== -1
     )
       return;

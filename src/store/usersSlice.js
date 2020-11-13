@@ -80,7 +80,7 @@ const getUncashedUsers = (users, getState) => {
 export const loadStrangers = (showNotif) => async (dispatch, getState) => {
   dispatch(startLoading());
   const strangers = await getStrangers(showNotif);
-  console.log(strangers);
+  // console.log(strangers);
 
   // load unly those, who was not loaded before
   const uncashed = getUncashedUsers(strangers, getState);
@@ -92,7 +92,7 @@ export const loadStrangers = (showNotif) => async (dispatch, getState) => {
   const preparedStrangers = strangers
     .map((user) => allUsers.find((u) => u.id === user.id))
     .filter((el) => el !== null);
-  console.log(preparedStrangers);
+  // console.log(preparedStrangers);
   dispatch(setStrangers(preparedStrangers));
 
   dispatch(successLoading());
