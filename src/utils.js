@@ -83,3 +83,28 @@ export const addAge = (user) => {
 export const prepareUsers = (users) => {
   return users.map((user) => addAge(user)).map((user) => loadImages(user));
 };
+
+export const throttle = (f) => {
+  let store = {
+    isCooldown: false,
+    args: null,
+    savedthis: null,
+  };
+  function wrapper() {
+    if (store.isCooldown) {
+      store.savedthis = this;
+      store.args = arguments;
+      return;
+    }
+
+    f.apply(this, arguments);
+    store.isCooldown = true;
+    setTimeout(() => {
+      store.isCooldown = false;
+      if (store.args) f.apply(store.savedthis, store.args);
+      store.args = store.savedthis = null;
+    }, 30);
+  }
+
+  return wrapper;
+};
