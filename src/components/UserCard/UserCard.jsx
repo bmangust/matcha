@@ -190,7 +190,7 @@ const UserCard = (props) => {
 
           <CardMedia
             className={classes.CardMedia}
-            image={images[displayedImage].image || defaultImage}
+            image={images[displayedImage]?.image || defaultImage}
           />
 
           <CardContent className={classes.Info}>

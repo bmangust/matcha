@@ -8,6 +8,9 @@ const useStyles = makeStyles({
   Media: {
     paddingTop: "100%",
   },
+  Grid: {
+    marginTop: "10px",
+  },
 });
 
 const Gallery = (props) => {
@@ -27,7 +30,7 @@ const Gallery = (props) => {
   };
 
   return (
-    <Grid container justify="center" spacing={1}>
+    <Grid className={classes.Grid} container justify="center" spacing={1}>
       {images.length > 0 &&
         images.map((el) => (
           <Grid item xs={8} sm={4} key={el.id}>
