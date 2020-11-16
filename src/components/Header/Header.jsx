@@ -17,11 +17,11 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
-import { handleBack, setCompanion } from "../../store/UISlice";
+import { handleBack } from "../../store/UISlice";
 import { primaryColor } from "../../theme";
 import PropTypes from "prop-types";
 import { loadUsers } from "../../store/usersSlice";
-import defaultAvatar from "../../Images/default-avatar.png";
+import ClickableUsersList from "../ClickableUsersList/ClickableUsersList";
 
 const useStyles = makeStyles({
   Header: {
@@ -37,16 +37,14 @@ const useStyles = makeStyles({
   PopperPaper: {
     padding: "1rem",
   },
-  Avatar: {
-    marginRight: "1rem",
+  Category: {
+    fontSize: "1rem",
+    fontWeight: 700,
   },
 });
 
-const Header = (props) => {
+const Header = ({ header, notification }) => {
   const classes = useStyles();
-  const { header, notification } = {
-    ...props,
-  };
   const allUsers = useSelector((state) => state.users.users);
   const [users, setUsers] = useState([]);
   const loc = useLocation();
@@ -71,14 +69,6 @@ const Header = (props) => {
     setOpen((prevOpen) => !prevOpen);
   };
 
-  const handleItemClick = (id) => {
-    if (!users.length) return;
-    const user = users.find((el) => el.id === id);
-    dispatch(setCompanion({ companion: user }));
-    history.push(`/strangers/${id}`);
-    setOpen(false);
-  };
-
   const handleBackButton = () => {
     const parent = loc.pathname.split("/")[1];
     dispatch(handleBack(history, parent));
@@ -94,12 +84,6 @@ const Header = (props) => {
     setOpen(false);
   };
 
-  function handleListKeyDown(event) {
-    if (event.key === "Tab") {
-      event.preventDefault();
-      setOpen(false);
-    }
-  }
   // return focus to the button when we transitioned from !open -> open
   const prevOpen = useRef(open);
   useEffect(() => {
@@ -157,32 +141,13 @@ const Header = (props) => {
           {({ TransitionProps }) => (
             <Fade {...TransitionProps}>
               <Paper className={classes.PopperPaper}>
-                <Typography variant="h6">Visitors</Typography>
+                <Typography className={classes.Category}>Visitors</Typography>
                 <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList
+                  <ClickableUsersList
+                    users={users}
                     autoFocusItem={open}
-                    id="menu-list-grow"
-                    onKeyDown={handleListKeyDown}
-                  >
-                    {users.length > 0 ? (
-                      users.map((el) => (
-                        <MenuItem
-                          onClick={() => handleItemClick(el.id)}
-                          key={el.id}
-                        >
-                          <Grid container alignItems="center">
-                            <Avatar
-                              className={classes.Avatar}
-                              src={el.avatar.image || defaultAvatar}
-                            />
-                            <Typography>{el.username}</Typography>
-                          </Grid>
-                        </MenuItem>
-                      ))
-                    ) : (
-                      <Typography>No new notifications</Typography>
-                    )}
-                  </MenuList>
+                    setOpen={setOpen}
+                  />
                 </ClickAwayListener>
               </Paper>
             </Fade>
