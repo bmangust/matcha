@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Filter from "../../components/Filter/Filter";
 import { useNotifications } from "../../hooks/useNotifications";
 import { loadStrangers } from "../../store/usersSlice";
+import FilterSortWrapper from "../../components/FIlterSortWrapper/FilterSortWrapper";
 
 const useStyles = makeStyles({
   Strangers: {
@@ -93,7 +94,7 @@ const Strangers = () => {
               spacing={3}
             >
               {cards}
-              <Filter />
+              <FilterSortWrapper />
             </Grid>
           )}
         />
