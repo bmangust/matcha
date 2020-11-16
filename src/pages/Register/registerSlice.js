@@ -91,7 +91,8 @@ export const register = (
     showNotif("Account successfully created, now login");
     history.push("/login");
   } else {
-    showNotif("Server error, please try again", "error");
+    console.log(response.data.data);
+    showNotif(response.data.data, "error");
   }
   dispatch(stopLoading());
 };

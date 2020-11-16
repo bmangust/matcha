@@ -7,11 +7,13 @@ export const xssSanitize = (value) => {
     ap = /'/g,
     ic = /"/g;
   return value
+    ? value
     .toString()
     .replace(lt, "&lt;")
     .replace(gt, "&gt;")
     .replace(ap, "&#39;")
-    .replace(ic, "&#34;");
+        .replace(ic, "&#34;")
+    : "";
 };
 
 export const getLocationByIp = async () => {
@@ -42,7 +44,7 @@ export const capitalize = (str) => {
 
 export const loadImages = async (user) => {
   const images = user.images;
-  if (!images || images.length === 0) return;
+  if (!images || images.length === 0) return { ...user, images: [] };
 
   // console.log("fetching images for user: ", user);
   // console.log("images: ", images);
@@ -107,4 +109,13 @@ export const throttle = (f) => {
   }
 
   return wrapper;
+};
+
+export const getCookie = (name) => {
+  let matches = document.cookie.match(
+    new RegExp(
+      "(?:^|; )" + name.replace(/([.$?*|{}()[\]\\/+^])/g, "\\$1") + "=([^;]*)"
+    )
+  );
+  return matches ? decodeURIComponent(matches[1]) : undefined;
 };

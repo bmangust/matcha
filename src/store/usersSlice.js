@@ -114,9 +114,11 @@ export const loadUsers = (users) => async (dispatch, getState) => {
     // console.log(resolvedPromises);
     const userPromises = resolvedPromises
       .filter((el) => el.status === "fulfilled")
+      .filter((el) => el.value.data.status)
       .map(async (el) => await loadImages(el.value.data.data));
     const loadedUsers = await Promise.all(userPromises);
-    const preparedUsers = loadedUsers.map((user) => addAge(user));
+    // console.log(loadedUsers);
+    const preparedUsers = loadedUsers.map((user) => user && addAge(user));
     // console.log("loadedUsers", loadedUsers);
     dispatch(addUsers(preparedUsers));
   } catch (e) {

@@ -23,7 +23,7 @@ const initialGeneralState = {
   lookFor: "",
   minAge: 0,
   maxAge: 0,
-  images: null,
+  images: [],
   avatar: null,
   likedBy: [],
   matches: [],
@@ -49,7 +49,8 @@ const generalSlice = createSlice({
       state.isLoading = false;
     },
     resetGeneralState: (state) => {
-      state.images.forEach((el) => URL.revokeObjectURL(el.image));
+      state.images &&
+        state.images.forEach((el) => URL.revokeObjectURL(el.image));
       return initialGeneralState;
     },
     setNewState(state, { payload }) {
@@ -57,7 +58,7 @@ const generalSlice = createSlice({
         if (key === "position") {
           state.position.lat = payload.position.lat;
           state.position.lon = payload.position.lon;
-        } else if (key === "images") {
+        } else if (key === "images" && payload.images) {
           state.images =
             state.images && state.images.length > 0
               ? [...state.images, ...payload[key]]
@@ -78,18 +79,21 @@ export const {
   setNewState,
 } = generalSlice.actions;
 
-export const getSelfInfo = () => async (dispatch) => {
-  const res = await api("account");
-  dispatch(startLoading());
-  if (res.data.status) {
-    const user = await Promise.resolve(prepareUsers([res.data.data])[0]);
-    dispatch(authSuccess());
-    dispatch(saveNewState(user));
-    dispatch(setAdditionalState(user));
+const checkAuth = (data, dispatch) => {
+  // console.log(data);
+  let result = null;
+  if (data.status) {
+    Promise.resolve(prepareUsers([data.data])[0]).then((user) => {
+      // console.log(user);
+      dispatch(saveNewState(user));
+      dispatch(setAdditionalState(user));
+      dispatch(authSuccess());
+      result = user;
+    });
   } else {
-    dispatch(authFail());
     dispatch(resetGeneralState());
   }
+  return result;
 };
 
 const checkInfo = (info) => {
@@ -123,6 +127,14 @@ const checkInfo = (info) => {
   return isInfoMissing || isAgeRangeMissing;
 };
 
+export const getSelfInfo = () => async (dispatch) => {
+  const res = await api("account");
+  dispatch(startLoading());
+  if (!checkAuth(res.data, dispatch)) {
+    dispatch(authFail());
+  }
+};
+
 export const saveNewState = (payload) => (dispatch) => {
   let isInfoMissing = checkInfo(payload);
   dispatch(setIsInfoMissing(isInfoMissing));
@@ -137,14 +149,7 @@ export const auth = (email, password, showNotif) => async (dispatch) => {
       password: xssSanitize(password),
     };
     const res = await api.post("/signin", body);
-    if (res.data.status) {
-      const user = await Promise.resolve(prepareUsers([res.data.data])[0]);
-      console.log(user);
-      dispatch(saveNewState(user));
-      dispatch(setAdditionalState(user));
-      dispatch(authSuccess());
-    } else {
-      dispatch(resetGeneralState());
+    if (!checkAuth(res.data, dispatch)) {
       showNotif("Email or password is wrong", "error");
     }
   } catch (err) {
