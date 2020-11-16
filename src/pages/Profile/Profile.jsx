@@ -1,11 +1,12 @@
 import { Tabs, Tab, Grid, makeStyles } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import TabPanel from "../../containers/TabPanel/TabPanel";
 import AvatarContainer from "../../components/Avatar/AvatarContainer";
 import { backgroundColor, primaryColor } from "../../theme";
 import UpdateInfo from "../../containers/UpdateInfo/UpdateInfo";
 import Gallery from "../../components/Gallery/Gallery";
+import Banned from "../../components/Banned/Banned";
 
 const useStyles = makeStyles({
   indicator: {
@@ -38,13 +39,13 @@ const buttons = [
   },
   {
     text: "Favorites",
-    component: <div>favorites</div>,
+    component: <Banned />,
   },
 ];
 
 const Profile = (props) => {
   const classes = useStyles();
-  const [currentTab, setCurrentTab] = React.useState(0);
+  const [currentTab, setCurrentTab] = useState(0);
 
   const selectTabHandler = (e, next) => {
     setCurrentTab(next);

@@ -1,23 +1,30 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { api } from "../axios";
+import { loadUsers } from "../store/usersSlice";
 
 export const banUser = async (id) => {
-  const res = await api.put("ban", { id });
+  const res = await api.post("ban", { id });
   console.log(res);
 };
 
 export const unbanUser = async (id) => {
-  const res = await api.delete("ban", { id });
+  const res = await api.request({ url: "ban", method: "delete", data: { id } });
   console.log(res);
 };
 
 export const useBan = () => {
   const [banned, setBanned] = useState([]);
+  const dispatch = useDispatch();
 
   const loadBanned = async () => {
     const res = await api("ban");
     console.log(res);
-    if (res.data.status) setBanned(res.data.data);
+    if (res.data.status) {
+      const data = res.data.data || [];
+      dispatch(loadUsers(data));
+      setBanned(data);
+    }
   };
 
   useEffect(() => {
