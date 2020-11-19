@@ -1,18 +1,14 @@
 import { getCookie } from "../utils";
-// import { host, port } from "../setupProxy";
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import { Chat, Message, WSmessage } from "../store/ws";
+import { useChat } from "./useChat.hook";
 
-let socket = null;
+export let socket = null;
 
 export const useWS = () => {
   //   const host = "192.168.43.151";
   const host = "localhost";
   const port = 8080;
   const cookie = getCookie("session_id");
-  const myId = useSelector((state) => state.general.id);
-  const [chats, setChats] = useState([]);
+  const { handleChatMessage } = useChat();
 
   const newConnection = () => {
     return new WebSocket(`ws://${host}:${port}/ws?key=${cookie}`);
@@ -26,11 +22,9 @@ export const useWS = () => {
   };
 
   socket.onmessage = function (event) {
-    console.log(`[message] Данные получены с сервера: ${event.data}`);
     const res = JSON.parse(event.data);
-    const chatID = res.payload.id;
-    const exists = chats.find((chat) => chatID === chat);
-    if (exists) setChats([...chats, chatID]);
+    console.log(`[message] Данные получены с сервера:`, res);
+    if (res.messageType < 200) handleChatMessage(res);
   };
 
   socket.onclose = function (event) {
@@ -49,24 +43,5 @@ export const useWS = () => {
     console.log(`[error] ${error.message}`);
   };
 
-  const newChat = (id) => {
-    console.log("newChat");
-    const chat = new Chat({ userIds: [id, myId] });
-    const newChat = new WSmessage({ messageType: 100, payload: chat });
-    send(newChat);
-  };
-
-  const newMessage = (id, text) => {
-    console.log("newMessage");
-    const ms = new Message({ sender: myId, recepient: id, text });
-    const wsMessage = new WSmessage({ messageType: 1, payload: ms });
-    send(wsMessage);
-  };
-
-  const send = (message) => {
-    console.log(JSON.stringify(message));
-    socket.send(JSON.stringify(message));
-  };
-
-  return { chats, newChat, newMessage };
+  return socket;
 };
