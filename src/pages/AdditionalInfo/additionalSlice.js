@@ -92,7 +92,6 @@ const additionalSlice = createSlice({
       state.maxAge = payload;
     },
     changeTags(state, { payload: { value } }) {
-      console.log(value);
       state.tags = value;
     },
 
@@ -209,10 +208,13 @@ export const updateInfo = (
   console.log(body);
   let message;
   try {
-    const response = await api.post("user", body);
+    const response = await api.put("account", body);
     if (tags && tags.length) {
       const tagsResponse = await api.put("tag", { tags: [...tags] });
-      console.log(tagsResponse);
+      console.log("TAGS", tagsResponse);
+      if (tagsResponse.data.status) {
+        dispatch(saveNewState({ tags }));
+      }
     }
 
     console.log(response.data.data);
