@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { api } from "../../axios";
-import { getLocationByIp } from "../../utils";
-import { saveNewState } from "../../store/generalSlice";
 import Form from "../../components/Form/Form";
 import {
   changeEmail,
@@ -30,6 +27,7 @@ import {
   updateInfo,
 } from "../../pages/AdditionalInfo/additionalSlice";
 import { useNotifications } from "../../hooks/useNotifications";
+import DialogMessage from "../../components/DialogMessage/DialogMessage";
 
 const UpdateInfo = () => {
   const {
@@ -107,21 +105,6 @@ const UpdateInfo = () => {
       tags,
     };
     dispatch(updateInfo(body, showNotif));
-    // if (location.status) body.position = location.data;
-    // if (password.length) {
-    //   body.password = password;
-    // }
-    // // console.log("[UpdateInfo] update user info");
-    // // console.log(body);
-    // const response = await api.post("user", body);
-
-    // if (response.data.status) {
-    //   dispatch(saveNewState(body));
-    //   showNotif("Successfully saved!");
-    // } else {
-    //   console.log(response.data);
-    //   showNotif("Server error", "error");
-    // }
   };
 
   const inputs = [
@@ -380,7 +363,21 @@ const UpdateInfo = () => {
     },
   ];
 
-  return <Form inputs={inputs} buttons={buttons} />;
+  const dialog = {
+    text:
+      "This action is irreversable. All your images, chats and likes will be vanished.",
+    header: "Are you sure?",
+    yesText: "Agree",
+    noText: "Disagree",
+    buttonText: "Delete account",
+  };
+
+  return (
+    <>
+      <Form inputs={inputs} buttons={buttons} />
+      <DialogMessage {...dialog} />
+    </>
+  );
 };
 
 export default UpdateInfo;

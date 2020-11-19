@@ -79,21 +79,18 @@ export const {
   setNewState,
 } = generalSlice.actions;
 
-const checkAuth = (data, dispatch) => {
+const checkAuth = async (data, dispatch) => {
   // console.log(data);
-  let result = null;
-  if (data.status) {
-    Promise.resolve(prepareUsers([data.data])[0]).then((user) => {
-      // console.log(user);
-      dispatch(saveNewState(user));
-      dispatch(setAdditionalState(user));
-      dispatch(authSuccess());
-      result = user;
-    });
-  } else {
-    dispatch(resetGeneralState());
+  console.log(data.data);
+  dispatch(saveNewState(data.data));
+  dispatch(authSuccess());
+  dispatch(setAdditionalState(data.data));
+  const user = await Promise.resolve(prepareUsers([data.data])[0]);
+  console.log(user);
+  if (user) {
+    dispatch(saveNewState(user));
+    dispatch(setAdditionalState(user));
   }
-  return result;
 };
 
 const checkInfo = (info) => {
@@ -130,7 +127,9 @@ const checkInfo = (info) => {
 export const getSelfInfo = () => async (dispatch) => {
   const res = await api("account");
   dispatch(startLoading());
-  if (!checkAuth(res.data, dispatch)) {
+  if (res.data.status) {
+    checkAuth(res.data, dispatch);
+  } else {
     dispatch(authFail());
   }
 };
@@ -149,8 +148,12 @@ export const auth = (email, password, showNotif) => async (dispatch) => {
       password: xssSanitize(password),
     };
     const res = await api.post("/signin", body);
-    if (!checkAuth(res.data, dispatch)) {
-      showNotif("Email or password is wrong", "error");
+    if (res.data.status) {
+      checkAuth(res.data, dispatch);
+    } else {
+      dispatch(authFail());
+      dispatch(resetGeneralState());
+      showNotif(res.data.data, "error");
     }
   } catch (err) {
     console.log(err);
@@ -163,12 +166,25 @@ export const logout = (showNotif) => async (dispatch) => {
   dispatch(startLoading());
   const res = await api.delete("/signout");
   if (res.data.status) {
+    showNotif("Successful logout");
     dispatch(resetGeneralState());
     dispatch(resetUIState());
     dispatch(resetFilter());
-    showNotif("Successful logout");
   } else {
     dispatch(stopLoading());
+    showNotif("Server error", "error");
+  }
+};
+
+export const deleteAccount = (showNotif) => async (dispatch) => {
+  const res = await api.delete("account");
+  console.log(res.data);
+  if (res.data.status) {
+    showNotif("Account successfully deleted");
+    dispatch(resetGeneralState());
+    dispatch(resetUIState());
+    dispatch(resetFilter());
+  } else {
     showNotif("Server error", "error");
   }
 };

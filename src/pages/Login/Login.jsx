@@ -20,13 +20,6 @@ const useStyles = makeStyles({
   },
 });
 
-const getUser = async () => {
-  const res = await api(
-    `data/4567e1e306df5dd2ab333d9d499a1ab2f9071275e21f7d61265af04668b97789`
-  );
-  console.log(res.data);
-};
-
 const Login = () => {
   const showNotif = useNotifications();
   const classes = useStyles();
@@ -131,7 +124,6 @@ const Login = () => {
         ) : (
           <Form inputs={inputs} buttons={buttons} />
         )}
-        <Button onClick={getUser}>user</Button>
       </Grid>
     </Grid>
   );
