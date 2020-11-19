@@ -24,7 +24,7 @@ const useStyles = makeStyles({
   Profile: {
     minHeight: "100vh",
     padding: "30px",
-    paddingBlockEnd: "40px",
+    paddingBlockEnd: "60px",
   },
 });
 

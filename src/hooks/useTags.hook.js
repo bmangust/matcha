@@ -6,9 +6,9 @@ export const useTags = () => {
 
   const fetchTags = async (offset = 0, limit = 10) => {
     const res = await api("tag", { params: { offset, limit } });
-    if (res.data.status) {
-      const tags = res.data.data;
-      setTags(tags);
+    // console.log(res.data);
+    if (res.data.status && res.data.data) {
+      setTags(res.data.data);
     }
   };
 

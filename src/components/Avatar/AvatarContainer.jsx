@@ -63,7 +63,7 @@ const AvatarContainer = () => {
     >
       <Avatar
         className={classes.Avatar}
-        src={displayedAvatar?.image || avatar.image || defaultAvatar}
+        src={displayedAvatar?.image || avatar?.image || defaultAvatar}
       />
     </Badge>
   );
