@@ -1,6 +1,8 @@
 import { Grid, Fab, InputBase, makeStyles } from "@material-ui/core";
 import SendIcon from "@material-ui/icons/Send";
 import React from "react";
+import { useSelector } from "react-redux";
+import { useChat } from "../../../../hooks/useChat.hook";
 import { backgroundColor } from "../../../../theme";
 
 const useStyles = makeStyles({
@@ -32,10 +34,13 @@ const useStyles = makeStyles({
 const SendForm = () => {
   const classes = useStyles();
   const [message, setMessage] = React.useState("");
+  const id = useSelector((state) => state.UI.companion.id);
+  const { newMessage } = useChat();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(message);
+    newMessage(id, message);
     setMessage("");
   };
 

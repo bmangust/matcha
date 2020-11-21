@@ -1,5 +1,6 @@
 import { makeStyles, Grid, List, ListItem } from "@material-ui/core";
 import React from "react";
+import { useSelector } from "react-redux";
 import Message from "./Message/Message";
 import SendForm from "./SendForm/SendForm";
 
@@ -26,14 +27,19 @@ const useStyles = makeStyles({
   },
 });
 
-const ChatRoom = (props) => {
-  const { companion } = { ...props };
-  const { name, messages, image } = { ...companion };
+const ChatRoom = () => {
+  const { name, avatar } = useSelector((state) => state.UI.companion);
+  const { messages } = useSelector((state) => state.chat.chat);
   const classes = useStyles();
   const renderedMessages = messages
     ? messages.map((el) => (
         <ListItem key={el.id} className={classes.ListItem}>
-          <Message self={el.self} text={el.text} image={image} name={name} />
+          <Message
+            self={el.self}
+            text={el.text}
+            image={avatar?.image}
+            name={name}
+          />
         </ListItem>
       ))
     : "No messages yet";

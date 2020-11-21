@@ -1,24 +1,34 @@
 import { getCookie } from "../utils";
 import { useChat } from "./useChat.hook";
 
-export let socket = null;
+// const status = {
+//   CONNECTING: "CONNECTING",
+//   READY: "READY",
+//   CLOSED: "CLOSED",
+// };
+//   const host = "192.168.43.151";
+const host = "localhost";
+const port = 8080;
+const cookie = getCookie("session_id");
+let socket = null;
+const queue = [];
+
+const newConnection = () => {
+  return new WebSocket(`ws://${host}:${port}/ws?key=${cookie}`);
+};
 
 export const useWS = () => {
-  //   const host = "192.168.43.151";
-  const host = "localhost";
-  const port = 8080;
-  const cookie = getCookie("session_id");
   const { handleChatMessage } = useChat();
 
-  const newConnection = () => {
-    return new WebSocket(`ws://${host}:${port}/ws?key=${cookie}`);
-  };
-
   socket = socket ? socket : newConnection();
-  console.log(socket);
+  // console.log(socket);
 
   socket.onopen = function (e) {
     console.log("[open] Соединение установлено");
+    while (queue.length > 0) {
+      const message = queue.shift();
+      send(message);
+    }
   };
 
   socket.onmessage = function (event) {
@@ -44,4 +54,17 @@ export const useWS = () => {
   };
 
   return socket;
+};
+
+export const send = (message) => {
+  console.log(JSON.stringify(message));
+  if (!socket) socket = newConnection();
+  console.log(socket);
+
+  if (socket.readyState !== socket.OPEN) {
+    // queue all messages
+    queue.push(message);
+    return;
+  }
+  socket.send(JSON.stringify(message));
 };

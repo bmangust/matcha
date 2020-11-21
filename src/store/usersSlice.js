@@ -27,7 +27,8 @@ const usersSlice = createSlice({
      * @param {State} state
      * @param {action} {payload} - users to add
      */
-    addUsers(state, { users }) {
+    addUsers(state, { payload }) {
+      const users = [...payload];
       if (!users.length) return;
       users.forEach((user) => {
         if (
@@ -43,7 +44,8 @@ const usersSlice = createSlice({
      * @param {State} state
      * @param {action} {payload} - users to update
      */
-    updateUsers(state, { users }) {
+    updateUsers(state, { payload }) {
+      const users = [...payload];
       if (!users.length) return;
       users.forEach((user) => {
         const userInState = state.users.find((el) => user.id === el.id);

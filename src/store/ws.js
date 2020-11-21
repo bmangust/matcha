@@ -3,12 +3,18 @@ export class WSmessage {
     this.messageType = messageType;
     this.toChat = toChat || "";
     this.payload = payload || null;
-    this.NEW_CHAT = 100;
-    this.NEW_MESSAGE = 1;
-    this.EDIT_MESSAGE = 2;
-    this.DELETE_MESSAGE = 3;
   }
 }
+
+export const CONSTANTS = {
+  NEW_CHAT: 100,
+  NEW_MESSAGE: 1,
+  EDIT_MESSAGE: 2,
+  DELETE_MESSAGE: 3,
+  SENT_MESSAGE: 1,
+  DELIVERED_MESSAGE: 2,
+  READ_MESSAGE: 3,
+};
 
 export class Chat {
   constructor({ id, userIds, messages }) {
@@ -26,8 +32,5 @@ export class Message {
     this.date = date || new Date().getTime();
     this.state = state || 1;
     this.text = text || "no text";
-    this.SENT_MESSAGE = 1;
-    this.DELIVERED_MESSAGE = 2;
-    this.READ_MESSAGE = 3;
   }
 }

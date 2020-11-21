@@ -8,6 +8,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import React from "react";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles({
   List: {
@@ -26,35 +27,52 @@ const useStyles = makeStyles({
   },
 });
 
-const ChatList = (props) => {
+const ChatList = ({ chats, handleChatSelect }) => {
   const classes = useStyles();
-  const { chats, handleChatSelect } = { ...props };
+  const users = useSelector((state) => state.users.users);
+  const myId = useSelector((state) => state.general.id);
+
+  const chatList = chats.map((chat) => {
+    const newChatItem = { ...chat };
+    // console.log(newChatItem);
+    const recepient = newChatItem.userIds.find((id) => id !== myId);
+    const user = users.find((user) => user.id === recepient);
+    newChatItem.user = { ...user };
+    return newChatItem;
+  });
+
   return (
     <List className={classes.List}>
-      {chats.map(({ id, name, image, messages, newMessages }) => (
-        <ListItem
-          className={classes.ListItem}
-          button
-          onClick={() => handleChatSelect(id)}
-          key={id}
-        >
-          <Badge
-            color="secondary"
-            overlap="circle"
-            variant="dot"
-            badgeContent={newMessages || 0}
+      {chatList.map((chat) => {
+        const chatId = chat.id;
+        const { id, name, image, messages, newMessages } = { ...chat.user };
+        return (
+          <ListItem
+            className={classes.ListItem}
+            button
+            onClick={() => handleChatSelect(id, chatId)}
+            key={chatId}
           >
-            <ListItemAvatar>
-              <Avatar src={image} alt={name} />
-            </ListItemAvatar>
-          </Badge>
-          <ListItemText
-            primary={name}
-            primaryTypographyProps={{ className: classes.Username }}
-            secondary={messages[messages.length - 1]?.text || ""}
-          />
-        </ListItem>
-      ))}
+            <Badge
+              color="secondary"
+              overlap="circle"
+              variant="dot"
+              badgeContent={newMessages || 0}
+            >
+              <ListItemAvatar>
+                <Avatar src={image} alt={name} />
+              </ListItemAvatar>
+            </Badge>
+            <ListItemText
+              primary={name}
+              primaryTypographyProps={{ className: classes.Username }}
+              secondary={
+                messages ? messages[messages.length - 1]?.text || "" : ""
+              }
+            />
+          </ListItem>
+        );
+      })}
     </List>
   );
 };

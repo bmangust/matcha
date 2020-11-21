@@ -1,10 +1,21 @@
 import React from "react";
-import { Divider, Grid, makeStyles, Typography } from "@material-ui/core";
-import { useSelector } from "react-redux";
+import {
+  Button,
+  Divider,
+  Grid,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
+import { useDispatch, useSelector } from "react-redux";
 import Gallery from "../../components/Gallery/Gallery";
 import Tags from "../../components/Tags/Tags";
 import ProfileHeader from "../../components/ProfileHeader/ProfileHeader";
 import Bio from "../../components/Bio/Bio";
+import { useHistory } from "react-router-dom";
+import { setCompanion } from "../../store/UISlice";
+import { useChat } from "../../hooks/useChat.hook";
+import defaultAvatar from "../../Images/default-avatar.png";
+import { useWS } from "../../hooks/useWS.hook";
 
 const useStyles = makeStyles({
   Typography: {
@@ -23,11 +34,24 @@ const useStyles = makeStyles({
 
 const UserProfile = (props) => {
   const classes = useStyles();
+  const history = useHistory();
   const user = useSelector((state) => state.UI.companion);
-  const { images, avatar, name, surname, country, city, age, bio, tags } = {
+  const { chats } = useSelector((state) => state.chat);
+  const { id, images, avatar, name, surname, country, city, age, bio, tags } = {
     ...user,
   };
   const defaultBio = "UFO flew here and dropped this message here";
+  const { selectChat } = useChat();
+
+  const handleChat = (e) => {
+    // console.log(chats);
+    // const chat =
+    //   chats &&
+    //   chats.find((chat) => chat.userIds.find((userId) => userId === id));
+    // console.log(chat);
+    selectChat(id);
+    history.push(`/chat/${id}`);
+  };
 
   return (
     <Grid
@@ -36,7 +60,7 @@ const UserProfile = (props) => {
       alignItems="center"
       className={classes.FullWidth}
     >
-      <ProfileHeader img={avatar.image} />
+      <ProfileHeader img={avatar?.image || defaultAvatar} />
 
       <Grid
         container
@@ -59,6 +83,7 @@ const UserProfile = (props) => {
         <Divider className={classes.FullWidth} />
         <Bio bio={bio || defaultBio} />
         <Gallery images={images} />
+        <Button onClick={handleChat}>Message</Button>
       </Grid>
     </Grid>
   );
