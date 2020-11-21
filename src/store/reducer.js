@@ -6,6 +6,7 @@ import uiReducer from "./UISlice";
 import filterReducer from "../components/Filter/filterSlice";
 import additionalReducer from "../pages/AdditionalInfo/additionalSlice";
 import usersReducer from "./usersSlice";
+import chatReducer from "./chatSlice";
 
 export default combineReducers({
   general: generalReducer,
@@ -15,4 +16,5 @@ export default combineReducers({
   filter: filterReducer,
   additional: additionalReducer,
   users: usersReducer,
+  chat: chatReducer,
 });
