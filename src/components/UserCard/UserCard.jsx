@@ -131,14 +131,15 @@ const UserCard = (props) => {
   };
 
   const LeftButtonDisabled =
-    images.length === 0 || displayedImage === images.length - 1;
-  const RightButtonDisabled = displayedImage === 0 || images.length === 0;
+    images?.length === 0 || displayedImage === images?.length - 1 || true;
+  const RightButtonDisabled =
+    displayedImage === 0 || images?.length === 0 || true;
 
   return (
     <Grid item xs={12} sm={6} lg={4}>
       <Card className={classes.UserCard} onClick={showUserProfile}>
         <div>
-          {images.length > 1 && (
+          {images && images.length > 1 && (
             <MobileStepper
               variant="dots"
               steps={0}
@@ -190,7 +191,10 @@ const UserCard = (props) => {
 
           <CardMedia
             className={classes.CardMedia}
-            image={images[displayedImage]?.image || defaultImage}
+            image={
+              (images && images.length && images[displayedImage].image) ||
+              defaultImage
+            }
           />
 
           <CardContent className={classes.Info}>

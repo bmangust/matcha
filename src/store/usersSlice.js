@@ -1,3 +1,4 @@
+import { Store } from "@material-ui/icons";
 import { createSlice } from "@reduxjs/toolkit";
 import { CancelToken, api } from "../axios";
 import { addAge, loadImages, prepareUsers } from "../utils";
@@ -9,6 +10,8 @@ const initialUsersState = {
   strangers: [],
 };
 
+const loadedIds = new Set();
+
 const usersSlice = createSlice({
   name: "users",
   initialState: initialUsersState,
@@ -19,10 +22,13 @@ const usersSlice = createSlice({
     successLoading(state) {
       state.isLoading = false;
     },
-    addUsers(state, { payload }) {
-      // console.log(payload);
-      if (!payload.length) return;
-      const users = payload;
+    /**
+     * Adds all users, filters already added users by id
+     * @param {State} state
+     * @param {action} {payload} - users to add
+     */
+    addUsers(state, { users }) {
+      if (!users.length) return;
       users.forEach((user) => {
         if (
           Object.keys(user).length !== 0 &&
@@ -31,6 +37,27 @@ const usersSlice = createSlice({
           state.users.push(user);
         }
       });
+    },
+    /**
+     * Run through all passed users and updates their info or addes new
+     * @param {State} state
+     * @param {action} {payload} - users to update
+     */
+    updateUsers(state, { users }) {
+      if (!users.length) return;
+      users.forEach((user) => {
+        const userInState = state.users.find((el) => user.id === el.id);
+        if (userInState) {
+          Object.keys(userInState).forEach(
+            (key) => (userInState[key] = user[key])
+          );
+        } else {
+          state.users.push(user);
+        }
+      });
+    },
+    setUsers(state, { payload }) {
+      state.users = payload;
     },
     setStrangers(state, { payload }) {
       state.strangers = [...payload];
@@ -48,6 +75,8 @@ const usersSlice = createSlice({
 
 const source = CancelToken.source();
 
+const getUserIds = (users) => users.map((user) => user.id);
+
 const getStrangers = async (showNotif) => {
   try {
     const res = await api.get("strangers", { cancelToken: source.token });
@@ -64,50 +93,59 @@ const getStrangers = async (showNotif) => {
   return [];
 };
 
-const getUncashedUsers = (users, getState) => {
-  const allUsers = getState().users.users;
-  if (allUsers.length === 0) return users;
-  // console.log("[getUncashedUsers] filter", users);
-  const uncashed = users.filter((user) => {
-    // console.log(user);
-    const found = allUsers.find((el) => el.id === user.id);
-    return found;
-  });
+/**
+ * Returns array of users not yet stored in redux
+ * @param {Array<user>} users all users for loading
+ */
+const getUncashedUsers = (users) => {
+  if (loadedIds.length === 0) return users;
+  const uncashed = users.filter((user) => !loadedIds.has(user.id));
   // console.log(uncashed);
   return uncashed;
 };
 
+/**
+ * Loads all strangers and saves to store
+ * @param {function} showNotif cunsom hook to show notification
+ */
 export const loadStrangers = (showNotif) => async (dispatch, getState) => {
   dispatch(startLoading());
-  const strangers = await getStrangers(showNotif);
+  let strangers = await getStrangers(showNotif);
+  strangers = strangers.map((stranger) => addAge(stranger));
+  // console.log(strangers);
+  dispatch(setStrangers(strangers));
+  dispatch(addUsers(strangers));
   // console.log(strangers);
 
   // load unly those, who was not loaded before
-  const uncashed = getUncashedUsers(strangers, getState);
+  const uncashed = getUncashedUsers(strangers);
   let preparedUsers = await Promise.all(prepareUsers(uncashed));
-  dispatch(addUsers(preparedUsers));
+  // console.log(preparedUsers);
+  dispatch(updateUsers(preparedUsers));
 
   // map fetched strangers to those we've already prepared
   const allUsers = getState().users.users;
+  // console.log(allUsers);
   const preparedStrangers = strangers
     .map((user) => allUsers.find((u) => u.id === user.id))
     .filter((el) => el !== null);
   // console.log(preparedStrangers);
+  loadedIds.add(getUserIds(preparedStrangers));
+  // console.log(loadedIds);
   dispatch(setStrangers(preparedStrangers));
 
   dispatch(successLoading());
 };
 
+/**
+ * Recieves Set of strings, loads only uncashed ones
+ * @param {Set<string>} users
+ */
 export const loadUsers = (users) => async (dispatch, getState) => {
-  const loadedUsers = getState().users.users;
-  // console.log("loadUsers", users, loadedUsers);
   if (!users) return;
-  // filter already loaded users
-  const notYetLoaded =
-    loadedUsers.length > 0
-      ? [...users].filter((user) => !loadedUsers.find((el) => el.id === user))
-      : [...users];
+  const notYetLoaded = [...users].filter((id) => !loadedIds.has(id));
   // console.log(notYetLoaded);
+
   try {
     const promises = notYetLoaded.map((el) => api(`/data/${el}`));
     let resolvedPromises = await Promise.allSettled(promises);
@@ -120,6 +158,8 @@ export const loadUsers = (users) => async (dispatch, getState) => {
     // console.log(loadedUsers);
     const preparedUsers = loadedUsers.map((user) => user && addAge(user));
     // console.log("loadedUsers", loadedUsers);
+    loadedIds.add(getUserIds(preparedUsers));
+    // console.log(loadedIds);
     dispatch(addUsers(preparedUsers));
   } catch (e) {
     console.log(e);
@@ -131,6 +171,8 @@ export const {
   startLoading,
   successLoading,
   addUsers,
+  setUsers,
+  updateUsers,
   setStrangers,
   failLoading,
   resetError,

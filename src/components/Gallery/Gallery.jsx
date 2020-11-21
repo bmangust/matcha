@@ -3,6 +3,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { media } from "../../axios";
 import { saveNewState } from "../../store/generalSlice";
+import defaultAvatar from "../../Images/default-avatar.png";
 
 const useStyles = makeStyles({
   Media: {
@@ -33,12 +34,12 @@ const Gallery = (props) => {
     <Grid className={classes.Grid} container justify="center" spacing={1}>
       {images.length > 0 &&
         images.map((el) => (
-          <Grid item xs={8} sm={4} key={el.id}>
+          <Grid item xs={8} sm={4} key={el.id || el}>
             <Card>
               <CardMedia
                 onClick={() => setAvatar(el)}
                 className={classes.Media}
-                image={el.image}
+                image={el.image || defaultAvatar}
               />
             </Card>
           </Grid>
