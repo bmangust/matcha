@@ -18,9 +18,14 @@ import {
   ChevronRightRounded,
 } from "@material-ui/icons";
 import defaultImage from "../../Images/default-avatar.png";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { sendVisit, sendLike, setCompanion } from "../../store/UISlice";
+import {
+  sendVisit,
+  sendLike,
+  setCompanion,
+  setParent,
+} from "../../store/UISlice";
 import { banUser } from "../../hooks/useBan.hook";
 
 const useStyles = makeStyles({
@@ -102,11 +107,14 @@ const UserCard = (props) => {
   const { id, username, images, age } = { ...props.user };
   const tags = props.user.tags || ["No tags"];
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const showUserProfile = (e) => {
+    const parent = location.pathname.split("/")[1];
     dispatch(setCompanion({ companion: props.user }));
     dispatch(sendVisit(id));
+    dispatch(setParent(parent));
     history.push("/strangers/" + id);
   };
 

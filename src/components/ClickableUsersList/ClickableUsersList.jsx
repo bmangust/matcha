@@ -8,8 +8,8 @@ import {
 } from "@material-ui/core";
 import React, { forwardRef } from "react";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { setCompanion } from "../../store/UISlice";
+import { useHistory, useLocation } from "react-router-dom";
+import { setCompanion, setParent } from "../../store/UISlice";
 import ProfileListItem from "../ProfileListItem/ProfileListItem";
 
 const useStyles = makeStyles({
@@ -31,6 +31,7 @@ const ClickableUsersList = (
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
 
   function handleListKeyDown(event) {
     if (event.key === "Tab") {
@@ -42,6 +43,8 @@ const ClickableUsersList = (
   const handleItemClick = (id) => {
     if (!users.length) return;
     const user = users.find((el) => el.id === id);
+    const parent = location.pathname.split("/")[1];
+    dispatch(setParent({ parent }));
     dispatch(setCompanion({ companion: user }));
     history.push(`/strangers/${id}`);
     if (setOpen) setOpen(false);

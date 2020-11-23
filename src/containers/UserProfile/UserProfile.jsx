@@ -36,7 +36,6 @@ const UserProfile = (props) => {
   const classes = useStyles();
   const history = useHistory();
   const user = useSelector((state) => state.UI.companion);
-  const { chats } = useSelector((state) => state.chat);
   const { id, images, avatar, name, surname, country, city, age, bio, tags } = {
     ...user,
   };
@@ -44,11 +43,6 @@ const UserProfile = (props) => {
   const { selectChat } = useChat();
 
   const handleChat = (e) => {
-    // console.log(chats);
-    // const chat =
-    //   chats &&
-    //   chats.find((chat) => chat.userIds.find((userId) => userId === id));
-    // console.log(chat);
     selectChat(id);
     history.push(`/chat/${id}`);
   };

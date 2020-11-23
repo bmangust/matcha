@@ -8,6 +8,7 @@ const initialUIState = {
   selectedTab: null,
   companion: null,
   isInfoMissing: false,
+  parent: "/",
 };
 
 const UISlice = createSlice({
@@ -35,6 +36,9 @@ const UISlice = createSlice({
     setIsInfoMissing(state, { payload }) {
       state.isInfoMissing = payload;
     },
+    setParent(state, { payload }) {
+      state.parent = payload.parent;
+    },
   },
 });
 
@@ -46,14 +50,18 @@ export const {
   resetUIState,
   setCompanion,
   setIsInfoMissing,
+  setParent,
 } = UISlice.actions;
 
-export const handleBack = (history, parent) => (dispatch) => {
+export const handleBack = (history, parent) => (dispatch, useState) => {
   dispatch(hideBackButton());
   const header = capitalize(parent);
   dispatch(setHeader({ header }));
   dispatch(setCompanion({ companion: null }));
-  parent === "strangers" ? history.push("/") : history.push(`/${parent}`);
+  const backLocation = useState().UI.parent;
+  backLocation === "strangers"
+    ? history.push("/")
+    : history.push(`/${backLocation}`);
 };
 
 export const sendVisit = (watchedId) => async (dispatch) => {

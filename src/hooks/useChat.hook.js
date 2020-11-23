@@ -2,7 +2,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Chat, Message, WSmessage, CONSTANTS } from "../store/ws";
 import { api } from "../axios";
 import { send } from "./useWS.hook";
-import { setCompanion, setHeader, showBackButton } from "../store/UISlice";
+import {
+  setCompanion,
+  setHeader,
+  setParent,
+  showBackButton,
+} from "../store/UISlice";
 import { setChat, setChats, addChat } from "../store/chatSlice";
 import { loadUsers } from "../store/usersSlice";
 
@@ -106,6 +111,7 @@ export const useChat = () => {
     } else {
       dispatch(setChat(selectedChat));
       dispatch(setCompanion({ companion: selectedCompanion }));
+      dispatch(setParent({ parent: "chat" }));
       dispatch(setHeader({ header: selectedCompanion?.name || null }));
       dispatch(showBackButton());
       return selectedCompanion;
