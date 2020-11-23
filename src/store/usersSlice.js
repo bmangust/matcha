@@ -1,4 +1,3 @@
-import { Store } from "@material-ui/icons";
 import { createSlice } from "@reduxjs/toolkit";
 import { CancelToken, api } from "../axios";
 import { addAge, loadImages, prepareUsers } from "../utils";
@@ -57,6 +56,10 @@ const usersSlice = createSlice({
           state.users.push(user);
         }
       });
+    },
+    sortStrangers(state, { payload }) {
+      const { compareFunction } = { ...payload };
+      state.strangers.sort(compareFunction);
     },
     setUsers(state, { payload }) {
       state.users = payload;
@@ -175,6 +178,7 @@ export const {
   addUsers,
   setUsers,
   updateUsers,
+  sortStrangers,
   setStrangers,
   failLoading,
   resetError,

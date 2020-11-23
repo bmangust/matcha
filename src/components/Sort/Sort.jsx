@@ -1,55 +1,107 @@
-import { Grid, makeStyles } from "@material-ui/core";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-// import Input from "../Input/Input";
-// import { changeUsername, changeSearchAgeRange } from "./filterSlice";
+import {
+  Button,
+  ButtonGroup,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  makeStyles,
+} from "@material-ui/core";
+import React, { useCallback, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { sortStrangers } from "../../store/usersSlice";
+import { secondaryColor } from "../../theme";
 
 const useStyles = makeStyles({
-  Inputs: {
+  Wrapper: {
     width: "100%",
     margin: "10px 0",
+  },
+  Active: {
+    color: secondaryColor.light,
+    fontWeight: "bold",
   },
 });
 
 const Sort = () => {
   const classes = useStyles();
-  //   const { username, age } = { ...useSelector((state) => state.filter) };
   const dispatch = useDispatch();
+  const [isAsc, setIsAsc] = useState(true);
+  const [sortingParam, setSortingParam] = useState(null);
 
-  //   const inputs = [
-  //     {
-  //       name: "username",
-  //       type: "text",
-  //       label: "Username",
-  //       value: username,
-  //       onChange: (e) => {
-  //         dispatch(changeUsername(e.target.value));
-  //       },
-  //     },
-  //     {
-  //       name: "AgeRange",
-  //       type: "doubleSelector",
-  //       label: "Age search range",
-  //       value: age,
-  //       onChange: (value) => dispatch(changeSearchAgeRange(value)),
-  //     },
-  //   ];
+  const sortByUsernameAsc = (userA, userB) => {
+    return userA.username.localeCompare(userB.username);
+  };
+  const sortByUsernameDesc = (userA, userB) => {
+    return userB.username.localeCompare(userA.username);
+  };
+  const sortByAgeAsc = (userA, userB) => {
+    return userA.age - userB.age;
+  };
+  const sortByAgeDesc = (userA, userB) => {
+    return userB.age - userA.age;
+  };
+  const sortByRatingAsc = (userA, userB) => {
+    return userA.rating - userB.rating;
+  };
+  const sortByRatingDesc = (userA, userB) => {
+    return userB.rating - userA.rating;
+  };
+  const compFn = useCallback(() => {
+    switch (sortingParam) {
+      case "username":
+        return isAsc ? sortByUsernameAsc : sortByUsernameDesc;
+      case "age":
+        return isAsc ? sortByAgeAsc : sortByAgeDesc;
+      case "rating":
+        return isAsc ? sortByRatingAsc : sortByRatingDesc;
+      default:
+        return;
+    }
+  }, [isAsc, sortingParam]);
+
+  useEffect(() => {
+    dispatch(sortStrangers({ compareFunction: compFn() }));
+  }, [isAsc, sortingParam, compFn]);
 
   return (
-    <>
-      {/* {inputs.map(({ name, type, label, value, onChange }) => (
-        <Grid className={classes.Inputs} key={label} item xs={12} md={6}>
-          <Input
-            name={name}
-            type={type}
-            label={label}
-            value={value}
-            onChange={onChange}
+    <Grid
+      container
+      justify="space-around"
+      alignItems="center"
+      className={classes.Wrapper}
+    >
+      <ButtonGroup variant="outlined">
+        <Button
+          className={sortingParam === "username" && classes.Active}
+          onClick={() => setSortingParam("username")}
+        >
+          username
+        </Button>
+        <Button
+          className={sortingParam === "age" && classes.Active}
+          onClick={() => setSortingParam("age")}
+        >
+          age
+        </Button>
+        <Button
+          className={sortingParam === "rating" && classes.Active}
+          onClick={() => setSortingParam("rating")}
+        >
+          rating
+        </Button>
+      </ButtonGroup>
+
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={isAsc}
+            onChange={() => setIsAsc((state) => !state)}
+            name="isAscending"
           />
-        </Grid>
-      ))} */}
-      <Grid className={classes.Inputs}>Sort</Grid>
-    </>
+        }
+        label="Ascending order"
+      />
+    </Grid>
   );
 };
 

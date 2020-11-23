@@ -9,8 +9,9 @@ import React, { useState } from "react";
 import { ExpandLessRounded, ExpandMoreRounded } from "@material-ui/icons";
 import Filter from "../Filter/Filter";
 import Sort from "../Sort/Sort";
+import { secondaryColor } from "../../theme";
 
-const useStyles = makeStyles((props) => ({
+const useStyles = makeStyles({
   Wrapper: {
     position: "fixed",
     left: 0,
@@ -24,19 +25,26 @@ const useStyles = makeStyles((props) => ({
   ButtonLabel: {
     fontFamily: "Righteous",
     fontSize: "1.2rem",
-  },
-  Button: {
     padding: "0 15px",
   },
-}));
+  Active: {
+    boxShadow: `0 0 5px ${secondaryColor.light}`,
+  },
+});
 
 const FilterSortWrapper = () => {
-  const [content, setContent] = useState(<Filter />);
+  const [content, setContent] = useState("");
   const [show, setShow] = useState(false);
   const classes = useStyles(content);
 
   const handleShow = () => {
     setShow((prev) => !prev);
+  };
+
+  const handleButtonPress = (button) => {
+    const triggerShow = content ? button === content || !show : true;
+    setContent(button);
+    triggerShow && handleShow();
   };
 
   return (
@@ -51,7 +59,7 @@ const FilterSortWrapper = () => {
       <Paper className={classes.Paper}>
         <Grid container direction="column" alignItems="center">
           <Grid container item direction="column" alignItems="center">
-            {show && content}
+            {show && (content === "filter" ? <Filter /> : <Sort />)}
           </Grid>
           <Grid container justify="space-evenly" alignItems="center" item>
             <ButtonGroup
@@ -60,18 +68,16 @@ const FilterSortWrapper = () => {
               aria-label="text primary button group"
             >
               <Button
-                variant={content === <Filter /> && "outlined"}
-                className={classes.Button}
+                className={show && content === "filter" && classes.Active}
                 classes={{ label: classes.ButtonLabel }}
-                onClick={() => setContent(<Filter />)}
+                onClick={() => handleButtonPress("filter")}
               >
                 Filter
               </Button>
               <Button
-                variant={content === <Sort /> && "outlined"}
-                className={classes.Button}
+                className={show && content === "sort" && classes.Active}
                 classes={{ label: classes.ButtonLabel }}
-                onClick={() => setContent(<Sort />)}
+                onClick={() => handleButtonPress("sort")}
               >
                 Sort
               </Button>
