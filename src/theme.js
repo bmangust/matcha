@@ -16,6 +16,7 @@ export const secondaryColor = {
   dark: "#C81927",
   contrastText: "#fff",
 };
+export const borderRadius = "30px";
 
 export const theme = createMuiTheme({
   palette: {
@@ -54,7 +55,7 @@ export const theme = createMuiTheme({
     // },
   },
   shape: {
-    borderRadius: 30,
+    borderRadius: borderRadius,
   },
   props: {
     MuiButton: {

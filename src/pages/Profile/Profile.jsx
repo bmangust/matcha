@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import TabPanel from "../../containers/TabPanel/TabPanel";
 import AvatarContainer from "../../components/Avatar/AvatarContainer";
-import { backgroundColor, primaryColor } from "../../theme";
+import { backgroundColor, borderRadius, primaryColor } from "../../theme";
 import UpdateInfo from "../../containers/UpdateInfo/UpdateInfo";
 import Gallery from "../../components/Gallery/Gallery";
 import Banned from "../../components/Banned/Banned";
@@ -14,11 +14,11 @@ const useStyles = makeStyles({
     border: `1px solid ${primaryColor.dark}`,
     bottom: 0,
     height: "100%",
-    borderRadius: "30px",
+    borderRadius: borderRadius,
   },
   TabPanel: {
     backgroundColor: backgroundColor.foreground,
-    borderRadius: "30px",
+    borderRadius: borderRadius,
     padding: "5px",
   },
   Profile: {

@@ -107,14 +107,13 @@ const UserCard = (props) => {
   const { id, username, images, age } = { ...props.user };
   const tags = props.user.tags || ["No tags"];
   const history = useHistory();
-  const location = useLocation();
   const dispatch = useDispatch();
 
   const showUserProfile = (e) => {
-    const parent = location.pathname.split("/")[1];
+    const parent = "strangers";
     dispatch(setCompanion({ companion: props.user }));
     dispatch(sendVisit(id));
-    dispatch(setParent(parent));
+    dispatch(setParent({ parent }));
     history.push("/strangers/" + id);
   };
 

@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useSelector } from "react-redux";
+import { borderRadius } from "../../../theme";
 
 const useStyles = makeStyles({
   List: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",
+    borderRadius: borderRadius,
   },
   Username: {
     fontWeight: 800,

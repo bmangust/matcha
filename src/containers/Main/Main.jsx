@@ -22,6 +22,7 @@ import Profile from "../../pages/Profile/Profile";
 import Header from "../../components/Header/Header";
 import Chat from "../Chat/Chat";
 import { useNotifications } from "../../hooks/useNotifications";
+import { useWS } from "../../hooks/useWS.hook";
 
 const useStyles = makeStyles({
   selectedTab: {
@@ -45,17 +46,13 @@ const useStyles = makeStyles({
     height: "100vh",
   },
   Container: {
+    paddingTop: "70px",
     backgroundColor: backgroundColor.background,
     maxWidth: "100vw",
     width: "100%",
   },
-  Header: {
-    paddingTop: "30px",
-    position: "static",
-    top: 0,
-    left: 0,
-  },
 });
+
 const tabs = [
   {
     index: 0,
@@ -95,6 +92,7 @@ const Main = (props) => {
   const history = useHistory();
   const classes = useStyles();
   const [notification, setNotification] = useState(null);
+  useWS();
 
   const handleChange = async (e, url) => {
     if (url === "/logout") {
@@ -150,12 +148,10 @@ const Main = (props) => {
           spacing={1}
           className={classes.Container}
         >
-          <Grid className={classes.Header}>
-            <Header
-              header={companion?.username || header || tabs[0].label}
-              notification={notification}
-            />
-          </Grid>
+          <Header
+            header={companion?.username || header || tabs[0].label}
+            notification={notification}
+          />
           <Switch>
             <Route path="/chat" component={Chat} />
             <Route path="/profile" component={Profile} />

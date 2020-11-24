@@ -10,6 +10,7 @@ import React, { forwardRef } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { setCompanion, setParent } from "../../store/UISlice";
+import { borderRadius } from "../../theme";
 import ProfileListItem from "../ProfileListItem/ProfileListItem";
 
 const useStyles = makeStyles({
@@ -20,7 +21,7 @@ const useStyles = makeStyles({
     width: "100%",
   },
   ListItem: {
-    borderRadius: "30px",
+    borderRadius: borderRadius,
   },
 });
 
