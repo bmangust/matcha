@@ -355,6 +355,7 @@ const UpdateInfo = () => {
 
   const buttons = [
     {
+      component: "fab",
       type: "submit",
       text: "Save",
       size: "large",

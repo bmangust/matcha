@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, List, ListItem, makeStyles } from "@material-ui/core";
+import { Button, Fab, List, ListItem, makeStyles } from "@material-ui/core";
 import Input from "../Input/Input";
 
 const useStyles = makeStyles({
@@ -18,6 +18,11 @@ const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "center",
   },
+  Fab: {
+    position: "fixed",
+    right: "10vw",
+    bottom: "4rem",
+  },
 });
 const Form = (props) => {
   const classes = useStyles();
@@ -33,18 +38,33 @@ const Form = (props) => {
         ))}
         {buttons && (
           <ListItem className={classes.Buttons}>
-            {buttons.map(({ variant, type, text, onClick, ...others }) => (
-              <Button
-                key={text}
-                className={classes.Button}
-                variant={variant}
-                type={type}
-                onClick={onClick}
-                {...others}
-              >
-                {text}
-              </Button>
-            ))}
+            {buttons.map(
+              ({ component, variant, type, text, onClick, ...others }) =>
+                component === "fab" ? (
+                  <Fab
+                    color="primary"
+                    key={text}
+                    className={classes.Fab}
+                    variant={variant}
+                    type={type}
+                    onClick={onClick}
+                    {...others}
+                  >
+                    {text}
+                  </Fab>
+                ) : (
+                  <Button
+                    key={text}
+                    className={classes.Button}
+                    variant={variant}
+                    type={type}
+                    onClick={onClick}
+                    {...others}
+                  >
+                    {text}
+                  </Button>
+                )
+            )}
           </ListItem>
         )}
       </List>
