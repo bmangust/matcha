@@ -54,7 +54,7 @@ const UserProfile = (props) => {
       alignItems="center"
       className={classes.FullWidth}
     >
-      <ProfileHeader img={avatar?.image || defaultAvatar} />
+      <ProfileHeader img={avatar?.image || images[0].image || defaultAvatar} />
 
       <Grid
         container

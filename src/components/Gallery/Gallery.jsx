@@ -1,4 +1,10 @@
-import { Card, CardMedia, Grid, makeStyles } from "@material-ui/core";
+import {
+  Card,
+  CardMedia,
+  Grid,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { media } from "../../axios";
@@ -6,11 +12,30 @@ import { saveNewState } from "../../store/generalSlice";
 import defaultAvatar from "../../Images/default-avatar.png";
 
 const useStyles = makeStyles({
+  Card: {
+    position: "relative",
+    "&:hover": {
+      "& $Media": {
+        transform: "scale(1.2)",
+      },
+      "& $Info": {
+        transform: "translateY(-1.5rem)",
+      },
+    },
+  },
   Media: {
     paddingTop: "100%",
   },
   Grid: {
     marginTop: "10px",
+  },
+  Info: {
+    position: "absolute",
+    transform: "translateY(2rem)",
+    width: "100%",
+    textAlign: "center",
+    color: "#fafafa",
+    background: "linear-gradient(#00000000, #000000aa)",
   },
 });
 
@@ -35,12 +60,15 @@ const Gallery = (props) => {
       {images.length > 0 &&
         images.map((el) => (
           <Grid item xs={8} sm={4} key={el.id || el}>
-            <Card>
+            <Card className={classes.Card}>
               <CardMedia
                 onClick={() => setAvatar(el)}
                 className={classes.Media}
                 image={el.image || defaultAvatar}
               />
+              {/* {!props.images && (
+                <Typography className={classes.Info}>Set avatar</Typography>
+              )} */}
             </Card>
           </Grid>
         ))}

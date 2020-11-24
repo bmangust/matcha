@@ -23,9 +23,14 @@ export const useChat = () => {
    * @param {string} chatId
    */
   const getChatInfo = async (chatId) => {
-    const chatInfo = await api(`chat/${chatId}`);
-    console.log(chatInfo.data);
-    return chatInfo.data;
+    try {
+      const chatInfo = await api(`chat/${chatId}`);
+      console.log(chatInfo.data);
+      return chatInfo.data;
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   };
 
   /**
@@ -35,13 +40,18 @@ export const useChat = () => {
   const createChat = async (userId) => {
     console.log("newChat");
     const chat = new Chat({ userIds: [userId, myId] });
-    const res = await api.post("chat", chat);
-    console.log(res.data);
-    if (res.data.status) {
-      const chatInfo = await getChatInfo(res.data.data);
-      if (chatInfo.status) dispatch(addChat(chatInfo.data));
+    try {
+      const res = await api.post("chat", chat);
+      console.log(res.data);
+      if (res.data.status) {
+        const chatInfo = await getChatInfo(res.data.data);
+        if (chatInfo.status) dispatch(addChat(chatInfo.data));
+      }
+      return res.data.data;
+    } catch (e) {
+      console.log(e);
+      return null;
     }
-    return res.data.data;
   };
 
   const loadRecipients = () => {

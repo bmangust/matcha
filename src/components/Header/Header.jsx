@@ -6,10 +6,7 @@ import {
   makeStyles,
   Popper,
   Paper,
-  MenuItem,
-  MenuList,
   ClickAwayListener,
-  Avatar,
   Fade,
   AppBar,
 } from "@material-ui/core";
