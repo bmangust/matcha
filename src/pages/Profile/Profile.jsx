@@ -1,5 +1,5 @@
 import { Tabs, Tab, Grid, makeStyles } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { createContext, useState } from "react";
 import { connect } from "react-redux";
 import TabPanel from "../../containers/TabPanel/TabPanel";
 import AvatarContainer from "../../components/Avatar/AvatarContainer";
@@ -30,18 +30,22 @@ const useStyles = makeStyles({
 
 const buttons = [
   {
+    id: 0,
     text: "Info",
     component: <UpdateInfo />,
   },
   {
+    id: 1,
     text: "Gallery",
     component: <Gallery />,
   },
   {
-    text: "Favorites",
+    id: 2,
+    text: "Banned",
     component: <Banned />,
   },
 ];
+export const TabContext = createContext(buttons[0].id);
 
 const Profile = (props) => {
   const classes = useStyles();
@@ -70,15 +74,17 @@ const Profile = (props) => {
       alignItems="center"
       className={classes.Profile}
     >
-      <AvatarContainer />
-      <Tabs
-        classes={{ root: classes.TabPanel, indicator: classes.indicator }}
-        value={currentTab}
-        onChange={selectTabHandler}
-      >
-        {tabs}
-      </Tabs>
-      {tabPanels}
+      <TabContext.Provider value={currentTab}>
+        <AvatarContainer />
+        <Tabs
+          classes={{ root: classes.TabPanel, indicator: classes.indicator }}
+          value={currentTab}
+          onChange={selectTabHandler}
+        >
+          {tabs}
+        </Tabs>
+        {tabPanels}
+      </TabContext.Provider>
     </Grid>
   );
 };

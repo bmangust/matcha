@@ -1,6 +1,15 @@
-import React from "react";
-import { Button, Fab, List, ListItem, makeStyles } from "@material-ui/core";
+import React, { useContext } from "react";
+import {
+  Button,
+  Fab,
+  List,
+  ListItem,
+  makeStyles,
+  useTheme,
+  Zoom,
+} from "@material-ui/core";
 import Input from "../Input/Input";
+import { TabContext } from "../../pages/Profile/Profile";
 
 const useStyles = makeStyles({
   Form: {
@@ -24,9 +33,16 @@ const useStyles = makeStyles({
     bottom: "4rem",
   },
 });
-const Form = (props) => {
+
+const Form = ({ inputs, buttons }) => {
   const classes = useStyles();
-  const { inputs, buttons } = { ...props };
+  const theme = useTheme();
+  const currentTab = useContext(TabContext);
+
+  const transitionDuration = {
+    enter: theme.transitions.duration.enteringScreen,
+    exit: theme.transitions.duration.leavingScreen,
+  };
 
   return (
     <form className={classes.Form}>
@@ -41,17 +57,29 @@ const Form = (props) => {
             {buttons.map(
               ({ component, variant, type, text, onClick, ...others }) =>
                 component === "fab" ? (
-                  <Fab
-                    color="primary"
+                  <Zoom
                     key={text}
-                    className={classes.Fab}
-                    variant={variant}
-                    type={type}
-                    onClick={onClick}
-                    {...others}
+                    in={currentTab === 0}
+                    timeout={transitionDuration}
+                    style={{
+                      transitionDelay: `${
+                        currentTab === 0 ? transitionDuration.exit : 0
+                      }ms`,
+                    }}
+                    unmountOnExit
                   >
-                    {text}
-                  </Fab>
+                    <Fab
+                      color="primary"
+                      key={text}
+                      className={classes.Fab}
+                      variant={variant}
+                      type={type}
+                      onClick={onClick}
+                      {...others}
+                    >
+                      {text}
+                    </Fab>
+                  </Zoom>
                 ) : (
                   <Button
                     key={text}

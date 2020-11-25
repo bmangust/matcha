@@ -44,8 +44,8 @@
 
 body {
   margin: 0;
-  /* font-family: "Quicksand", "Roboto", "Helvetica Neue", "Oxygen", "Ubuntu",
-    "Cantarell", "Fira Sans", "Droid Sans", sans-serif; */
+  font-family: "Quicksand", "Roboto", "Helvetica Neue", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
