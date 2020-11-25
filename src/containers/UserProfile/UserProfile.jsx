@@ -2,20 +2,20 @@ import React from "react";
 import {
   Button,
   Divider,
+  Fab,
   Grid,
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Gallery from "../../components/Gallery/Gallery";
 import Tags from "../../components/Tags/Tags";
 import ProfileHeader from "../../components/ProfileHeader/ProfileHeader";
 import Bio from "../../components/Bio/Bio";
 import { useHistory } from "react-router-dom";
-import { setCompanion } from "../../store/UISlice";
 import { useChat } from "../../hooks/useChat.hook";
 import defaultAvatar from "../../Images/default-avatar.png";
-import { useWS } from "../../hooks/useWS.hook";
+import { ChatRounded } from "@material-ui/icons";
 
 const useStyles = makeStyles({
   Typography: {
@@ -29,6 +29,14 @@ const useStyles = makeStyles({
   },
   FullWidth: {
     width: "100%",
+  },
+  Message: {
+    position: "fixed",
+    right: "10vw",
+    bottom: "4rem",
+  },
+  FabIcon: {
+    marginRight: "10px",
   },
 });
 
@@ -77,7 +85,15 @@ const UserProfile = (props) => {
         <Divider className={classes.FullWidth} />
         <Bio bio={bio || defaultBio} />
         <Gallery images={images} />
-        <Button onClick={handleChat}>Message</Button>
+        <Fab
+          variant="extended"
+          color="primary"
+          className={classes.Message}
+          onClick={handleChat}
+        >
+          <ChatRounded className={classes.FabIcon} />
+          Send message
+        </Fab>
       </Grid>
     </Grid>
   );
