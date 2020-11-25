@@ -125,11 +125,15 @@ const checkInfo = (info) => {
 };
 
 export const getSelfInfo = () => async (dispatch) => {
-  const res = await api("account");
-  dispatch(startLoading());
-  if (res.data.status) {
-    checkAuth(res.data, dispatch);
-  } else {
+  try {
+    const res = await api("account");
+    dispatch(startLoading());
+    if (res.data.status) {
+      checkAuth(res.data, dispatch);
+    } else {
+      dispatch(authFail());
+    }
+  } catch (e) {
     dispatch(authFail());
   }
 };

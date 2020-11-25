@@ -83,16 +83,19 @@ export const register = (
     email: xssSanitize(email),
     password: xssSanitize(password),
   };
-  console.log(body);
-  const response = await api.post("signup", body);
-  console.log(response.data);
-  if (response.data.status === true) {
-    dispatch(onRegisterSuccess());
-    showNotif("Account successfully created, now login");
-    history.push("/login");
-  } else {
-    console.log(response.data.data);
-    showNotif(response.data.data, "error");
+  // console.log(body);
+  try {
+    const response = await api.post("signup", body);
+    // console.log(response.data);
+    if (response.data.status === true) {
+      dispatch(onRegisterSuccess());
+      showNotif("Account successfully created, now login");
+      history.push("/login");
+    } else {
+      showNotif(response.data.data, "error");
+    }
+  } catch (e) {
+    showNotif("server error", "error");
   }
   dispatch(stopLoading());
 };
