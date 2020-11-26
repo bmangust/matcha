@@ -9,6 +9,7 @@ export const primaryColor = {
   main: "#457B9D",
   dark: "#1D3557",
   contrastText: "#000",
+  contrastTextLighter: "#777",
 };
 export const secondaryColor = {
   light: "#E94957",
@@ -43,16 +44,6 @@ export const theme = createMuiTheme({
         border: `1px solid ${backgroundColor.foreground}`,
       },
     },
-    // MuiBottomNavigation: {
-    //   root: {
-    //     position: "fixed",
-    //     left: 0,
-    //     bottom: 0,
-    //     display: "flex",
-    //     alignItems: "center",
-    //     justifyContent: "center",
-    //   },
-    // },
   },
   shape: {
     borderRadius: borderRadius,
