@@ -1,48 +1,55 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "../axios";
-import { loadUsers } from "../store/usersSlice";
+import { loadUsers, setStrangers } from "../store/usersSlice";
 
 export const banUser = async (id) => {
-  const res = await api.post("ban", { id });
-  console.log(res);
+  try {
+    const res = await api.post("ban", { id });
+    return res.data.status;
+  } catch (e) {}
 };
 
 export const unbanUser = async (id) => {
-  const res = await api.request({ url: "ban", method: "delete", data: { id } });
-  console.log(res);
+  try {
+    const res = await api.delete(`ban/${id}`);
+    return res.data.status;
+  } catch (e) {}
 };
 
 export const useBan = () => {
   const [banned, setBanned] = useState([]);
   const dispatch = useDispatch();
+  const strangers = useSelector((state) => state.users.strangers);
 
   const loadBanned = async () => {
-    const res = await api("ban");
-    console.log(res);
-    if (res.data.status) {
-      const data = res.data.data || [];
-      dispatch(loadUsers(data));
-      setBanned(data);
-    }
+    try {
+      const res = await api("ban");
+      console.log(res);
+      if (res.data.status) {
+        const data = res.data.data || [];
+        dispatch(loadUsers(data));
+        setBanned(data);
+      }
+    } catch (e) {}
   };
 
   useEffect(() => {
     loadBanned();
   }, []);
 
-  const banAndUpdate = async (user) => {
-    await banUser(user.id);
-    if (banned.length) {
-      const updatedBanned = [...banned, user.id];
-      setBanned(updatedBanned);
-    }
+  const banAndUpdate = async (userId) => {
+    await banUser(userId);
+    const filteredStrangers = strangers.filter((user) => user.id !== userId);
+    dispatch(setStrangers(filteredStrangers));
+    const updatedBanned = [...banned, userId];
+    setBanned(updatedBanned);
   };
 
-  const unbanAndUpdate = async (user) => {
-    await unbanUser(user.id);
-    if (banned.length) {
-      const updatedBanned = banned.filter((id) => id !== user.id);
+  const unbanAndUpdate = async (userId) => {
+    const res = await unbanUser(userId);
+    if (banned.length && res) {
+      const updatedBanned = banned.filter((id) => id !== userId);
       setBanned(updatedBanned);
     }
   };

@@ -13,14 +13,13 @@ const Banned = () => {
   const [bannedList, setBannedList] = useState(null);
 
   useEffect(() => {
-    //   "fe4c83fea2e99350a7d6688de16b2ecdb0074dddea4f86f83ba6b24a1468981a",
-    console.log(banned);
-    console.log(users);
-    if (!banned || !banned.length || !users.length) return;
+    // console.log(banned);
+    // console.log(users);
+    if (!banned || !users.length) return;
     const bannedUsers = banned.map((id) =>
       users.find((user) => user.id === id)
     );
-    console.log(bannedUsers);
+    // console.log(bannedUsers);
     const unbanAction = {
       icon: <ReplayRounded />,
       color: "secondary",
