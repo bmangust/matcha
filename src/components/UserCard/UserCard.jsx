@@ -18,7 +18,7 @@ import {
   ChevronRightRounded,
 } from "@material-ui/icons";
 import defaultImage from "../../Images/default-avatar.png";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
   sendVisit,
@@ -26,7 +26,7 @@ import {
   setCompanion,
   setParent,
 } from "../../store/UISlice";
-import { banUser } from "../../hooks/useBan.hook";
+import { useBan } from "../../hooks/useBan.hook";
 
 const useStyles = makeStyles({
   UserCard: {
@@ -108,6 +108,7 @@ const UserCard = (props) => {
   const tags = props.user.tags || ["No tags"];
   const history = useHistory();
   const dispatch = useDispatch();
+  const { banAndUpdate } = useBan();
 
   const showUserProfile = (e) => {
     const parent = "strangers";
@@ -124,7 +125,7 @@ const UserCard = (props) => {
 
   const handleBan = (e) => {
     e.stopPropagation();
-    banUser(id);
+    banAndUpdate(id);
   };
 
   const handleNextImage = (e) => {
