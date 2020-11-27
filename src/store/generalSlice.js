@@ -168,28 +168,37 @@ export const auth = (email, password, showNotif) => async (dispatch) => {
 
 export const logout = (showNotif) => async (dispatch) => {
   dispatch(startLoading());
-  const res = await api.delete("/signout");
-  if (res.data.status) {
-    showNotif("Successful logout");
-    dispatch(resetGeneralState());
-    dispatch(resetUIState());
-    dispatch(resetFilter());
-  } else {
+  try {
+    const res = await api.delete("/signout");
+    if (res.data.status) {
+      showNotif("Successful logout");
+      dispatch(resetGeneralState());
+      dispatch(resetUIState());
+      dispatch(resetFilter());
+    } else {
+      throw new Error(res.data.data);
+    }
+  } catch (e) {
     dispatch(stopLoading());
     showNotif("Server error", "error");
   }
 };
 
 export const deleteAccount = (showNotif) => async (dispatch) => {
-  const res = await api.delete("account");
-  console.log(res.data);
-  if (res.data.status) {
-    showNotif("Account successfully deleted");
-    dispatch(resetGeneralState());
-    dispatch(resetUIState());
-    dispatch(resetFilter());
-  } else {
-    showNotif("Server error", "error");
+  try {
+    const res = await api.delete("account");
+    console.log(res.data);
+    if (res.data.status) {
+      showNotif("Account successfully deleted");
+      dispatch(resetGeneralState());
+      dispatch(resetUIState());
+      dispatch(resetFilter());
+    } else {
+      throw new Error(res.data.data);
+    }
+  } catch (e) {
+    dispatch(stopLoading());
+    showNotif(e, "error");
   }
 };
 
