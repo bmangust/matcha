@@ -8,8 +8,15 @@ import {
   setParent,
   showBackButton,
 } from "../store/UISlice";
-import { setChat, setChats, addChat } from "../store/chatSlice";
+import {
+  setChat,
+  setChats,
+  addChat,
+  updateMessage,
+  setDeleteMessage,
+} from "../store/chatSlice";
 import { loadUsers } from "../store/usersSlice";
+import { useNotifications } from "./useNotifications";
 
 export const useChat = () => {
   const myId = useSelector((state) => state.general.id);
@@ -17,6 +24,7 @@ export const useChat = () => {
   const companion = useSelector((state) => state.UI.companion);
   const { chats, chat } = useSelector((state) => state.chat);
   const dispatch = useDispatch();
+  const notif = useNotifications();
 
   /**
    * Fetches and returns chat info
@@ -45,7 +53,11 @@ export const useChat = () => {
       console.log(res.data);
       if (res.data.status) {
         const chatInfo = await getChatInfo(res.data.data);
-        if (chatInfo.status) dispatch(addChat(chatInfo.data));
+        console.log(chatInfo);
+        if (chatInfo.status) {
+          dispatch(addChat(chatInfo.data));
+          dispatch(setChat(chatInfo.data));
+        }
       }
       return res.data.data;
     } catch (e) {
@@ -59,42 +71,68 @@ export const useChat = () => {
     dispatch(loadUsers(new Set(userIds)));
   };
 
-  const handleChatMessage = (res) => {
-    console.log("[handleChatMessage");
-    if (res.messageType === CONSTANTS.NEW_CHAT) {
+  const readMessage = (message) => {
+    const readMessage = { ...message };
+    readMessage.state = CONSTANTS.MESSAGE.READ_MESSAGE;
+    console.log(readMessage);
+    send(
+      new WSmessage({
+        messageType: CONSTANTS.WS.EDIT_MESSAGE,
+        payload: readMessage,
+      })
+    );
+    dispatch(updateMessage(readMessage));
+  };
+
+  const handleChatMessage = async (res) => {
+    console.log("[handleChatMessage]", res);
+    if (res.messageType === CONSTANTS.WS.NEW_CHAT) {
       const chatID = res.payload.id;
+      const chatData = await getChatInfo(chatID);
+      if (chatData.status) dispatch(addChat(chatData.data));
       const exists = chats.find((chat) => chatID === chat.id);
-      getChatInfo(chatID);
-      console.log(chatID, exists);
+      console.log("[handleChatMessage]", "chatID", "chatData", "exists");
+      console.log(chatID, chatData, exists);
       if (!exists) {
         // should never happen
+        console.log(
+          "chat not found. actually this should never be visible",
+          chats
+        );
       }
-    } else if (res.messageType === CONSTANTS.NEW_MESSAGE) {
+    } else if (res.messageType === CONSTANTS.WS.NEW_MESSAGE) {
       // show new message
-    } else if (res.messageType === CONSTANTS.EDIT_MESSAGE) {
-      // find and edit message
-    } else if (res.messageType === CONSTANTS.DELETE_MESSAGE) {
+      console.log("[handleChatMessage] new message");
+      const username =
+        res.sender !== myId
+          ? users.find((user) => user.id === res.sender)
+          : null;
+      console.log(username);
+      if (username) {
+        notif(`${username}: ${res.text}`, "info");
+      }
+      dispatch(updateMessage(res.payload));
+    } else if (res.messageType === CONSTANTS.WS.EDIT_MESSAGE) {
+      console.log("[handleChatMessage] edit message");
+      dispatch(updateMessage(res.payload));
+    } else if (res.messageType === CONSTANTS.WS.DELETE_MESSAGE) {
       // find and delete message
     }
   };
 
   const getChatsInfo = async () => {
     console.log("[getChatsInfoWS]", chats);
-    const res = await api("chat");
-    console.log(res.data);
-    if (res.data.status) {
-      loadRecipients(res.data.data);
-      dispatch(setChats(res.data.data));
+    try {
+      const res = await api("chat");
+      console.log(res.data);
+      if (res.data.status) {
+        loadRecipients(res.data.data);
+        dispatch(setChats(res.data.data));
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
-
-  // const newChat = (id) => {
-  //   console.log("newChat");
-  //   const chat = new Chat({ userIds: [id, myId] });
-  //   const newChat = new WSmessage({ messageType: 100, payload: chat });
-  //   send(newChat);
-  //   // getChatsInfo();
-  // };
 
   /**
    * Tries to find exsiting chat by its ID or recipient ID
@@ -103,6 +141,8 @@ export const useChat = () => {
    * @param {string} chatId if known
    */
   const selectChat = async (userId, chatId = null) => {
+    console.log(chats);
+    if (!chats || chats.length === 0) await getChatsInfo();
     const selectedCompanion = companion || users.find((e) => e.id === userId);
     if (!selectedCompanion) {
       dispatch(loadUsers([userId]));
@@ -128,46 +168,64 @@ export const useChat = () => {
     }
   };
 
-  const newMessage = (recepient, text) => {
-    console.log("newMessage");
-    const ms = new Message({ sender: myId, recepient, text });
-    const wsMessage = new WSmessage({
-      messageType: CONSTANTS.SENT_MESSAGE,
-      payload: ms,
-      toChat: chat,
+  const newMessage = (recipient, text) => {
+    const message = new Message({
+      sender: myId,
+      recipient,
+      text,
+      chatId: chat.id,
     });
+    const wsMessage = new WSmessage({
+      messageType: CONSTANTS.MESSAGE.SENT_MESSAGE,
+      payload: message,
+    });
+    dispatch(updateMessage(message));
     send(wsMessage);
   };
 
-  const editMessage = (id, recepient, text) => {
+  const editMessage = (id, recipient, text) => {
     console.log("editMessage");
-    const ms = new Message({ sender: myId, id, recepient, text });
-    const wsMessage = new WSmessage({
-      messageType: CONSTANTS.EDIT_MESSAGE,
-      payload: ms,
-      toChat: chat,
+    const message = new Message({
+      sender: myId,
+      id,
+      recipient,
+      text,
+      chatId: chat.id,
     });
+    const wsMessage = new WSmessage({
+      messageType: CONSTANTS.WS.EDIT_MESSAGE,
+      payload: message,
+    });
+    dispatch(updateMessage(message));
     send(wsMessage);
   };
 
-  const deleteMessage = (id, recepient, text) => {
-    console.log("editMessage");
-    const ms = new Message({ sender: myId, id, recepient, text });
-    const wsMessage = new WSmessage({
-      messageType: CONSTANTS.DELETE_MESSAGE,
-      payload: ms,
-      toChat: chat,
+  const deleteMessage = (id, recipient, text) => {
+    console.log("deleteMessage");
+    const message = new Message({
+      sender: myId,
+      id,
+      recipient,
+      text,
+      chatId: chat.id,
     });
+    const wsMessage = new WSmessage({
+      messageType: CONSTANTS.WS.DELETE_MESSAGE,
+      payload: message,
+    });
+    dispatch(setDeleteMessage(message));
     send(wsMessage);
   };
 
   return {
-    // newChat,
     selectChat,
     createChat,
     newMessage,
+    editMessage,
+    deleteMessage,
     getChatInfo,
     getChatsInfo,
+    readMessage,
     handleChatMessage,
   };
 };

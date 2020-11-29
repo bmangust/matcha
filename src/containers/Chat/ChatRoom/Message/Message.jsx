@@ -33,7 +33,6 @@ const useStyles = makeStyles({
   Date: {
     fontSize: "0.7rem",
     color: primaryColor.contrastTextLighter,
-    // textAlign: ({ self }) => (self ? "end" : "start"),
   },
   Icon: {
     marginLeft: "0.3rem",
@@ -56,7 +55,8 @@ const useStyles = makeStyles({
 
 const getDate = (date) => {
   const d = new Date(date);
-  return `${d.getHours()}:${d.getMinutes()}`;
+  const minutes = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
+  return `${d.getHours()}:${minutes}`;
 };
 
 const Message = (props) => {

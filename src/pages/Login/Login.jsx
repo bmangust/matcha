@@ -11,12 +11,14 @@ import {
 } from "./loginSlice";
 import { auth } from "../../store/generalSlice";
 import Form from "../../components/Form/Form";
-import { api } from "../../axios";
 import { useNotifications } from "../../hooks/useNotifications";
 
 const useStyles = makeStyles({
   Grid: {
     height: "100vh",
+  },
+  label: {
+    textTransform: "none",
   },
 });
 
@@ -106,6 +108,8 @@ const Login = () => {
     },
   ];
 
+  const handleForgot = () => {};
+
   return (
     <Grid container justify="center" alignItems="center">
       <Grid
@@ -122,7 +126,17 @@ const Login = () => {
         {isLoading ? (
           <CircularProgress />
         ) : (
-          <Form inputs={inputs} buttons={buttons} />
+          <>
+            <Form inputs={inputs} buttons={buttons} />
+            <Button
+              variant="text"
+              color="primary"
+              classes={{ label: classes.label }}
+              onClick={handleForgot}
+            >
+              Forgot password?
+            </Button>
+          </>
         )}
       </Grid>
     </Grid>

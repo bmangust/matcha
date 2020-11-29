@@ -1,12 +1,5 @@
-import React from "react";
-import {
-  Button,
-  Divider,
-  Fab,
-  Grid,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
+import React, { useEffect } from "react";
+import { Divider, Fab, Grid, makeStyles, Typography } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import Gallery from "../../components/Gallery/Gallery";
 import Tags from "../../components/Tags/Tags";
@@ -49,11 +42,17 @@ const UserProfile = (props) => {
   };
   const defaultBio = "UFO flew here and dropped this message here";
   const { selectChat } = useChat();
+  const chat = useSelector((state) => state.chat.chat);
 
   const handleChat = (e) => {
     selectChat(id);
-    history.push(`/chat/${id}`);
   };
+
+  useEffect(() => {
+    console.log("UserProfile useEffect push to chat");
+    if (!chat || !chat.id) return;
+    history.push(`/chat/${chat.id}`);
+  }, [chat, history]);
 
   return (
     <Grid
@@ -62,7 +61,7 @@ const UserProfile = (props) => {
       alignItems="center"
       className={classes.FullWidth}
     >
-      <ProfileHeader img={avatar?.image || images[0].image || defaultAvatar} />
+      <ProfileHeader img={avatar?.image || images[0]?.image || defaultAvatar} />
 
       <Grid
         container

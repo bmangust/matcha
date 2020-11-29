@@ -22,7 +22,7 @@ import Profile from "../../pages/Profile/Profile";
 import Header from "../../components/Header/Header";
 import Chat from "../Chat/Chat";
 import { useNotifications } from "../../hooks/useNotifications";
-import { useWS } from "../../hooks/useWS.hook";
+import { checkStatusAndReconnect, useWS } from "../../hooks/useWS.hook";
 
 const useStyles = makeStyles({
   selectedTab: {
@@ -115,6 +115,11 @@ const Main = (props) => {
     if (lookedBySet.size === 0) return;
     setNotification(lookedBySet);
   }, [lookedBy, id]);
+
+  // check WS status on every tab change and user visit
+  useEffect(() => {
+    checkStatusAndReconnect();
+  }, [selectedTab, companion]);
 
   const renderedTabs = tabs.map((el) => {
     return (

@@ -1,6 +1,8 @@
 import { makeStyles, Grid, List, ListItem } from "@material-ui/core";
-import React from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import { useChat } from "../../../hooks/useChat.hook";
+import { CONSTANTS } from "../../../store/ws";
 import Message from "./Message/Message";
 import SendForm from "./SendForm/SendForm";
 
@@ -27,22 +29,64 @@ const useStyles = makeStyles({
   },
 });
 
-const ChatRoom = () => {
-  const { name, avatar } = useSelector((state) => state.UI.companion);
+let cnt = 0;
+
+const ChatRoom = (props) => {
+  const { name, avatar, images } = useSelector((state) => state.UI.companion);
   const { messages } = useSelector((state) => state.chat.chat);
+  const myId = useSelector((state) => state.general.id);
   const classes = useStyles();
-  const renderedMessages = messages
-    ? messages.map((el) => (
-        <ListItem key={el.id} className={classes.ListItem}>
-          <Message
-            self={el.self}
-            text={el.text}
-            image={avatar?.image}
-            name={name}
-          />
-        </ListItem>
-      ))
-    : "No messages yet";
+  const { readMessage } = useChat();
+  const [mappedMessages, setMappedMessages] = useState([]);
+  console.log("[ChatRoom]", mappedMessages);
+
+  const formatedMessages = useMemo(
+    () =>
+      !messages || !messages.length
+        ? []
+        : messages.map((el) => (
+            <ListItem key={el.id} className={classes.ListItem}>
+              <Message
+                self={el.sender === myId}
+                text={el.text}
+                image={avatar?.image || images[0]?.image}
+                name={name}
+                date={el.date}
+                state={el.state}
+              />
+            </ListItem>
+          )),
+    [name, avatar, images, messages, myId, classes.ListItem]
+  );
+
+  const readAllMessages = useCallback(() => {
+    messages.forEach((message) => {
+      if (message.sender !== myId) {
+        switch (message.state) {
+          case CONSTANTS.MESSAGE.SENT_MESSAGE:
+          case CONSTANTS.MESSAGE.DELIVERED_MESSAGE:
+            readMessage(message);
+            return;
+          case CONSTANTS.MESSAGE.READ_MESSAGE:
+          default:
+            return;
+        }
+      }
+    });
+  }, [messages]);
+
+  useEffect(() => {
+    if (cnt === 5) return;
+    if (!messages || !messages.length) return;
+    readAllMessages();
+  }, [messages]);
+
+  useEffect(() => {
+    if (cnt === 5) return;
+    setMappedMessages(formatedMessages);
+  }, [formatedMessages]);
+  cnt++;
+
   return (
     <Grid
       container
@@ -52,7 +96,9 @@ const ChatRoom = () => {
       spacing={1}
       className={classes.Container}
     >
-      <List className={classes.List}>{renderedMessages}</List>
+      <List className={classes.List}>
+        {mappedMessages.length ? mappedMessages : "No messages yet"}
+      </List>
       <Grid item className={classes.SendForm}>
         <SendForm />
       </Grid>

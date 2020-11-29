@@ -1,12 +1,7 @@
 import { getCookie } from "../utils";
 import { useChat } from "./useChat.hook";
 
-// const status = {
-//   CONNECTING: "CONNECTING",
-//   READY: "READY",
-//   CLOSED: "CLOSED",
-// };
-//   const host = "192.168.43.151";
+// const host = "192.168.43.151";
 const host = "localhost";
 const port = 8080;
 const cookie = getCookie("session_id");
@@ -18,13 +13,13 @@ const newConnection = () => {
 };
 
 export const useWS = () => {
-  const { handleChatMessage } = useChat();
+  const { handleChatMessage, getChatsInfo } = useChat();
 
   socket = socket ? socket : newConnection();
-  // console.log(socket);
 
   socket.onopen = function (e) {
     console.log("[open] Соединение установлено");
+    getChatsInfo();
     while (queue.length > 0) {
       const message = queue.shift();
       send(message);
@@ -42,26 +37,36 @@ export const useWS = () => {
       console.log(
         `[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`
       );
+      socket = null;
     } else {
-      // например, сервер убил процесс или сеть недоступна
-      // обычно в этом случае event.code 1006
+      // server killed the connection or user is offline (event.code 1006)
       console.log("[close] Соединение прервано");
+      console.log(event);
+      socket = newConnection();
     }
   };
 
   socket.onerror = function (error) {
     console.log(`[error] ${error.message}`);
+    checkStatusAndReconnect();
   };
 
   return socket;
 };
 
+export const checkStatusAndReconnect = () => {
+  if (socket.readyState !== socket.OPEN) {
+    socket = newConnection();
+  }
+};
+
 export const send = (message) => {
-  console.log(JSON.stringify(message));
+  console.log(message);
   if (!socket) socket = newConnection();
   console.log(socket);
 
   if (socket.readyState !== socket.OPEN) {
+    checkStatusAndReconnect();
     // queue all messages
     queue.push(message);
     return;

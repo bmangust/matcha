@@ -54,12 +54,12 @@ const Chat = (props) => {
         />
       </Switch>
       {/* chat debug */}
-      <Container>
+      {/* <Container>
         <Button onClick={() => createChat(id)}>Create chat</Button>
         <Button onClick={() => getChatsInfo()}>Get chats info</Button>
         <input onChange={handleChange} value={id} />
         <Button onClick={() => getChatInfo(id)}>Get chat info</Button>
-      </Container>
+      </Container> */}
     </Container>
   );
 };
