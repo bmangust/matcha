@@ -47,7 +47,7 @@ const buttons = [
 ];
 export const TabContext = createContext(buttons[0].id);
 
-const Profile = (props) => {
+const Profile = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = useState(0);
 
@@ -59,11 +59,15 @@ const Profile = (props) => {
     <Tab disableRipple label={el.text} key={index} />
   ));
 
-  const tabPanels = buttons.map((el, index) => (
-    <TabPanel value={currentTab} index={index} key={index}>
-      {el.component}
+  const getPanel = (index) => (
+    <TabPanel
+      value={currentTab}
+      index={buttons[currentTab].id}
+      key={buttons[currentTab].id}
+    >
+      {buttons[currentTab].component}
     </TabPanel>
-  ));
+  );
 
   return (
     <Grid
@@ -83,7 +87,7 @@ const Profile = (props) => {
         >
           {tabs}
         </Tabs>
-        {tabPanels}
+        {getPanel()}
       </TabContext.Provider>
     </Grid>
   );
