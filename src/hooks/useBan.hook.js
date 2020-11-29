@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "../axios";
 import { loadUsers, setStrangers } from "../store/usersSlice";
@@ -22,10 +22,9 @@ export const useBan = () => {
   const dispatch = useDispatch();
   const strangers = useSelector((state) => state.users.strangers);
 
-  const loadBanned = async () => {
+  const loadBanned = () => async () => {
     try {
       const res = await api("ban");
-      console.log(res);
       if (res.data.status) {
         const data = res.data.data || [];
         dispatch(loadUsers(data));
@@ -38,21 +37,27 @@ export const useBan = () => {
     loadBanned();
   }, []);
 
-  const banAndUpdate = async (userId) => {
-    await banUser(userId);
-    const filteredStrangers = strangers.filter((user) => user.id !== userId);
-    dispatch(setStrangers(filteredStrangers));
-    const updatedBanned = [...banned, userId];
-    setBanned(updatedBanned);
-  };
-
-  const unbanAndUpdate = async (userId) => {
-    const res = await unbanUser(userId);
-    if (banned.length && res) {
-      const updatedBanned = banned.filter((id) => id !== userId);
+  const banAndUpdate = useCallback(
+    () => async (userId) => {
+      await banUser(userId);
+      const filteredStrangers = strangers.filter((user) => user.id !== userId);
+      dispatch(setStrangers(filteredStrangers));
+      const updatedBanned = [...banned, userId];
       setBanned(updatedBanned);
-    }
-  };
+    },
+    [strangers, banned, dispatch]
+  );
+
+  const unbanAndUpdate = useCallback(
+    () => async (userId) => {
+      const res = await unbanUser(userId);
+      if (banned.length && res) {
+        const updatedBanned = banned.filter((id) => id !== userId);
+        setBanned(updatedBanned);
+      }
+    },
+    [banned]
+  );
 
   return { banned, loadBanned, banAndUpdate, unbanAndUpdate };
 };
