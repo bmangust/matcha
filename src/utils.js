@@ -8,10 +8,10 @@ export const xssSanitize = (value) => {
     ic = /"/g;
   return value
     ? value
-    .toString()
-    .replace(lt, "&lt;")
-    .replace(gt, "&gt;")
-    .replace(ap, "&#39;")
+        .toString()
+        .replace(lt, "&lt;")
+        .replace(gt, "&gt;")
+        .replace(ap, "&#39;")
         .replace(ic, "&#34;")
     : "";
 };
@@ -112,10 +112,20 @@ export const throttle = (f) => {
 };
 
 export const getCookie = (name) => {
-  let matches = document.cookie.match(
+  const allCookies = document.cookie;
+  console.log(allCookies);
+  let matches = allCookies.match(
     new RegExp(
       "(?:^|; )" + name.replace(/([.$?*|{}()[\]\\/+^])/g, "\\$1") + "=([^;]*)"
     )
   );
-  return matches ? decodeURIComponent(matches[1]) : undefined;
+  const cookie = matches ? decodeURIComponent(matches[1]) : undefined;
+  if (cookie === undefined) {
+    cookie = allCookies
+      .split(";")
+      .find((el) => el.match(/session_id.+/))
+      .split("=")[1]
+      .trim();
+  }
+  return cookie;
 };

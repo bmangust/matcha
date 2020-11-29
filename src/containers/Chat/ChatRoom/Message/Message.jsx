@@ -39,7 +39,7 @@ const useStyles = makeStyles({
     marginLeft: "0.3rem",
     fontSize: "0.7rem",
     color: ({ state }) =>
-      state === CONSTANTS.SENT_MESSAGE
+      state === CONSTANTS.MESSAGE.SENT_MESSAGE
         ? primaryColor.contrastTextLighter
         : secondaryColor.main,
   },
@@ -76,7 +76,7 @@ const Message = (props) => {
           <Typography component="span" className={classes.Date}>
             {getDate(date)}
           </Typography>
-          {state === CONSTANTS.READ_MESSAGE ? (
+          {state === CONSTANTS.MESSAGE.READ_MESSAGE ? (
             <DoneAllRounded className={classes.Icon} />
           ) : (
             <DoneRounded className={classes.Icon} />

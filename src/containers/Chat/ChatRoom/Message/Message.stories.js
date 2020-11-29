@@ -35,7 +35,7 @@ SelfSent.args = {
   image: defaultAvatar,
   name: "Alex",
   date: new Date().getTime(),
-  state: CONSTANTS.SENT_MESSAGE,
+  state: CONSTANTS.MESSAGE.SENT_MESSAGE,
 };
 
 export const SelfDelivered = Template.bind({});
@@ -45,7 +45,7 @@ SelfDelivered.args = {
   image: defaultAvatar,
   name: "Alex",
   date: new Date().getTime(),
-  state: CONSTANTS.DELIVERED_MESSAGE,
+  state: CONSTANTS.MESSAGE.DELIVERED_MESSAGE,
 };
 
 export const SelfRead = Template.bind({});
@@ -55,7 +55,7 @@ SelfRead.args = {
   image: defaultAvatar,
   name: "Alex",
   date: new Date().getTime(),
-  state: CONSTANTS.READ_MESSAGE,
+  state: CONSTANTS.MESSAGE.READ_MESSAGE,
 };
 
 export const SelfMidText = Template.bind({});
@@ -66,7 +66,7 @@ SelfMidText.args = {
   image: defaultAvatar,
   name: "Alex",
   date: new Date().getTime(),
-  state: CONSTANTS.READ_MESSAGE,
+  state: CONSTANTS.MESSAGE.READ_MESSAGE,
 };
 
 export const SelfLongText = Template.bind({});
@@ -77,7 +77,7 @@ SelfLongText.args = {
   image: defaultAvatar,
   name: "Alex",
   date: new Date().getTime(),
-  state: CONSTANTS.READ_MESSAGE,
+  state: CONSTANTS.MESSAGE.READ_MESSAGE,
 };
 
 export const SelfReallyLongText = Template.bind({});
@@ -88,7 +88,7 @@ SelfReallyLongText.args = {
   image: defaultAvatar,
   name: "Alex",
   date: new Date().getTime(),
-  state: CONSTANTS.READ_MESSAGE,
+  state: CONSTANTS.MESSAGE.READ_MESSAGE,
 };
 
 export const OtherSent = Template.bind({});
@@ -98,7 +98,7 @@ OtherSent.args = {
   image: defaultAvatar,
   name: "Alex",
   date: new Date().getTime(),
-  state: CONSTANTS.SENT_MESSAGE,
+  state: CONSTANTS.MESSAGE.SENT_MESSAGE,
 };
 
 export const OtherDelivered = Template.bind({});
@@ -108,7 +108,7 @@ OtherDelivered.args = {
   image: defaultAvatar,
   name: "Alex",
   date: new Date().getTime(),
-  state: CONSTANTS.DELIVERED_MESSAGE,
+  state: CONSTANTS.MESSAGE.DELIVERED_MESSAGE,
 };
 
 export const OtherRead = Template.bind({});
@@ -118,7 +118,7 @@ OtherRead.args = {
   image: defaultAvatar,
   name: "Alex",
   date: new Date().getTime(),
-  state: CONSTANTS.READ_MESSAGE,
+  state: CONSTANTS.MESSAGE.READ_MESSAGE,
 };
 
 export const OtherMidText = Template.bind({});
@@ -129,7 +129,7 @@ OtherMidText.args = {
   image: defaultAvatar,
   name: "Alex",
   date: new Date().getTime(),
-  state: CONSTANTS.READ_MESSAGE,
+  state: CONSTANTS.MESSAGE.READ_MESSAGE,
 };
 
 export const OtherLongText = Template.bind({});
@@ -140,7 +140,7 @@ OtherLongText.args = {
   image: defaultAvatar,
   name: "Alex",
   date: new Date().getTime(),
-  state: CONSTANTS.READ_MESSAGE,
+  state: CONSTANTS.MESSAGE.READ_MESSAGE,
 };
 
 export const OtherReallyLongText = Template.bind({});
@@ -151,5 +151,5 @@ OtherReallyLongText.args = {
   image: defaultAvatar,
   name: "Alex",
   date: new Date().getTime(),
-  state: CONSTANTS.READ_MESSAGE,
+  state: CONSTANTS.MESSAGE.READ_MESSAGE,
 };

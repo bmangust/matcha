@@ -61,7 +61,7 @@ const Sort = () => {
 
   useEffect(() => {
     dispatch(sortStrangers({ compareFunction: compFn() }));
-  }, [isAsc, sortingParam, compFn]);
+  }, [isAsc, sortingParam, compFn, dispatch]);
 
   return (
     <Grid
