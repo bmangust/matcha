@@ -18,18 +18,18 @@ const Chat = (props) => {
   const classes = useStyles();
   const chats = useSelector((state) => state.chat.chats);
   const { getChatsInfo, selectChat, createChat, getChatInfo } = useChat();
-  const [id, setId] = useState("");
+  // const [id, setId] = useState("");
 
-  const handleChange = (e) => {
-    setId(e.target.value);
-  };
+  // const handleChange = (e) => {
+  //   setId(e.target.value);
+  // };
 
   useEffect(() => {
     getChatsInfo();
   }, []);
 
   const handleChatSelect = (id, chatId) => {
-    // console.log(id);
+    // console.log(id, chatId);
     selectChat(id, chatId);
     props.history.push(`/chat/${chatId}`);
   };

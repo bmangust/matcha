@@ -33,31 +33,14 @@ let cnt = 0;
 
 const ChatRoom = (props) => {
   const { name, avatar, images } = useSelector((state) => state.UI.companion);
-  const { messages } = useSelector((state) => state.chat.chat);
+  const { chat, chats } = useSelector((state) => state.chat);
+  const messages = chats.find((ch) => ch.id === chat).messages;
   const myId = useSelector((state) => state.general.id);
   const classes = useStyles();
   const { readMessage } = useChat();
   const [mappedMessages, setMappedMessages] = useState([]);
-  console.log("[ChatRoom]", mappedMessages);
-
-  const formatedMessages = useMemo(
-    () =>
-      !messages || !messages.length
-        ? []
-        : messages.map((el) => (
-            <ListItem key={el.id} className={classes.ListItem}>
-              <Message
-                self={el.sender === myId}
-                text={el.text}
-                image={avatar?.image || images[0]?.image}
-                name={name}
-                date={el.date}
-                state={el.state}
-              />
-            </ListItem>
-          )),
-    [name, avatar, images, messages, myId, classes.ListItem]
-  );
+  console.log(`[ChatRoom ${cnt}] mappedMessages`, mappedMessages);
+  console.log(`[ChatRoom ${cnt}] messages`, messages);
 
   const readAllMessages = useCallback(() => {
     messages.forEach((message) => {
@@ -76,15 +59,30 @@ const ChatRoom = (props) => {
   }, [messages]);
 
   useEffect(() => {
-    if (cnt === 5) return;
+    // if (cnt === 5) return;
     if (!messages || !messages.length) return;
     readAllMessages();
   }, [messages]);
 
   useEffect(() => {
-    if (cnt === 5) return;
+    // if (cnt === 5) return;
+    const formatedMessages = () =>
+      !messages || !messages.length
+        ? []
+        : messages.map((el) => (
+            <ListItem key={el.id} className={classes.ListItem}>
+              <Message
+                self={el.sender === myId}
+                text={el.text}
+                image={avatar?.image || images[0]?.image}
+                name={name}
+                date={el.date}
+                state={el.state}
+              />
+            </ListItem>
+          ));
     setMappedMessages(formatedMessages);
-  }, [formatedMessages]);
+  }, [messages]);
   cnt++;
 
   return (

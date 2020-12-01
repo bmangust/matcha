@@ -119,7 +119,7 @@ export const getCookie = (name) => {
       "(?:^|; )" + name.replace(/([.$?*|{}()[\]\\/+^])/g, "\\$1") + "=([^;]*)"
     )
   );
-  const cookie = matches ? decodeURIComponent(matches[1]) : undefined;
+  let cookie = matches ? decodeURIComponent(matches[1]) : undefined;
   if (cookie === undefined) {
     cookie = allCookies
       .split(";")

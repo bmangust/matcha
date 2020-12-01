@@ -33,7 +33,7 @@ export const useChat = () => {
   const getChatInfo = async (chatId) => {
     try {
       const chatInfo = await api(`chat/${chatId}`);
-      console.log(chatInfo.data);
+      console.log("[getChatInfo]", chatInfo.data);
       return chatInfo.data;
     } catch (e) {
       console.log(e);
@@ -53,7 +53,6 @@ export const useChat = () => {
       console.log(res.data);
       if (res.data.status) {
         const chatInfo = await getChatInfo(res.data.data);
-        console.log(chatInfo);
         if (chatInfo.status) {
           dispatch(addChat(chatInfo.data));
           dispatch(setChat(chatInfo.data));
@@ -84,6 +83,17 @@ export const useChat = () => {
     dispatch(updateMessage(readMessage));
   };
 
+  const showNotif = (message) => {
+    const username =
+      message.sender !== myId
+        ? users.find((user) => user.id === message.sender)
+        : null;
+    console.log(`[showNotif] username: ${username}`);
+    if (username) {
+      notif(`${username}: ${message.text}`);
+    }
+  };
+
   const handleChatMessage = async (res) => {
     console.log("[handleChatMessage]", res);
     if (res.messageType === CONSTANTS.WS.NEW_CHAT) {
@@ -103,17 +113,11 @@ export const useChat = () => {
     } else if (res.messageType === CONSTANTS.WS.NEW_MESSAGE) {
       // show new message
       console.log("[handleChatMessage] new message");
-      const username =
-        res.sender !== myId
-          ? users.find((user) => user.id === res.sender)
-          : null;
-      console.log(username);
-      if (username) {
-        notif(`${username}: ${res.text}`, "info");
-      }
+      showNotif(res.payload);
       dispatch(updateMessage(res.payload));
     } else if (res.messageType === CONSTANTS.WS.EDIT_MESSAGE) {
       console.log("[handleChatMessage] edit message");
+      showNotif(res.payload);
       dispatch(updateMessage(res.payload));
     } else if (res.messageType === CONSTANTS.WS.DELETE_MESSAGE) {
       // find and delete message
@@ -173,7 +177,7 @@ export const useChat = () => {
       sender: myId,
       recipient,
       text,
-      chatId: chat.id,
+      chatId: chat,
     });
     const wsMessage = new WSmessage({
       messageType: CONSTANTS.MESSAGE.SENT_MESSAGE,
@@ -190,7 +194,7 @@ export const useChat = () => {
       id,
       recipient,
       text,
-      chatId: chat.id,
+      chatId: chat,
     });
     const wsMessage = new WSmessage({
       messageType: CONSTANTS.WS.EDIT_MESSAGE,
@@ -207,7 +211,7 @@ export const useChat = () => {
       id,
       recipient,
       text,
-      chatId: chat.id,
+      chatId: chat,
     });
     const wsMessage = new WSmessage({
       messageType: CONSTANTS.WS.DELETE_MESSAGE,

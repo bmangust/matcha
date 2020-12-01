@@ -12,43 +12,60 @@ const chatSlice = createSlice({
   initialState,
   reducers: {
     setChats(state, { payload }) {
+      console.log(payload);
       if (payload && payload.length) {
-        state.chats = [...payload];
+        console.log("payload is not null");
+        state.chats = payload.map((chat) => ({
+          ...chat,
+          messages: chat.messages || [],
+        }));
       }
     },
     addChat(state, { payload }) {
+      console.log(payload);
       if (!state.chats.find((chat) => chat.id === payload.id)) {
-        state.chats.push(payload);
+        console.log("chat not found, adding", payload);
+        state.chats.push({ ...payload, messages: payload.messages || [] });
       }
     },
     removeChat(state, { payload }) {
-      state.chats = state.chats.filter((chat) => chat.id !== payload.id);
+      state.chats = state.chats?.filter((chat) => chat.id !== payload.id);
     },
     setChat(state, { payload }) {
-      state.chat = payload
+      const chat = payload
         ? state.chats.find((ch) => ch.id === payload.id)
         : null;
+      state.chat = chat?.id || null;
     },
     updateMessage(state, { payload }) {
-      if (!state.chat) {
-        const chat = state.chats.find((ch) => ch.id === payload.chatId);
-        state.chat = chat;
+      const selectedChat =
+        state.chat || state.chats.find((ch) => ch.id === payload.chatId)?.id;
+      if (!selectedChat) {
+        console.log("[updateMessage] chat not found. payload:", payload);
+        return;
       }
-      console.log(current(state.chat));
 
-      const message = state.chat.messages.find((msg) => msg.id === payload.id);
-      if (message) {
-        Object.keys(message).forEach((key) => (message[key] = payload[key]));
+      const chatIdx = state.chats.findIndex((chat) => chat.id === selectedChat);
+      const msgIdx = state.chats[chatIdx].messages.findIndex(
+        (msg) => msg.id === payload.id
+      );
+
+      console.log(`chatIdx: ${chatIdx}, msgIdx: ${msgIdx}`);
+      if (msgIdx === -1) {
+        state.chats[chatIdx].messages.push({ ...payload });
       } else {
-        state.chat.messages.push({ ...payload });
+        state.chats[chatIdx].messages = [
+          ...state.chats[chatIdx].messages.slice(0, msgIdx),
+          { ...payload },
+          ...state.chats[chatIdx].messages.slice(msgIdx + 1),
+        ];
       }
     },
-    // readAllChatMessages(state, { payload }) {
-    //   const { chatId, messages } = { ...payload };
-    //   const chat = state.chats;
-    // },
     setDeleteMessage(state, { payload }) {
-      const messageIndex = state.chat.messages.findIndex(
+      const selectedChat =
+        state.chat || state.chats.find((ch) => ch.id === payload.chatId)?.id;
+      const chatIdx = state.chats.findIndex((chat) => chat.id === selectedChat);
+      const messageIndex = state.chats[chatIdx].messages.findIndex(
         (msg) => msg.id === payload.id
       );
       if (messageIndex !== -1) {
@@ -60,11 +77,11 @@ const chatSlice = createSlice({
     },
     upadateChatMessages(state, { payload }) {
       if (!state.chat) return;
-      state.chat.messages = payload;
+      const chatIdx = state.chats.findIndex((chat) => chat.id === state.chat);
+      state.chats[chatIdx].messages = payload;
     },
     setChatById(state, { payload }) {
-      const chat = state.chats.find((chat) => chat.id === payload);
-      state.chat = chat;
+      state.chat = payload;
     },
     resetState() {
       return initialState;

@@ -50,8 +50,8 @@ const UserProfile = (props) => {
 
   useEffect(() => {
     console.log("UserProfile useEffect push to chat");
-    if (!chat || !chat.id) return;
-    history.push(`/chat/${chat.id}`);
+    if (!chat) return;
+    history.push(`/chat/${chat}`);
   }, [chat, history]);
 
   return (

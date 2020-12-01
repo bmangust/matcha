@@ -12,6 +12,12 @@ const newConnection = () => {
   return new WebSocket(`ws://${host}:${port}/ws?key=${cookie}`);
 };
 
+export const checkStatusAndReconnect = () => {
+  if (!socket || socket.readyState !== socket.OPEN) {
+    socket = newConnection();
+  }
+};
+
 export const useWS = () => {
   const { handleChatMessage, getChatsInfo } = useChat();
 
@@ -42,7 +48,7 @@ export const useWS = () => {
       // server killed the connection or user is offline (event.code 1006)
       console.log("[close] Соединение прервано");
       console.log(event);
-      socket = newConnection();
+      checkStatusAndReconnect();
     }
   };
 
@@ -54,14 +60,8 @@ export const useWS = () => {
   return socket;
 };
 
-export const checkStatusAndReconnect = () => {
-  if (socket.readyState !== socket.OPEN) {
-    socket = newConnection();
-  }
-};
-
 export const send = (message) => {
-  console.log(message);
+  console.log(JSON.stringify(message));
   if (!socket) socket = newConnection();
   console.log(socket);
 
