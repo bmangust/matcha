@@ -4,11 +4,11 @@ import { useChat } from "./useChat.hook";
 // const host = "192.168.43.151";
 const host = "localhost";
 const port = 8080;
-const cookie = getCookie("session_id");
 let socket = null;
 const queue = [];
 
 const newConnection = () => {
+  const cookie = getCookie("session_id");
   return new WebSocket(`ws://${host}:${port}/ws?key=${cookie}`);
 };
 

@@ -121,11 +121,8 @@ export const getCookie = (name) => {
   );
   let cookie = matches ? decodeURIComponent(matches[1]) : undefined;
   if (cookie === undefined) {
-    cookie = allCookies
-      .split(";")
-      .find((el) => el.match(/session_id.+/))
-      .split("=")[1]
-      .trim();
+    cookie = allCookies.split(";").find((el) => el.match(/session_id.+/));
+    if (cookie) cookie = cookie.split("=")[1].trim();
   }
   return cookie;
 };
