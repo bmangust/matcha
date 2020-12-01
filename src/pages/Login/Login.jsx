@@ -108,7 +108,9 @@ const Login = () => {
     },
   ];
 
-  const handleForgot = () => {};
+  const handleForgot = () => {
+    history.push("/forgot");
+  };
 
   return (
     <Grid container justify="center" alignItems="center">

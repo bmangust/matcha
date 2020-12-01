@@ -43,6 +43,7 @@ const useStyles = makeStyles({
     fontFamily: "Righteous",
     color: primaryColor.dark,
     fontSize: "2rem",
+    textTransform: "capitalize",
   },
   Popper: {
     zIndex: 5,

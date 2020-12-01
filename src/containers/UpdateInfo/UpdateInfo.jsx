@@ -28,6 +28,10 @@ import {
 } from "../../pages/AdditionalInfo/additionalSlice";
 import { useNotifications } from "../../hooks/useNotifications";
 import DialogMessage from "../../components/DialogMessage/DialogMessage";
+import { Switch, Route, useHistory } from "react-router-dom";
+import { setHeader, showBackButton, setParent } from "../../store/UISlice";
+import UpdatePassword from "../../components/UpdatePassword/UpdatePassword";
+import UpdatePersonalInfo from "../../components/UpdatePersonalInfo/UpdatePersonalInfo";
 
 const UpdateInfo = () => {
   const {
@@ -57,9 +61,8 @@ const UpdateInfo = () => {
   } = useSelector((state) => state.additional);
   const dispatch = useDispatch();
   const showNotif = useNotifications();
+  const history = useHistory();
 
-  const [password, setPassword] = useState("");
-  const [passwordValid, setPasswordValid] = useState(true);
   const [formValid, setFormValid] = useState(true);
 
   useEffect(() => {
@@ -70,8 +73,7 @@ const UpdateInfo = () => {
       emailValid &&
       phoneValid &&
       countryValid &&
-      cityValid &&
-      passwordValid;
+      cityValid;
     setFormValid(formValid);
   }, [
     usernameValid,
@@ -81,7 +83,6 @@ const UpdateInfo = () => {
     phoneValid,
     countryValid,
     cityValid,
-    passwordValid,
   ]);
 
   const saveUserInfo = async (e) => {
@@ -105,6 +106,13 @@ const UpdateInfo = () => {
       tags,
     };
     dispatch(updateInfo(body, showNotif));
+  };
+
+  const updatePersonalInfo = () => {
+    dispatch(setParent({ parent: "profile" }));
+    dispatch(setHeader({ header: "Update personal info" }));
+    dispatch(showBackButton());
+    history.push("/profile/personal");
   };
 
   const inputs = [
@@ -303,28 +311,28 @@ const UpdateInfo = () => {
         dispatch(changeSearchAgeRange(value));
       },
     },
-    {
-      name: "password",
-      type: "password",
-      label: "Password",
-      value: password,
-      ignoreUntouched: true,
-      onChange: (e) => {
-        setPassword(e.target.value);
-      },
-      onValidate: (isValid) => {
-        setPasswordValid(isValid);
-      },
-      rules: {
-        helperText:
-          "Use at least one lower- and uppercase letter, number and symbol. Min length 4",
-        rule: {
-          minLength: 0,
-          maxLength: 20,
-          regex: /^$|^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?]).{4,}$/,
-        },
-      },
-    },
+    // {
+    //   name: "password",
+    //   type: "password",
+    //   label: "Password",
+    //   value: password,
+    //   ignoreUntouched: true,
+    //   onChange: (e) => {
+    //     setPassword(e.target.value);
+    //   },
+    //   onValidate: (isValid) => {
+    //     setPasswordValid(isValid);
+    //   },
+    //   rules: {
+    //     helperText:
+    //       "Use at least one lower- and uppercase letter, number and symbol. Min length 4",
+    //     rule: {
+    //       minLength: 0,
+    //       maxLength: 20,
+    //       regex: /^$|^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?]).{4,}$/,
+    //     },
+    //   },
+    // },
     {
       name: "bio",
       type: "text",
@@ -362,6 +370,12 @@ const UpdateInfo = () => {
       disabled: !formValid,
       onClick: saveUserInfo,
     },
+    {
+      component: "button",
+      text: "update personal info",
+      size: "large",
+      onClick: updatePersonalInfo,
+    },
   ];
 
   const dialog = {
@@ -375,8 +389,14 @@ const UpdateInfo = () => {
 
   return (
     <>
-      <Form inputs={inputs} buttons={buttons} />
-      <DialogMessage {...dialog} />
+      <Switch>
+        <Route path="/profile" exact>
+          <Form inputs={inputs} buttons={buttons} />
+          <DialogMessage {...dialog} />
+        </Route>
+        <Route path="/profile/personal" component={UpdatePersonalInfo} />
+        <Route path="/profile/password-update" component={UpdatePassword} />
+      </Switch>
     </>
   );
 };

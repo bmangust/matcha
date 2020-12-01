@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { api } from "../axios";
-import { capitalize } from "../utils";
 import { setChat } from "./chatSlice";
 
 const initialUIState = {
@@ -24,7 +23,6 @@ const UISlice = createSlice({
     },
     setSelectedTab(state, { payload }) {
       state.selectedTab = payload.selectedTab;
-      // },
       state.header = payload.selectedTab.label;
       state.companion = null;
     },
@@ -58,8 +56,7 @@ export const {
 export const handleBack = (history, parent) => (dispatch, useState) => {
   const backLocation = useState().UI.parent;
   dispatch(hideBackButton());
-  const header = capitalize(parent);
-  dispatch(setHeader({ header }));
+  dispatch(setHeader({ header: parent }));
   dispatch(setCompanion({ companion: null }));
   dispatch(setChat(null));
   backLocation === "strangers"

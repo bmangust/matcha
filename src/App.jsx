@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AdditionalInfo from "./pages/AdditionalInfo/AdditionalInfo";
 import { getSelfInfo } from "./store/generalSlice";
 import { CircularProgress, Grid } from "@material-ui/core";
+import Forgot from "./components/Forgot/Forgot";
 
 const useStyles = makeStyles({
   Grid: {
@@ -63,6 +64,7 @@ function App() {
       setContent(
         <Switch>
           <Route path="/register" component={Register} exact />
+          <Route path="/forgot" component={Forgot} exact />
           <Route path="/login" component={Login} exact />
           <Route path="/">
             <Redirect to="/login" />
