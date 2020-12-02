@@ -14,6 +14,7 @@ import AdditionalInfo from "./pages/AdditionalInfo/AdditionalInfo";
 import { getSelfInfo } from "./store/generalSlice";
 import { CircularProgress, Grid } from "@material-ui/core";
 import Forgot from "./components/Forgot/Forgot";
+import UpdatePassword from "./components/UpdatePassword/UpdatePassword";
 
 const useStyles = makeStyles({
   Grid: {
@@ -65,6 +66,7 @@ function App() {
         <Switch>
           <Route path="/register" component={Register} exact />
           <Route path="/forgot" component={Forgot} exact />
+          <Route path="/reset" component={UpdatePassword} exact />
           <Route path="/login" component={Login} exact />
           <Route path="/">
             <Redirect to="/login" />

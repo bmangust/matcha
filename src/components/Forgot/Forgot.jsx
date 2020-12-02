@@ -1,6 +1,7 @@
 import { Grid, makeStyles } from "@material-ui/core";
 import React from "react";
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { api } from "../../axios";
 import { useNotifications } from "../../hooks/useNotifications";
 import Form from "../Form/Form";
@@ -18,6 +19,7 @@ const Forgot = () => {
   const notif = useNotifications();
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(false);
+  const history = useHistory();
 
   const updatePasswordRequest = (e) => {
     e.preventDefault();
@@ -27,6 +29,10 @@ const Forgot = () => {
     } catch (e) {
       notif("Server error, please try again later", "error");
     }
+  };
+
+  const backToLogin = () => {
+    history.push("/login");
   };
 
   const inputs = [
@@ -55,11 +61,18 @@ const Forgot = () => {
   const buttons = [
     {
       component: "button",
+      variant: "contained",
       type: "submit",
       text: "send restore password link",
       size: "large",
       disabled: !emailValid,
       onClick: updatePasswordRequest,
+    },
+    {
+      component: "button",
+      text: "back to login",
+      size: "large",
+      onClick: backToLogin,
     },
   ];
 

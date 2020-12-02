@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useRouteMatch } from "react-router-dom";
 import { api } from "../../axios";
+import queryString from "query-string";
 import {
   changePassword,
   changePasswordValid,
@@ -9,19 +11,36 @@ import {
 } from "../../pages/Register/registerSlice";
 import Form from "../Form/Form";
 
+const checkValidity = async (k) => {
+  try {
+    await api("/reset", { params: { k } });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 const UpdatePassword = (props) => {
   const { password, passwordValid, confirm, confirmValid } = useSelector(
     (state) => state.register
   );
   const dispatch = useDispatch();
+  const location = useLocation();
   const formValid = passwordValid && confirmValid;
+  const queryParams = queryString.parse(location.search);
 
-  const updatePasswordRequest = async () => {
-    const res = await api.put("/reset", { password });
-    console.log(res.data);
-    if (res.data.status) {
+  const updatePasswordRequest = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await api.put("/reset", { password });
+      console.log(res.data);
+    } catch (e) {
+      console.log(e);
     }
   };
+
+  useEffect(() => {
+    checkValidity(queryParams.k);
+  }, []);
 
   const inputs = [
     {
