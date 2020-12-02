@@ -99,10 +99,10 @@ const AdditionalInfo = () => {
             minAge,
             maxAge,
           },
-          showNotif,
-          history
+          showNotif
         )
       );
+      history.push("/");
     } else {
       setActiveStep((prev) => prev + 1);
     }

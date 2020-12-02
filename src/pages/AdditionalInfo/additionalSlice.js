@@ -177,8 +177,7 @@ export const updateInfo = (
     maxAge,
     tags,
   },
-  showNotif,
-  history
+  showNotif
 ) => async (dispatch) => {
   dispatch(startLoading());
 
@@ -233,7 +232,6 @@ export const updateInfo = (
   dispatch(onUpdateFail());
   console.log(message);
   showNotif("Server error", "error");
-  // history.push('/');
   dispatch(stopLoading());
 };
 
