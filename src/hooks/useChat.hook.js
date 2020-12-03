@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Chat, Message, WSmessage, CONSTANTS } from "../store/ws";
+import { Chat, Message, WSmessage, CONSTANTS } from "../models/ws";
 import { api } from "../axios";
 import { send } from "./useWS.hook";
 import {

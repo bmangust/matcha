@@ -1,7 +1,7 @@
 import { Avatar, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
 import { DoneAllRounded, DoneRounded } from "@material-ui/icons";
 import React from "react";
-import { CONSTANTS } from "../../../../store/ws";
+import { CONSTANTS } from "../../../../models/ws";
 import {
   backgroundColor,
   primaryColor,

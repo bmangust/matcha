@@ -2,7 +2,7 @@ import { makeStyles, Grid, List, ListItem } from "@material-ui/core";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useChat } from "../../../hooks/useChat.hook";
-import { CONSTANTS } from "../../../store/ws";
+import { CONSTANTS } from "../../../models/ws";
 import Message from "./Message/Message";
 import SendForm from "./SendForm/SendForm";
 
