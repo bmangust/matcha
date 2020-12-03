@@ -17,11 +17,13 @@ import {
 } from "../store/chatSlice";
 import { loadUsers } from "../store/usersSlice";
 import { useNotifications } from "./useNotifications";
+import { useLocation } from "react-router-dom";
 
 export const useChat = () => {
   const myId = useSelector((state) => state.general.id);
   const users = useSelector((state) => state.users.users);
   const companion = useSelector((state) => state.UI.companion);
+  const location = useLocation();
   const { chats, chat } = useSelector((state) => state.chat);
   const dispatch = useDispatch();
   const notif = useNotifications();
@@ -84,10 +86,15 @@ export const useChat = () => {
   };
 
   const showNotif = (message) => {
-    const username =
+    console.log(`[showNotif] location path: ${location.pathname}`);
+    const pathMatch = location.pathname.match(message.chatId);
+    console.log(pathMatch);
+    if (pathMatch && pathMatch[0] !== "") return;
+    const user =
       message.sender !== myId
         ? users.find((user) => user.id === message.sender)
         : null;
+    const username = user ? `${user.username}` : "Anonim";
     console.log(`[showNotif] username: ${username}`);
     if (username) {
       notif(`${username}: ${message.text}`);

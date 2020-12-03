@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UserCard from "../../components/UserCard/UserCard";
-import { Grid, makeStyles, Typography } from "@material-ui/core";
+import { Button, Grid, makeStyles, Typography } from "@material-ui/core";
 import { Route, Switch } from "react-router-dom";
 import UserProfile from "../../containers/UserProfile/UserProfile";
 import { useDispatch, useSelector } from "react-redux";
@@ -80,6 +80,18 @@ const Strangers = () => {
       alignItems="center"
       className={classes.Strangers}
     >
+      <Button
+        onClick={() =>
+          showNotif(
+            "hello",
+            // { message: "Author", id: 0, subMessage: "bye" },
+            "success",
+            { persist: true }
+          )
+        }
+      >
+        Show notification
+      </Button>
       <Switch>
         {routes}
         <Route
