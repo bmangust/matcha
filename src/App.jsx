@@ -15,7 +15,8 @@ import { getSelfInfo } from "./store/generalSlice";
 import { CircularProgress, Grid } from "@material-ui/core";
 import Forgot from "./components/Forgot/Forgot";
 import UpdatePassword from "./components/UpdatePassword/UpdatePassword";
-import SnackMessage from "./components/SnackMessage/SnackMessage";
+import SnackMessage from "./components/Notifier/SnackMessage/SnackMessage";
+import Notifier from "./components/Notifier/Notifier";
 
 const useStyles = makeStyles({
   Grid: {
@@ -81,11 +82,12 @@ function App() {
     <ThemeProvider theme={theme}>
       <SnackbarProvider
         maxSnack={3}
-        content={(key, message) => <SnackMessage id={key} message={message} />}
+        content={(key) => <SnackMessage id={key} />}
       >
         <>
           <CssBaseline />
           {content}
+          <Notifier />
         </>
       </SnackbarProvider>
     </ThemeProvider>

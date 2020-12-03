@@ -171,7 +171,7 @@ export const logout = (showNotif) => async (dispatch) => {
   try {
     const res = await api.delete("/signout");
     if (res.data.status) {
-      showNotif("Successful logout");
+      showNotif("Successful logout", "success");
       dispatch(resetGeneralState());
       dispatch(resetUIState());
       dispatch(resetFilter());
@@ -189,7 +189,7 @@ export const deleteAccount = (showNotif) => async (dispatch) => {
     const res = await api.delete("account");
     console.log(res.data);
     if (res.data.status) {
-      showNotif("Account successfully deleted");
+      showNotif("Account successfully deleted", "success");
       dispatch(resetGeneralState());
       dispatch(resetUIState());
       dispatch(resetFilter());

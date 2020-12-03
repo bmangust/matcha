@@ -35,7 +35,7 @@ const AvatarContainer = () => {
 
     if (res.data.status && res.data.data) {
       saveNewState({ images: [...images, avatar] });
-      showNotif("The file was uploaded");
+      showNotif("The file was uploaded", "success");
     } else {
       console.error(res.data);
       showNotif("Server error", "error");

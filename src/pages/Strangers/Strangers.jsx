@@ -80,18 +80,6 @@ const Strangers = () => {
       alignItems="center"
       className={classes.Strangers}
     >
-      <Button
-        onClick={() =>
-          showNotif(
-            "hello",
-            // { message: "Author", id: 0, subMessage: "bye" },
-            "success",
-            { persist: true }
-          )
-        }
-      >
-        Show notification
-      </Button>
       <Switch>
         {routes}
         <Route

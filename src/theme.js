@@ -23,6 +23,9 @@ export const theme = createMuiTheme({
   palette: {
     primary: primaryColor,
     secondary: secondaryColor,
+    info: {
+      main: "#04728B",
+    },
   },
   overrides: {
     MuiTextField: {

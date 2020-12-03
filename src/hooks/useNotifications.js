@@ -1,11 +1,19 @@
-import { useSnackbar } from "notistack";
+import { useDispatch } from "react-redux";
+import { addSnack } from "../components/Notifier/snackSlice";
 
 export const useNotifications = () => {
-  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
 
-  const showNotif = (message, variant = "success", options = {}) => {
-    enqueueSnackbar(message, { variant, ...options });
+  const showNotif = (message, variant, options = {}) => {
+    dispatch(
+      addSnack({
+        key: new Date().getTime() * Math.random(),
+        text: message.text || message,
+        header: message.header,
+        variant: variant || "default",
+        options,
+      })
+    );
   };
-
   return showNotif;
 };

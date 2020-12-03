@@ -89,7 +89,7 @@ export const register = (
     // console.log(response.data);
     if (response.data.status === true) {
       dispatch(onRegisterSuccess());
-      showNotif("Account successfully created, now login");
+      showNotif("Account successfully created, now login", "success");
       history.push("/login");
     } else {
       showNotif(response.data.data, "error");

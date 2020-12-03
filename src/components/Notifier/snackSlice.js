@@ -9,18 +9,19 @@ const snackSlice = createSlice({
   initialState,
   reducers: {
     addSnack(state, { payload }) {
-      state.notifications.concat([...payload]);
+      state.notifications.push(payload);
     },
     dismissSnack(state, { payload }) {
       state.notifications = state.notifications.map((notificaton) =>
         payload.dismissAll || notificaton.key === payload.key
-          ? { ...notification, dismissed: true }
-          : notification
+          ? { ...notificaton, dismissed: true }
+          : notificaton
       );
     },
     removeSnack(state, { payload }) {
+      console.log(payload);
       state.notifications = state.notifications.filter(
-        (el) => el.key === payload.key
+        (el) => el.key !== payload.key
       );
     },
   },

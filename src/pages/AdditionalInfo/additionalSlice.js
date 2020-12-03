@@ -220,7 +220,7 @@ export const updateInfo = (
     if (response.data.status) {
       dispatch(saveNewState(body));
       dispatch(onUpdateSuccess());
-      showNotif("Successfully saved!");
+      showNotif("Successfully saved!", "success");
       dispatch(stopLoading());
       return;
     } else {
