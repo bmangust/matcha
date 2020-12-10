@@ -4,6 +4,7 @@ import { prepareUsers, xssSanitize } from "../utils";
 import { resetUIState, setIsInfoMissing } from "./UISlice";
 import { resetFilter } from "../components/Filter/filterSlice";
 import { setAdditionalState } from "../pages/AdditionalInfo/additionalSlice";
+import { WSdisconnect } from "../hooks/useWS.hook";
 
 const initialGeneralState = {
   isAuth: false,
@@ -168,6 +169,7 @@ export const auth = (email, password, showNotif) => async (dispatch) => {
 
 export const logout = (showNotif) => async (dispatch) => {
   dispatch(startLoading());
+  WSdisconnect();
   try {
     const res = await api.delete("/signout");
     if (res.data.status) {

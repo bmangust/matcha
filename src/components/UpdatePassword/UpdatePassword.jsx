@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useRouteMatch } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { api } from "../../axios";
 import queryString from "query-string";
 import {
@@ -10,31 +10,40 @@ import {
   changeConfirmValid,
 } from "../../pages/Register/registerSlice";
 import Form from "../Form/Form";
-
-const checkValidity = async (k) => {
-  try {
-    await api("/reset", { params: { k } });
-  } catch (e) {
-    console.log(e);
-  }
-};
+import { Grid } from "@material-ui/core";
+import { useNotifications } from "../../hooks/useNotifications";
+import { useStyles } from "../../style";
 
 const UpdatePassword = (props) => {
+  const classes = useStyles();
   const { password, passwordValid, confirm, confirmValid } = useSelector(
     (state) => state.register
   );
   const dispatch = useDispatch();
   const location = useLocation();
+  const notif = useNotifications();
   const formValid = passwordValid && confirmValid;
   const queryParams = queryString.parse(location.search);
+  console.log(props);
+
+  const checkValidity = async (k) => {
+    try {
+      const res = await api("/reset", { params: { k } });
+      if (!res.data.status)
+        notif(`${res.data.data}. Try request link once again`, "warning");
+    } catch (e) {
+      notif("Server error", "error");
+    }
+  };
 
   const updatePasswordRequest = async (e) => {
     e.preventDefault();
     try {
       const res = await api.put("/reset", { password });
-      console.log(res.data);
+      if (res.data.status) notif("New password successfully saved", "success");
+      else notif(res.data.data, "success");
     } catch (e) {
-      console.log(e);
+      notif("Server error", "error");
     }
   };
 
@@ -99,7 +108,17 @@ const UpdatePassword = (props) => {
     },
   ];
 
-  return <Form inputs={inputs} buttons={buttons} />;
+  return (
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      justify="center"
+      className={classes.SingleForm}
+    >
+      <Form inputs={inputs} buttons={buttons} />
+    </Grid>
+  );
 };
 
 export default UpdatePassword;

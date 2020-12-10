@@ -1,18 +1,11 @@
-import { Grid, makeStyles } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { api } from "../../axios";
 import { useNotifications } from "../../hooks/useNotifications";
+import { useStyles } from "../../style";
 import Form from "../Form/Form";
-
-const useStyles = makeStyles({
-  FullWidth: {
-    width: "70vw",
-    height: "100vh",
-    margin: "0 auto",
-  },
-});
 
 const Forgot = () => {
   const classes = useStyles();
@@ -82,7 +75,7 @@ const Forgot = () => {
       direction="column"
       alignItems="center"
       justify="center"
-      className={classes.FullWidth}
+      className={classes.SingleForm}
     >
       <Form className={classes.Form} inputs={inputs} buttons={buttons} />
     </Grid>

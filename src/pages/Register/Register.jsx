@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { makeStyles, Grid, CircularProgress } from "@material-ui/core";
+import { Grid, CircularProgress } from "@material-ui/core";
 import {
   changeEmail,
   changeUsername,
@@ -15,27 +15,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Form from "../../components/Form/Form";
 import { useNotifications } from "../../hooks/useNotifications";
-
-const useStyles = makeStyles({
-  Grid: {
-    height: "100vh",
-  },
-  Form: {
-    width: "100%",
-  },
-  Button: {
-    margin: "8px",
-  },
-  List: {
-    width: "100%",
-  },
-  Buttons: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+import { useStyles } from "../../style";
 
 const Register = () => {
   const showNotif = useNotifications();
@@ -177,24 +157,18 @@ const Register = () => {
   ];
 
   return (
-    <Grid container justify="center" alignItems="center">
-      <Grid
-        item
-        xs={12}
-        sm={6}
-        lg={4}
-        container
-        direction="column"
-        justify="center"
-        alignItems="center"
-        className={classes.Grid}
-      >
-        {isLoading ? (
-          <CircularProgress />
-        ) : (
-          <Form inputs={inputs} buttons={buttons} />
-        )}
-      </Grid>
+    <Grid
+      container
+      justify="center"
+      alignItems="center"
+      direction="column"
+      className={classes.SingleForm}
+    >
+      {isLoading ? (
+        <CircularProgress />
+      ) : (
+        <Form inputs={inputs} buttons={buttons} />
+      )}
     </Grid>
   );
 };

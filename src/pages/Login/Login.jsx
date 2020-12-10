@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { makeStyles, CircularProgress, Grid, Button } from "@material-ui/core";
+import { CircularProgress, Grid, Button } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -12,15 +12,7 @@ import {
 import { auth } from "../../store/generalSlice";
 import Form from "../../components/Form/Form";
 import { useNotifications } from "../../hooks/useNotifications";
-
-const useStyles = makeStyles({
-  Grid: {
-    height: "100vh",
-  },
-  label: {
-    textTransform: "none",
-  },
-});
+import { useStyles } from "../../style";
 
 const Login = () => {
   const showNotif = useNotifications();
@@ -113,34 +105,28 @@ const Login = () => {
   };
 
   return (
-    <Grid container justify="center" alignItems="center">
-      <Grid
-        item
-        xs={12}
-        sm={6}
-        lg={4}
-        container
-        direction="column"
-        justify="center"
-        alignItems="center"
-        className={classes.Grid}
-      >
-        {isLoading ? (
-          <CircularProgress />
-        ) : (
-          <>
-            <Form inputs={inputs} buttons={buttons} />
-            <Button
-              variant="text"
-              color="primary"
-              classes={{ label: classes.label }}
-              onClick={handleForgot}
-            >
-              Forgot password?
-            </Button>
-          </>
-        )}
-      </Grid>
+    <Grid
+      container
+      justify="center"
+      alignItems="center"
+      direction="column"
+      className={classes.SingleForm}
+    >
+      {isLoading ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <Form inputs={inputs} buttons={buttons} />
+          <Button
+            variant="text"
+            color="primary"
+            classes={{ label: classes.label }}
+            onClick={handleForgot}
+          >
+            Forgot password?
+          </Button>
+        </>
+      )}
     </Grid>
   );
 };

@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { CancelToken, api } from "../axios";
 import { addAge, loadImages, prepareUsers } from "../utils";
+import { resetGeneralState } from "./generalSlice";
+import { resetUIState } from "./UISlice";
 
 const initialUsersState = {
   isLoading: false,
@@ -85,11 +87,14 @@ const getUserIds = (users) => users.map((user) => user.id);
 const getStrangers = async (showNotif) => {
   try {
     const res = await api.get("strangers", { cancelToken: source.token });
-    if (res.data.status && res.data.data) {
+    if (res.data.status) {
       // console.log("[userSlice] starngers", res.data.data);
       return res.data.data;
     } else {
       showNotif(res.data.data, "error");
+      if (res.data.data === "incorrect session id") {
+        return null;
+      }
     }
   } catch (e) {
     showNotif("Server error", "error");
@@ -116,6 +121,12 @@ const getUncashedUsers = (users) => {
 export const loadStrangers = (showNotif) => async (dispatch, getState) => {
   dispatch(startLoading());
   let strangers = await getStrangers(showNotif);
+  if (!strangers) {
+    dispatch(resetGeneralState());
+    dispatch(resetUsersState());
+    dispatch(resetUIState());
+    return;
+  }
   strangers = strangers.map((stranger) => addAge(stranger));
   // console.log(strangers);
   dispatch(setStrangers(strangers));

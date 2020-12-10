@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Switch, Route, useHistory, withRouter, Link } from "react-router-dom";
 import { logout } from "../../store/generalSlice";
-import { setHeader, setSelectedTab } from "../../store/UISlice";
+import { setCompanion, setHeader, setSelectedTab } from "../../store/UISlice";
 
 import {
   AppBar,
@@ -84,7 +84,7 @@ const tabs = [
   },
 ];
 
-const Main = (props) => {
+const Main = () => {
   const showNotif = useNotifications();
   const { header, selectedTab, companion } = useSelector((state) => state.UI);
   const { id, isLoading, lookedBy } = useSelector((state) => state.general);
@@ -102,6 +102,7 @@ const Main = (props) => {
     }
     const tab = tabs.find((e) => e.url === url);
     dispatch(setHeader({ header: tab.label }));
+    dispatch(setCompanion({ companion: null }));
     dispatch(setSelectedTab({ selectedTab: tab }));
     history.push(url);
   };

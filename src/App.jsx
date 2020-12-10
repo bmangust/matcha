@@ -58,6 +58,7 @@ function App() {
     } else if (isAuth) {
       setContent(
         <Switch>
+          <Route path="/reset" component={UpdatePassword} exact />
           <Redirect exact from="/strangers" to="/" />
           <Redirect from="/login" to="/" />
           <Route path="/" component={Main} />
