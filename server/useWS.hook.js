@@ -3,7 +3,6 @@ import { useChat } from "./useChat.hook";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import { stubTrue } from "lodash";
-import { CONSTANTS } from "../models/ws";
 
 // const host = "192.168.43.151";
 const local = stubTrue;
@@ -55,16 +54,6 @@ export const useWS = () => {
     }
   });
 
-  socket.on(CONSTANTS.WS.CHAT, (message) => {
-    console.log("[WS.CHAT]", message);
-  });
-
-  socket.on(CONSTANTS.WS.MESSAGE, (message) => {
-    const json = JSON.parse(message);
-    console.log(json);
-    handleChatMessage(json);
-  });
-
   socket.onAny((event, ...args) => {
     console.log(`got ${event}`);
     console.log(args);
@@ -72,7 +61,7 @@ export const useWS = () => {
 
   socket.on("disconnect", (reason) => {
     console.log(reason);
-    // socket.connect();
+    socket.connect();
     // if (reason === "io server disconnect") {
     //   // the disconnection was initiated by the server, you need to reconnect manually
     //    socket.connect();
@@ -80,8 +69,8 @@ export const useWS = () => {
     // else the socket will automatically try to reconnect
   });
 
-  socket.on("close", (reason) => {
-    console.log(`[close] ${reason}`);
+  socket.on("hello", (message) => {
+    console.log(message);
   });
 
   socket.onerror = function (error) {
@@ -92,10 +81,10 @@ export const useWS = () => {
   return socket;
 };
 
-export const send = (type, message) => {
+export const send = (message) => {
   console.log(JSON.stringify(message));
   // if (!socket) socket = newConnection();
-  // console.log(socket);
+  console.log(socket);
 
   // if (socket.readyState !== socket.OPEN) {
   //   checkStatusAndReconnect();
@@ -104,6 +93,8 @@ export const send = (type, message) => {
   //   return;
   // }
 
-  socket.emit(type, JSON.stringify(message));
+  socket.emit("message", JSON.stringify(message), (data) => {
+    console.log(data); // data will be 'woot'
+  });
   // socket.send(JSON.stringify(message));
 };

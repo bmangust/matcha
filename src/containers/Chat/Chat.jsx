@@ -1,4 +1,4 @@
-import { makeStyles, Container, Button } from "@material-ui/core";
+import { makeStyles, Grid, Button, TextField } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import ChatList from "./ChatList/ChatList";
 import ChatRoom from "./ChatRoom/ChatRoom";
@@ -7,22 +7,31 @@ import { Route, Switch } from "react-router-dom";
 import { useChat } from "../../hooks/useChat.hook";
 
 const useStyles = makeStyles({
-  Container: {
+  Grid: {
     overflow: "hidden",
-    display: "flex",
-    flexDirection: "column",
+    width: "100%",
   },
 });
 
 const Chat = (props) => {
   const classes = useStyles();
   const chats = useSelector((state) => state.chat.chats);
-  const { getChatsInfo, selectChat, createChat, getChatInfo } = useChat();
-  // const [id, setId] = useState("");
+  const {
+    getChatsInfo,
+    selectChat,
+    createChat,
+    getChatInfo,
+    newMessage,
+  } = useChat();
+  const [id, setId] = useState("");
+  const [message, setMessage] = useState("");
 
-  // const handleChange = (e) => {
-  //   setId(e.target.value);
-  // };
+  const handleIdChange = (e) => {
+    setId(e.target.value);
+  };
+  const handleMessageChange = (e) => {
+    setMessage(e.target.value);
+  };
 
   useEffect(() => {
     getChatsInfo();
@@ -36,7 +45,12 @@ const Chat = (props) => {
   // console.log(chats);
 
   return (
-    <Container className={classes.Container}>
+    <Grid
+      container
+      justify="center"
+      direction="column"
+      className={classes.Grid}
+    >
       <Switch>
         {chats.map((el) => (
           <Route
@@ -54,13 +68,19 @@ const Chat = (props) => {
         />
       </Switch>
       {/* chat debug */}
-      {/* <Container>
+      <Grid container>
         <Button onClick={() => createChat(id)}>Create chat</Button>
         <Button onClick={() => getChatsInfo()}>Get chats info</Button>
-        <input onChange={handleChange} value={id} />
+        <TextField placeholder="id" onChange={handleIdChange} value={id} />
+        <TextField
+          placeholder="message"
+          onChange={handleMessageChange}
+          value={message}
+        />
         <Button onClick={() => getChatInfo(id)}>Get chat info</Button>
-      </Container> */}
-    </Container>
+        <Button onClick={() => newMessage(id, message)}>Send message</Button>
+      </Grid>
+    </Grid>
   );
 };
 

@@ -15,6 +15,7 @@
     "classnames": "^2.2.6",
     "http-proxy-middleware": "^1.0.6",
     "lodash": "^4.17.20",
+    "nodemon": "^2.0.6",
     "notistack": "^1.0.1",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.7",
@@ -27,6 +28,7 @@
     "react-transition-group": "^4.4.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "socket.io": "^3.0.4",
     "socket.io-client": "^3.0.3",
     "uuid": "^8.3.1"
   },

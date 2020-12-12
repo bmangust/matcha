@@ -1,23 +1,27 @@
 import { v4 as uuid } from "uuid/dist";
 
 export class WSmessage {
-  constructor({ messageType, payload }) {
-    this.messageType = messageType;
+  constructor({ type, payload }) {
+    this.type = type;
     this.payload = payload || null;
   }
 }
 
 export const CONSTANTS = {
   WS: {
-    NEW_CHAT: 100,
-    NEW_MESSAGE: 1,
-    EDIT_MESSAGE: 2,
-    DELETE_MESSAGE: 3,
+    CHAT: "CHAT",
+    MESSAGE: "MESSAGE",
+  },
+  CHAT: {
+    NEW_CHAT: "NEW_CHAT",
+    DELETE_CHAT: "DELETE_CHAT",
   },
   MESSAGE: {
-    SENT_MESSAGE: 1,
-    DELIVERED_MESSAGE: 2,
-    READ_MESSAGE: 3,
+    NEW_MESSAGE: "NEW_MESSAGE",
+    DELIVERED_MESSAGE: "DELIVERED_MESSAGE",
+    READ_MESSAGE: "READ_MESSAGE",
+    EDIT_MESSAGE: "EDIT_MESSAGE",
+    DELETE_MESSAGE: "DELETE_MESSAGE",
   },
 };
 
@@ -30,13 +34,12 @@ export class Chat {
 }
 
 export class Message {
-  constructor({ id, sender, recipient, date, state, text, chatId }) {
+  constructor({ id, sender, recipient, date, text, chatId }) {
     this.id = id || uuid();
     this.chatId = chatId || "";
     this.sender = sender;
     this.recipient = recipient;
     this.date = date || new Date().getTime();
-    this.state = state || CONSTANTS.MESSAGE.SENT_MESSAGE;
-    this.text = text || "no text";
+    this.text = text || "";
   }
 }

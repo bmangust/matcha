@@ -1,23 +1,22 @@
 const { createProxyMiddleware } = require("http-proxy-middleware");
-// const host = "192.168.43.151";
-const host = "aim-love.ga";
-// const host = "localhost";
+const local = true;
+const host = local ? "localhost" : "aim-love.ga";
 const port = 8080;
+
+const url = local ? `http://${host}:${port}` : `https://${host}`;
 
 module.exports = function (app) {
   app.use(
     "/api/main/",
     createProxyMiddleware({
-      target: `https://${host}`,
-      // target: `http://${host}:${port}`,
+      target: url,
       changeOrigin: true,
     })
   );
   app.use(
     "/api/media/",
     createProxyMiddleware({
-      target: `https://${host}`,
-      // target: `http://${host}:${port}`,
+      target: url,
       changeOrigin: true,
     })
   );
