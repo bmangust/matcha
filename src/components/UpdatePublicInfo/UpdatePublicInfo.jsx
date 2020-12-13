@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Form from "../../components/Form/Form";
+import Form from "../Form/Form";
 import {
   changeEmail,
   changeUsername,
@@ -27,13 +27,10 @@ import {
   updateInfo,
 } from "../../pages/AdditionalInfo/additionalSlice";
 import { useNotifications } from "../../hooks/useNotifications";
-import DialogMessage from "../../components/DialogMessage/DialogMessage";
-import { Switch, Route, useHistory } from "react-router-dom";
-import { setHeader, showBackButton, setParent } from "../../store/UISlice";
-import UpdatePassword from "../../components/UpdatePassword/UpdatePassword";
-import UpdatePersonalInfo from "../../components/UpdatePersonalInfo/UpdatePersonalInfo";
+import { handleBack } from "../../store/UISlice";
+import { useHistory } from "react-router-dom";
 
-const UpdateInfo = () => {
+const UpdatePublicInfo = () => {
   const {
     id,
     email,
@@ -60,8 +57,8 @@ const UpdateInfo = () => {
     tags,
   } = useSelector((state) => state.additional);
   const dispatch = useDispatch();
-  const showNotif = useNotifications();
   const history = useHistory();
+  const showNotif = useNotifications();
 
   const [formValid, setFormValid] = useState(true);
 
@@ -107,12 +104,8 @@ const UpdateInfo = () => {
     };
     dispatch(updateInfo(body, showNotif));
   };
-
-  const updatePersonalInfo = () => {
-    dispatch(setParent({ parent: "profile" }));
-    dispatch(setHeader({ header: "Update personal info" }));
-    dispatch(showBackButton());
-    history.push("/profile/personal");
+  const handleBackClick = () => {
+    dispatch(handleBack(history, "profile"));
   };
 
   const inputs = [
@@ -371,34 +364,16 @@ const UpdateInfo = () => {
       onClick: saveUserInfo,
     },
     {
-      component: "button",
-      text: "update personal info",
+      text: "back",
       size: "large",
-      onClick: updatePersonalInfo,
+      onClick: handleBackClick,
+      style: {
+        marginBottom: "2rem",
+      },
     },
   ];
 
-  const dialog = {
-    text:
-      "This action is irreversable. All your images, chats and likes will be vanished.",
-    header: "Are you sure?",
-    yesText: "Agree",
-    noText: "Disagree",
-    buttonText: "Delete account",
-  };
-
-  return (
-    <>
-      <Switch>
-        <Route path="/profile" exact>
-          <Form inputs={inputs} buttons={buttons} />
-          <DialogMessage {...dialog} />
-        </Route>
-        <Route path="/profile/personal" component={UpdatePersonalInfo} />
-        <Route path="/profile/password-update" component={UpdatePassword} />
-      </Switch>
-    </>
-  );
+  return <Form inputs={inputs} buttons={buttons} />;
 };
 
-export default UpdateInfo;
+export default UpdatePublicInfo;

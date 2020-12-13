@@ -40,7 +40,12 @@ export default function DialogMessage({
 
   return (
     <>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+      <Button
+        style={{ width: "80%" }}
+        variant="outlined"
+        color="primary"
+        onClick={handleClickOpen}
+      >
         {buttonText}
       </Button>
       <Dialog
@@ -61,7 +66,7 @@ export default function DialogMessage({
           <Button onClick={handleClose} color="primary">
             {noText}
           </Button>
-          <Button onClick={handleDelete} color="primary">
+          <Button onClick={handleDelete} color="secondary">
             {yesText}
           </Button>
         </DialogActions>

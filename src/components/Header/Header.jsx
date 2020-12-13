@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import { ChevronLeftRounded } from "@material-ui/icons";
 import NotificationsIcon from "@material-ui/icons/Notifications";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, cloneElement } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { handleBack } from "../../store/UISlice";
@@ -28,7 +28,7 @@ function ElevationScroll({ children }) {
     threshold: 0,
   });
 
-  return React.cloneElement(children, {
+  return cloneElement(children, {
     elevation: trigger ? 4 : 0,
   });
 }
@@ -98,16 +98,6 @@ const Header = ({ header, notification }) => {
     }
     setOpen(false);
   };
-
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpen = useRef(open);
-  useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current.focus();
-    }
-
-    prevOpen.current = open;
-  }, [open]);
 
   return (
     <ElevationScroll>

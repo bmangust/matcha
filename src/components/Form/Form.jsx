@@ -57,30 +57,30 @@ const Form = ({ inputs, buttons }) => {
             {buttons.map(
               ({ component, variant, type, text, onClick, ...others }) =>
                 component === "fab" ? (
-                  <Zoom
+                  // <Zoom
+                  //   key={text}
+                  //   in={currentTab === 0}
+                  //   timeout={transitionDuration}
+                  //   style={{
+                  //     transitionDelay: `${
+                  //       currentTab === 0 ? transitionDuration.exit : 0
+                  //     }ms`,
+                  //   }}
+                  //   unmountOnExit
+                  // >
+                  <Fab
+                    color="primary"
                     key={text}
-                    in={currentTab === 0}
-                    timeout={transitionDuration}
-                    style={{
-                      transitionDelay: `${
-                        currentTab === 0 ? transitionDuration.exit : 0
-                      }ms`,
-                    }}
-                    unmountOnExit
+                    className={classes.Fab}
+                    variant={variant}
+                    type={type}
+                    onClick={onClick}
+                    {...others}
                   >
-                    <Fab
-                      color="primary"
-                      key={text}
-                      className={classes.Fab}
-                      variant={variant}
-                      type={type}
-                      onClick={onClick}
-                      {...others}
-                    >
-                      {text}
-                    </Fab>
-                  </Zoom>
+                    {text}
+                  </Fab>
                 ) : (
+                  // </Zoom>
                   <Button
                     key={text}
                     className={classes.Button}

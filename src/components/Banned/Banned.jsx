@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { Grid } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import { ReplayRounded } from "@material-ui/icons";
 
 import { useBan } from "../../hooks/useBan.hook";
@@ -37,7 +37,11 @@ const Banned = () => {
     setBannedList(list);
   }, [users, banned, bannedUsers, unbanAndUpdate]);
 
-  return <Grid container>{bannedList}</Grid>;
+  return (
+    <Grid container justify="center">
+      {bannedList || <Typography>No users banned. Yet...</Typography>}
+    </Grid>
+  );
 };
 
 export default Banned;

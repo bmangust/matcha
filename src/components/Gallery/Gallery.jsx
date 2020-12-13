@@ -44,20 +44,20 @@ const Gallery = (props) => {
   const dispatch = useDispatch();
   let images = useSelector((state) => state.general.images);
   if (props.images) images = props.images;
-  console.log(images);
+  // console.log(images);
 
   const setAvatar = async (image) => {
     // let avatar changing only when Gallery is rendered with images from general redux slice
     if (props.images) return;
-    console.log(image);
+    // console.log(image);
     const res = await media.put("avatar", { imageId: image.id });
     dispatch(saveNewState({ avatar: image }));
-    console.log(res);
+    // console.log(res);
   };
 
   return (
     <Grid className={classes.Grid} container justify="center" spacing={1}>
-      {images.length > 0 &&
+      {images.length > 0 ? (
         images.map((el) => (
           <Grid item xs={8} sm={4} key={el.id || el}>
             <Card className={classes.Card}>
@@ -66,12 +66,12 @@ const Gallery = (props) => {
                 className={classes.Media}
                 image={el.image || defaultAvatar}
               />
-              {/* {!props.images && (
-                <Typography className={classes.Info}>Set avatar</Typography>
-              )} */}
             </Card>
           </Grid>
-        ))}
+        ))
+      ) : (
+        <Typography>No images</Typography>
+      )}
     </Grid>
   );
 };

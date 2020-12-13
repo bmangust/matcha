@@ -48,6 +48,7 @@ const UpdatePassword = (props) => {
 
   useEffect(() => {
     checkValidity(queryParams.k);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const inputs = [

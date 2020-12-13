@@ -1,12 +1,16 @@
 import { Tabs, Tab, Grid, makeStyles } from "@material-ui/core";
 import React, { createContext, useState } from "react";
-import { connect } from "react-redux";
 import TabPanel from "../../containers/TabPanel/TabPanel";
 import AvatarContainer from "../../components/Avatar/AvatarContainer";
-import { backgroundColor, borderRadius, primaryColor } from "../../theme";
-import UpdateInfo from "../../containers/UpdateInfo/UpdateInfo";
+import {
+  backgroundColor,
+  borderRadius,
+  primaryColor,
+  secondaryColor,
+} from "../../theme";
 import Gallery from "../../components/Gallery/Gallery";
 import Banned from "../../components/Banned/Banned";
+import Settings from "../../components/Settings/Settings";
 
 const useStyles = makeStyles({
   indicator: {
@@ -15,6 +19,9 @@ const useStyles = makeStyles({
     bottom: 0,
     height: "100%",
     borderRadius: borderRadius,
+    "&:hover,&:focus": {
+      borderColor: secondaryColor.main,
+    },
   },
   TabPanel: {
     backgroundColor: backgroundColor.foreground,
@@ -26,23 +33,28 @@ const useStyles = makeStyles({
     padding: "30px",
     paddingBlockEnd: "60px",
   },
+  Tab: {
+    "&:hover,&:focus": {
+      color: secondaryColor.main,
+    },
+  },
 });
 
 const buttons = [
   {
     id: 0,
-    text: "Info",
-    component: <UpdateInfo />,
-  },
-  {
-    id: 1,
     text: "Gallery",
     component: <Gallery />,
   },
   {
-    id: 2,
+    id: 1,
     text: "Banned",
     component: <Banned />,
+  },
+  {
+    id: 2,
+    text: "Settings",
+    component: <Settings />,
   },
 ];
 export const TabContext = createContext(buttons[0].id);
@@ -56,7 +68,7 @@ const Profile = () => {
   };
 
   const tabs = buttons.map((el, index) => (
-    <Tab disableRipple label={el.text} key={index} />
+    <Tab className={classes.Tab} disableRipple label={el.text} key={index} />
   ));
 
   const getPanel = (index) => (
@@ -93,9 +105,4 @@ const Profile = () => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  id: state.general.id,
-  images: state.general.images,
-});
-
-export default connect(mapStateToProps)(Profile);
+export default Profile;
