@@ -24,7 +24,6 @@ const UpdatePassword = (props) => {
   const notif = useNotifications();
   const formValid = passwordValid && confirmValid;
   const queryParams = queryString.parse(location.search);
-  console.log(props);
 
   const checkValidity = async (k) => {
     try {
@@ -101,7 +100,7 @@ const UpdatePassword = (props) => {
     {
       component: "button",
       type: "submit",
-      text: "update personal info",
+      text: "Save new password",
       size: "large",
       disabled: !formValid,
       onClick: updatePasswordRequest,

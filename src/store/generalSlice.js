@@ -128,10 +128,10 @@ const checkInfo = (info) => {
 
 export const getSelfInfo = () => async (dispatch) => {
   try {
-    const res = await api("account");
     dispatch(startLoading());
+    const res = await api("account");
     if (res.data.status) {
-      checkAuth(res.data, dispatch);
+      await checkAuth(res.data, dispatch);
     } else {
       dispatch(authFail());
     }

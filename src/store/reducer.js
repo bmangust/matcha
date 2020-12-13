@@ -7,7 +7,7 @@ import filterReducer from "../components/Filter/filterSlice";
 import additionalReducer from "../pages/AdditionalInfo/additionalSlice";
 import usersReducer from "./usersSlice";
 import chatReducer from "./chatSlice";
-import snackReducer from "../components/Notifier/snackSlice";
+import snackReducer from "./snackSlice";
 
 export default combineReducers({
   general: generalReducer,

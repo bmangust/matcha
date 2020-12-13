@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { addSnack } from "../components/Notifier/snackSlice";
+import { addSnack } from "../store/snackSlice";
 
 export const useNotifications = () => {
   const dispatch = useDispatch();

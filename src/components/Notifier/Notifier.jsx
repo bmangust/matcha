@@ -1,7 +1,7 @@
 import { useSnackbar } from "notistack";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { removeSnack } from "./snackSlice";
+import { removeSnack } from "../../store/snackSlice";
 
 let displayed = [];
 
