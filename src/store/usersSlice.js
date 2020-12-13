@@ -89,7 +89,7 @@ const getStrangers = async (showNotif) => {
     const res = await api.get("strangers", { cancelToken: source.token });
     if (res.data.status) {
       // console.log("[userSlice] starngers", res.data.data);
-      return res.data.data;
+      return res.data.data || [];
     } else {
       showNotif(res.data.data, "error");
       if (res.data.data === "incorrect session id") {

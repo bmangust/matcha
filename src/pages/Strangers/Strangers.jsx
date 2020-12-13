@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import UserCard from "../../components/UserCard/UserCard";
-import { Button, Grid, makeStyles, Typography } from "@material-ui/core";
+import { Grid, makeStyles, Typography } from "@material-ui/core";
 import { Route, Switch } from "react-router-dom";
 import UserProfile from "../../containers/UserProfile/UserProfile";
 import { useDispatch, useSelector } from "react-redux";
-import Filter from "../../components/Filter/Filter";
 import { useNotifications } from "../../hooks/useNotifications";
 import { loadStrangers } from "../../store/usersSlice";
 import FilterSortWrapper from "../../components/FIlterSortWrapper/FilterSortWrapper";
@@ -37,7 +36,7 @@ const Strangers = () => {
   // load strangers on component mount
   useEffect(() => {
     dispatch(loadStrangers(showNotif));
-  }, [dispatch]);
+  }, []);
 
   // filter users and set cards
   useEffect(() => {

@@ -57,15 +57,16 @@ const generalSlice = createSlice({
     setNewState(state, { payload }) {
       Object.keys(payload).forEach((key) => {
         if (key === "position") {
-          state.position.lat = payload.position.lat;
-          state.position.lon = payload.position.lon;
+          if (payload.position.lat) state.position.lat = payload.position.lat;
+          if (payload.position.lon) state.position.lon = payload.position.lon;
         } else if (key === "images" && payload.images) {
           state.images =
             state.images && state.images.length > 0
               ? [...state.images, ...payload[key]]
               : [...payload[key]];
+        } else {
+          state[key] = payload[key];
         }
-        state[key] = payload[key];
       });
     },
   },

@@ -17,6 +17,7 @@ import Forgot from "./components/Forgot/Forgot";
 import UpdatePassword from "./components/UpdatePassword/UpdatePassword";
 import SnackMessage from "./components/Notifier/SnackMessage/SnackMessage";
 import Notifier from "./components/Notifier/Notifier";
+import { useGPS } from "./hooks/useGPS.hook";
 
 const useStyles = makeStyles({
   Grid: {
@@ -31,10 +32,12 @@ function App() {
   const { isInfoMissing } = useSelector((state) => state.UI);
   const dispatch = useDispatch();
   const [content, setContent] = useState(<CircularProgress />);
+  const { getCurrentLocaion } = useGPS();
 
   useEffect(() => {
     dispatch(getSelfInfo());
-  }, [dispatch]);
+    getCurrentLocaion();
+  }, []);
 
   useEffect(() => {
     if (isLoading) {

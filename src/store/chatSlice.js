@@ -1,5 +1,3 @@
-import { current } from "@reduxjs/toolkit/node_modules/immer";
-
 const { createSlice } = require("@reduxjs/toolkit");
 
 const initialState = {

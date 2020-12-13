@@ -1,7 +1,8 @@
 import { api } from "../../axios";
+import { getLocationByIp } from "../../hooks/useGPS.hook";
 import { saveNewState } from "../../store/generalSlice";
 import { startLoading, stopLoading } from "../../store/generalSlice";
-import { getLocationByIp, xssSanitize } from "../../utils";
+import { xssSanitize } from "../../utils";
 
 const { createSlice } = require("@reduxjs/toolkit");
 
@@ -178,7 +179,7 @@ export const updateInfo = (
     tags,
   },
   showNotif
-) => async (dispatch) => {
+) => async (dispatch, getState) => {
   dispatch(startLoading());
 
   const body = {
@@ -197,13 +198,11 @@ export const updateInfo = (
     minAge,
     maxAge,
   };
-  try {
-    const location = await getLocationByIp();
-    if (location.status) body.position = location.data;
-  } catch (e) {
-    console.log("Getting location failed");
-  }
   console.log("[AdditionalInfoSlice] update user info");
+  const position = getState().general.position;
+  if (position.lat !== 0 && position.lon !== 0) {
+    body.position = position;
+  }
   console.log(body);
   let message;
   try {
@@ -227,12 +226,22 @@ export const updateInfo = (
       message = response.data;
     }
   } catch (e) {
-    message = e;
+    console.log(e);
+    message = "Server error";
   }
+  showNotif(message, "error");
   dispatch(onUpdateFail());
-  console.log(message);
-  showNotif("Server error", "error");
   dispatch(stopLoading());
+};
+
+const getLocation = async () => {
+  try {
+    const location = await getLocationByIp();
+    if (location.status) return location.data;
+  } catch (e) {
+    console.log("Getting location failed");
+  }
+  return null;
 };
 
 export default additionalSlice.reducer;
