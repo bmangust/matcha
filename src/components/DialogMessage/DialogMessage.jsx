@@ -20,6 +20,7 @@ export default function DialogMessage({
   noText,
   header,
   text,
+  className,
 }) {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
@@ -41,10 +42,10 @@ export default function DialogMessage({
   return (
     <>
       <Button
-        style={{ width: "80%" }}
         variant="outlined"
         color="primary"
         onClick={handleClickOpen}
+        className={className}
       >
         {buttonText}
       </Button>

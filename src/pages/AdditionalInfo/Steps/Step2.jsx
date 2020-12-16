@@ -21,6 +21,7 @@ const Step2 = () => {
       label: "Phone",
       value: phone,
       ignoreUntouched: true,
+      inputProps: { autoFocus: true },
       onChange: (e) => {
         dispatch(changePhone(e.target.value));
       },

@@ -16,8 +16,8 @@ const useStyles = makeStyles({
     width: "60%",
     margin: "0.5rem 0",
   },
-  "@media (min-width: 600px)": {
-    "$ &Button": {
+  "@media (max-width: 600px)": {
+    Button: {
       width: "100%",
     },
   },

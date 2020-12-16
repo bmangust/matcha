@@ -27,7 +27,10 @@ const Step3 = () => {
     {
       name: "maxDistance",
       type: "slider",
-      label: "Search distance",
+      label: "Search distance, km",
+      step: 100,
+      min: 0,
+      max: 10000,
       value: maxDist,
       onChange: (value) => {
         dispatch(changeMaxDist(value));

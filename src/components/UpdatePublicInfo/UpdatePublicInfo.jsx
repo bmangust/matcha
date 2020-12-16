@@ -2,26 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Form from "../Form/Form";
 import {
-  changeEmail,
   changeUsername,
   changeName,
   changeSurname,
-  changeBirthDate,
   changeGender,
   changeBio,
-  changePhone,
   changeCountry,
   changeCity,
-  changeMaxDist,
-  changeLookFor,
-  changeSearchAgeRange,
   changeTags,
-  changeEmailValid,
   changeUsernameValid,
   changeNameValid,
   changeSurnameValid,
   changeBioValid,
-  changePhoneValid,
   changeCountryValid,
   changeCityValid,
   updateInfo,
@@ -32,26 +24,16 @@ import { useHistory } from "react-router-dom";
 
 const UpdatePublicInfo = () => {
   const {
-    id,
-    email,
     username,
     name,
     surname,
-    birthDate,
     bio,
-    phone,
     gender,
     country,
     city,
-    maxDist,
-    lookFor,
-    minAge,
-    maxAge,
     usernameValid,
     nameValid,
     surnameValid,
-    emailValid,
-    phoneValid,
     countryValid,
     cityValid,
     tags,
@@ -64,46 +46,16 @@ const UpdatePublicInfo = () => {
 
   useEffect(() => {
     const formValid =
-      usernameValid &&
-      nameValid &&
-      surnameValid &&
-      emailValid &&
-      phoneValid &&
-      countryValid &&
-      cityValid;
+      usernameValid && nameValid && surnameValid && countryValid && cityValid;
     setFormValid(formValid);
-  }, [
-    usernameValid,
-    nameValid,
-    surnameValid,
-    emailValid,
-    phoneValid,
-    countryValid,
-    cityValid,
-  ]);
+  }, [usernameValid, nameValid, surnameValid, countryValid, cityValid]);
 
   const saveUserInfo = async (e) => {
     e.preventDefault();
-    const body = {
-      id,
-      email,
-      username,
-      name,
-      surname,
-      bio,
-      birthDate,
-      phone,
-      gender,
-      country,
-      city,
-      maxDist,
-      lookFor,
-      minAge,
-      maxAge,
-      tags,
-    };
+    const body = { username, name, surname, gender, country, city, bio, tags };
     dispatch(updateInfo(body, showNotif));
   };
+
   const handleBackClick = () => {
     dispatch(handleBack(history, "profile"));
   };
@@ -128,27 +80,6 @@ const UpdatePublicInfo = () => {
           minLength: 3,
           maxLength: 20,
           regex: /^[\w%-+.]+$/,
-        },
-      },
-    },
-    {
-      name: "email",
-      type: "email",
-      label: "Email",
-      value: email,
-      ignoreUntouched: true,
-      onChange: (e) => {
-        dispatch(changeEmail(e.target.value));
-      },
-      onValidate: (isValid) => {
-        dispatch(changeEmailValid(isValid));
-      },
-      rules: {
-        helperText: "invalid email",
-        rule: {
-          minLength: 3,
-          maxLength: 40,
-          regex: /^([\w%+-.]+)@([\w-]+\.)+([\w]{2,})$/i,
         },
       },
     },
@@ -195,36 +126,6 @@ const UpdatePublicInfo = () => {
       },
     },
     {
-      name: "phone",
-      type: "text",
-      label: "Phone",
-      value: phone,
-      ignoreUntouched: true,
-      onChange: (e) => {
-        dispatch(changePhone(e.target.value));
-      },
-      onValidate: (isValid) => {
-        dispatch(changePhoneValid(isValid));
-      },
-      rules: {
-        helperText: "invalid phone",
-        rule: {
-          minLength: 0,
-          maxLength: 12,
-          regex: /^$|^\+?\d+$/,
-        },
-      },
-    },
-    {
-      name: "birthDate",
-      type: "date",
-      label: "Birth date",
-      value: birthDate,
-      onChange: (e) => {
-        dispatch(changeBirthDate(e.target.value));
-      },
-    },
-    {
       name: "gender",
       type: "select",
       label: "I'm",
@@ -232,16 +133,6 @@ const UpdatePublicInfo = () => {
       value: gender,
       onChange: (e) => {
         dispatch(changeGender(e.target.value));
-      },
-    },
-    {
-      name: "lookFor",
-      type: "select",
-      label: "I look for",
-      values: ["male", "female", "both"],
-      value: lookFor,
-      onChange: (e) => {
-        dispatch(changeLookFor(e.target.value));
       },
     },
     {
@@ -287,46 +178,6 @@ const UpdatePublicInfo = () => {
       },
     },
     {
-      name: "maxDist",
-      type: "slider",
-      label: "Search distance",
-      value: maxDist,
-      onChange: (value) => {
-        dispatch(changeMaxDist(value));
-      },
-    },
-    {
-      name: "ageRange",
-      type: "slider",
-      label: "Age search range",
-      value: [minAge, maxAge],
-      onChange: (value) => {
-        dispatch(changeSearchAgeRange(value));
-      },
-    },
-    // {
-    //   name: "password",
-    //   type: "password",
-    //   label: "Password",
-    //   value: password,
-    //   ignoreUntouched: true,
-    //   onChange: (e) => {
-    //     setPassword(e.target.value);
-    //   },
-    //   onValidate: (isValid) => {
-    //     setPasswordValid(isValid);
-    //   },
-    //   rules: {
-    //     helperText:
-    //       "Use at least one lower- and uppercase letter, number and symbol. Min length 4",
-    //     rule: {
-    //       minLength: 0,
-    //       maxLength: 20,
-    //       regex: /^$|^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?]).{4,}$/,
-    //     },
-    //   },
-    // },
-    {
       name: "bio",
       type: "text",
       label: "Bio",
@@ -348,6 +199,7 @@ const UpdatePublicInfo = () => {
       },
     },
     {
+      name: "tags",
       type: "autocomplete",
       values: [],
       onChange: (values) => dispatch(changeTags(values)),

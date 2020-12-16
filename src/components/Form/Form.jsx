@@ -1,15 +1,6 @@
-import React, { useContext } from "react";
-import {
-  Button,
-  Fab,
-  List,
-  ListItem,
-  makeStyles,
-  useTheme,
-  Zoom,
-} from "@material-ui/core";
+import React from "react";
+import { Button, Fab, List, ListItem, makeStyles } from "@material-ui/core";
 import Input from "../Input/Input";
-import { TabContext } from "../../pages/Profile/Profile";
 
 const useStyles = makeStyles({
   Form: {
@@ -31,18 +22,12 @@ const useStyles = makeStyles({
     position: "fixed",
     right: "10vw",
     bottom: "4rem",
+    zIndex: 2,
   },
 });
 
 const Form = ({ inputs, buttons }) => {
   const classes = useStyles();
-  const theme = useTheme();
-  const currentTab = useContext(TabContext);
-
-  const transitionDuration = {
-    enter: theme.transitions.duration.enteringScreen,
-    exit: theme.transitions.duration.leavingScreen,
-  };
 
   return (
     <form className={classes.Form}>
@@ -57,17 +42,6 @@ const Form = ({ inputs, buttons }) => {
             {buttons.map(
               ({ component, variant, type, text, onClick, ...others }) =>
                 component === "fab" ? (
-                  // <Zoom
-                  //   key={text}
-                  //   in={currentTab === 0}
-                  //   timeout={transitionDuration}
-                  //   style={{
-                  //     transitionDelay: `${
-                  //       currentTab === 0 ? transitionDuration.exit : 0
-                  //     }ms`,
-                  //   }}
-                  //   unmountOnExit
-                  // >
                   <Fab
                     color="primary"
                     key={text}
@@ -80,7 +54,6 @@ const Form = ({ inputs, buttons }) => {
                     {text}
                   </Fab>
                 ) : (
-                  // </Zoom>
                   <Button
                     key={text}
                     className={classes.Button}

@@ -1,5 +1,4 @@
 import { api } from "../../axios";
-import { getLocationByIp } from "../../hooks/useGPS.hook";
 import { saveNewState } from "../../store/generalSlice";
 import { startLoading, stopLoading } from "../../store/generalSlice";
 import { xssSanitize } from "../../utils";
@@ -182,21 +181,23 @@ export const updateInfo = (
 ) => async (dispatch, getState) => {
   dispatch(startLoading());
 
+  const additionalState = getState().additional;
+
   const body = {
-    id,
-    username,
-    name: xssSanitize(name),
-    surname: xssSanitize(surname),
-    bio: xssSanitize(bio),
-    phone,
-    birthDate,
-    gender,
-    country: xssSanitize(country),
-    city: xssSanitize(city),
-    maxDist,
-    lookFor,
-    minAge,
-    maxAge,
+    id: id || additionalState.id,
+    username: username || additionalState.username,
+    name: xssSanitize(name) || additionalState.name,
+    surname: xssSanitize(surname) || additionalState.surname,
+    bio: xssSanitize(bio) || additionalState.bio,
+    phone: phone || additionalState.phone,
+    birthDate: birthDate || additionalState.birthDate,
+    gender: gender || additionalState.gender,
+    country: xssSanitize(country) || additionalState.country,
+    city: xssSanitize(city) || additionalState.city,
+    maxDist: maxDist || additionalState.maxDist,
+    lookFor: lookFor || additionalState.lookFor,
+    minAge: minAge || additionalState.minAge,
+    maxAge: maxAge || additionalState.maxAge,
   };
   console.log("[AdditionalInfoSlice] update user info");
   const position = getState().general.position;
@@ -232,16 +233,6 @@ export const updateInfo = (
   showNotif(message, "error");
   dispatch(onUpdateFail());
   dispatch(stopLoading());
-};
-
-const getLocation = async () => {
-  try {
-    const location = await getLocationByIp();
-    if (location.status) return location.data;
-  } catch (e) {
-    console.log("Getting location failed");
-  }
-  return null;
 };
 
 export default additionalSlice.reducer;

@@ -8,15 +8,39 @@ import {
   changeGender,
   changeSurname,
   changeSurnameValid,
+  changeUsernameValid,
+  changeUsername,
 } from "../additionalSlice";
 
 const Step1 = () => {
   const dispatch = useDispatch();
-  const { name, surname, birthDate, gender } = {
+  const { username, name, surname, birthDate, gender } = {
     ...useSelector((state) => state.additional),
   };
 
   const inputs = [
+    {
+      name: "username",
+      type: "text",
+      label: "Username",
+      value: username,
+      ignoreUntouched: true,
+      onChange: (e) => {
+        dispatch(changeUsername(e.target.value));
+      },
+      onValidate: (isValid) => {
+        dispatch(changeUsernameValid(isValid));
+      },
+      rules: {
+        helperText:
+          "Use letters, numbers or symbols ., %, _, -, +. Min length 3",
+        rule: {
+          minLength: 3,
+          maxLength: 20,
+          regex: /^[\w%-+.]+$/,
+        },
+      },
+    },
     {
       name: "name",
       type: "text",

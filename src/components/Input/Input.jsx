@@ -65,6 +65,7 @@ const Input = (props) => {
     onChange,
     rules,
     ignoreUntouched, //defaults to false if not passed explictly
+    ...rest
   } = {
     ...props,
   };
@@ -85,7 +86,7 @@ const Input = (props) => {
     // update inputValid state in Redux
     onValidate && onValidate((ignoreUntouched || touched) && !error);
     setError(error);
-  }, [value, rule, touched, helperText, onValidate]);
+  }, [value, rule, touched, helperText, onValidate, ignoreUntouched]);
 
   switch (type) {
     case "text":
@@ -103,6 +104,7 @@ const Input = (props) => {
           className={classes.Input}
           onFocus={() => setTouched(true)}
           onChange={(e) => onChange(e)}
+          {...rest}
         />
       );
     case "select":
@@ -115,6 +117,7 @@ const Input = (props) => {
           className={classes.Input}
           onChange={(e) => onChange(e)}
           select
+          {...rest}
         >
           {values.map((e) => (
             <MenuItem key={e} value={e}>
@@ -133,6 +136,7 @@ const Input = (props) => {
           InputLabelProps={{ shrink: true }}
           value={getDate(value)}
           onChange={(e) => onChange(e)}
+          {...rest}
         />
       );
     case "slider":
@@ -146,6 +150,7 @@ const Input = (props) => {
             onChange={(e, value) => onChange(value)}
             valueLabelDisplay="auto"
             aria-labelledby="range-slider"
+            {...rest}
           />
         </Box>
       );
@@ -161,6 +166,7 @@ const Input = (props) => {
                 label="Minimum age"
                 className={classes.SmallSelector}
                 onChange={(e) => onChange({ minAge: +e.target.value })}
+                {...rest}
               />
             </Grid>
             <Grid item xs={3}>
@@ -171,6 +177,7 @@ const Input = (props) => {
                 label="Maximum age"
                 className={classes.SmallSelector}
                 onChange={(e) => onChange({ maxAge: +e.target.value })}
+                {...rest}
               />
             </Grid>
           </Grid>
@@ -178,7 +185,13 @@ const Input = (props) => {
       );
     case "autocomplete":
       return (
-        <TagInput className={classes.Input} tags={values} onChange={onChange} />
+        <TagInput
+          name={name}
+          className={classes.Input}
+          tags={values}
+          onChange={onChange}
+          {...rest}
+        />
       );
     default:
       return null;

@@ -24,7 +24,7 @@ const TagInput = (props) => {
         <Autocomplete
           multiple
           freeSolo
-          id="tags-outlined"
+          id={props.name}
           options={allTags}
           getOptionLabel={(option) => option}
           defaultValue={props.tags}
