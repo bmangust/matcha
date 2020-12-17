@@ -28,17 +28,21 @@ const AvatarContainer = () => {
     if (image.size > 1000000) {
       showNotif("The file is larger than 1MB", "error");
     }
-    const res = await mediaUpload(id, image);
-    const objectUrl = URL.createObjectURL(image);
-    const avatar = { id: res.data.data.id, image: objectUrl };
-    setDisplayedAvatar(avatar);
+    try {
+      const res = await mediaUpload(id, image);
+      const objectUrl = URL.createObjectURL(image);
+      const avatar = { id: res.data.data.id, image: objectUrl };
 
-    if (res.data.status && res.data.data) {
-      saveNewState({ images: [...images, avatar] });
-      showNotif("The file was uploaded", "success");
-    } else {
-      console.error(res.data);
-      showNotif("Server error", "error");
+      if (res.data.status && res.data.data) {
+        setDisplayedAvatar(avatar);
+        saveNewState({ images: [...images, avatar] });
+        showNotif("The file was uploaded", "success");
+      } else {
+        URL.revokeObjectURL(objectUrl);
+        throw new Error("Unable to upload a photo");
+      }
+    } catch (e) {
+      showNotif(e, "error");
     }
   };
 

@@ -60,10 +60,7 @@ const generalSlice = createSlice({
           if (payload.position.lat) state.position.lat = payload.position.lat;
           if (payload.position.lon) state.position.lon = payload.position.lon;
         } else if (key === "images" && payload.images) {
-          state.images =
-            state.images && state.images.length > 0
-              ? [...state.images, ...payload[key]]
-              : [...payload[key]];
+          state.images = [...payload.images];
         } else {
           state[key] = payload[key];
         }

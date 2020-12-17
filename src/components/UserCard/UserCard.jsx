@@ -26,6 +26,7 @@ import {
   setCompanion,
   setParent,
 } from "../../store/UISlice";
+import cn from "classnames";
 import { useBan } from "../../hooks/useBan.hook";
 
 const useStyles = makeStyles({
@@ -37,10 +38,7 @@ const useStyles = makeStyles({
       "& $Info": {
         transform: "translateY(-80px)",
       },
-      "& $Like": {
-        opacity: 1,
-      },
-      "& $Ban": {
+      "& $Fab": {
         opacity: 1,
       },
     },
@@ -83,7 +81,7 @@ const useStyles = makeStyles({
     height: 0,
     paddingTop: "100%",
   },
-  Like: {
+  Fab: {
     position: "absolute",
     bottom: "10px",
     right: "10px",
@@ -91,13 +89,11 @@ const useStyles = makeStyles({
     opacity: 0,
     zIndex: 3,
   },
-  Ban: {
-    position: "absolute",
-    bottom: "10px",
+  Like: {
     right: "70px",
-    transition: "0.3s",
-    opacity: 0,
-    zIndex: 4,
+  },
+  Ban: {
+    right: "10px",
   },
 });
 
@@ -124,7 +120,9 @@ const UserCard = (props) => {
   };
 
   const handleBan = (e) => {
+    console.log("[UserCard] handleBan 1");
     e.stopPropagation();
+    console.log("[UserCard] handleBan 2");
     banAndUpdate(id);
   };
 
@@ -179,18 +177,20 @@ const UserCard = (props) => {
             />
           )}
 
-          <Fab
-            color="secondary"
-            className={classes.Like}
-            size="small"
-            onClick={(e) => handleLike(e)}
-          >
-            <FavoriteOutlined />
-          </Fab>
+          {images && images.length > 0 && (
+            <Fab
+              color="secondary"
+              className={cn(classes.Fab, classes.Like)}
+              size="small"
+              onClick={(e) => handleLike(e)}
+            >
+              <FavoriteOutlined />
+            </Fab>
+          )}
 
           <Fab
             color="secondary"
-            className={classes.Ban}
+            className={cn(classes.Fab, classes.Ban)}
             size="small"
             onClick={(e) => handleBan(e)}
           >

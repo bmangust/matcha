@@ -6,7 +6,7 @@ const useStyles = makeStyles({
     width: "70%",
     textAlign: "center",
   },
-  "@media (max-width: 600px)": {
+  "@media (max-width: 960px)": {
     root: {
       width: "100%",
     },
