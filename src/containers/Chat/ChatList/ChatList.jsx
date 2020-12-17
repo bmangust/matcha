@@ -70,8 +70,10 @@ const ChatList = () => {
     <List className={classes.List}>
       {chatList.length ? (
         chatList.map((chat) => {
-          console.log(chat);
-          const { name, image, messages, newMessages } = { ...chat.user };
+          const { name, avatar, images, messages, newMessages } = {
+            ...chat.user,
+          };
+          const img = avatar?.image || images[0]?.image || null;
           return (
             <ListItem
               className={classes.ListItem}
@@ -86,7 +88,7 @@ const ChatList = () => {
                 badgeContent={newMessages || 0}
               >
                 <ListItemAvatar>
-                  <Avatar src={image} alt={name} />
+                  <Avatar src={img} alt={name} />
                 </ListItemAvatar>
               </Badge>
               <ListItemText
