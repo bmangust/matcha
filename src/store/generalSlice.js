@@ -146,14 +146,23 @@ export const saveNewState = (payload) => (dispatch) => {
   dispatch(setNewState(payload));
 };
 
-export const auth = (email, password, showNotif) => async (dispatch) => {
+export const auth = (email, password, showNotif) => async (
+  dispatch,
+  getState
+) => {
   dispatch(startLoading());
+  const position = getState().general.position;
   try {
     const body = {
       email: xssSanitize(email),
       password: xssSanitize(password),
     };
-    const res = await api.post("/signin", body);
+    const res = await api.post("/signin", body, {
+      headers: {
+        latitude: position.lat,
+        longitude: position.lon,
+      },
+    });
     if (res.data.status) {
       checkAuth(res.data, dispatch);
     } else {

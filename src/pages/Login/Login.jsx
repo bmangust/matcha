@@ -13,12 +13,14 @@ import { auth } from "../../store/generalSlice";
 import Form from "../../components/Form/Form";
 import { useNotifications } from "../../hooks/useNotifications";
 import { useStyles } from "../../style";
+import { useGPS } from "../../hooks/useGPS.hook";
 
 const Login = () => {
   const showNotif = useNotifications();
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
+  const { getCurrentLocaion } = useGPS();
   const { email, password, emailValid, passwordValid } = useSelector(
     (state) => state.login
   );
@@ -29,6 +31,11 @@ const Login = () => {
     const formValid = emailValid && passwordValid;
     setFormValid(formValid);
   }, [emailValid, passwordValid]);
+
+  useEffect(() => {
+    getCurrentLocaion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onRegisterHandler = () => {
     history.push("register");
