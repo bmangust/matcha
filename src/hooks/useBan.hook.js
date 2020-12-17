@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "../axios";
 import { loadUsers, setStrangers } from "../store/usersSlice";
@@ -22,11 +22,13 @@ export const useBan = () => {
   const dispatch = useDispatch();
   const strangers = useSelector((state) => state.users.strangers);
 
-  const loadBanned = () => async () => {
+  const loadBanned = async () => {
+    console.log("[useBan] loadBanned");
     try {
       const res = await api("ban");
       if (res.data.status) {
         const data = res.data.data || [];
+        console.log(data);
         dispatch(loadUsers(data));
         setBanned(data);
       }
@@ -34,30 +36,27 @@ export const useBan = () => {
   };
 
   useEffect(() => {
+    console.log("[useBan] useEffect");
     loadBanned();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const banAndUpdate = useCallback(
-    () => async (userId) => {
-      await banUser(userId);
-      const filteredStrangers = strangers.filter((user) => user.id !== userId);
-      dispatch(setStrangers(filteredStrangers));
-      const updatedBanned = [...banned, userId];
+  const banAndUpdate = async (userId) => {
+    console.log("[useBan]banAndUpdate");
+    await banUser(userId);
+    const filteredStrangers = strangers.filter((user) => user.id !== userId);
+    dispatch(setStrangers(filteredStrangers));
+    const updatedBanned = [...banned, userId];
+    setBanned(updatedBanned);
+  };
+
+  const unbanAndUpdate = async (userId) => {
+    const res = await unbanUser(userId);
+    if (banned.length && res) {
+      const updatedBanned = banned.filter((id) => id !== userId);
       setBanned(updatedBanned);
-    },
-    [strangers, banned, dispatch]
-  );
+    }
+  };
 
-  const unbanAndUpdate = useCallback(
-    () => async (userId) => {
-      const res = await unbanUser(userId);
-      if (banned.length && res) {
-        const updatedBanned = banned.filter((id) => id !== userId);
-        setBanned(updatedBanned);
-      }
-    },
-    [banned]
-  );
-
-  return { banned, loadBanned, banAndUpdate, unbanAndUpdate };
+  return { banned, banAndUpdate, unbanAndUpdate };
 };
