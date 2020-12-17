@@ -4,9 +4,7 @@ export const CancelToken = axios.CancelToken;
 const api = axios.create({
   baseURL: `/api/main/`,
   withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
 const media = axios.create({
@@ -15,6 +13,12 @@ const media = axios.create({
   headers: { "Content-Type": "application/json" },
   responseType: "blob",
   validateStatus: false,
+});
+
+const chatApi = axios.create({
+  baseURL: "/api/chat/",
+  withCredentials: true,
+  headers: { "Content-Type": "application/json" },
 });
 
 // media.interceptors.response.use(
@@ -44,4 +48,4 @@ const mediaUpload = async (id, file, isAvatar = false) => {
   });
   return res;
 };
-export { api, media, mediaUpload };
+export { api, media, chatApi, mediaUpload };

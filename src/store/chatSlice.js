@@ -26,60 +26,83 @@ const chatSlice = createSlice({
         state.chats.push({ ...payload, messages: payload.messages || [] });
       }
     },
-    removeChat(state, { payload }) {
+    deleteChat(state, { payload }) {
       state.chats = state.chats?.filter((chat) => chat.id !== payload.id);
     },
     setChat(state, { payload }) {
-      const chat = payload
-        ? state.chats.find((ch) => ch.id === payload.id)
-        : null;
-      state.chat = chat?.id || null;
+      console.log(payload);
+      if (!state.chats.length) return;
+      if (!payload) {
+        state.chat = null;
+        return;
+      }
+      // just to be sure that chat exsist
+      // actually we can just set chat to payload.id
+      const chat = state.chats.find((ch) => ch.id === payload.id);
+      console.log(chat);
+      state.chat = chat ? chat.id : null;
+    },
+    setChatByUserId(state, { payload }) {
+      if (!payload || state.chats.length === 0) return;
+      const chat = state.chats.find((chat) =>
+        chat.userIds.includes(payload.id)
+      );
+      state.chat = chat && chat.id;
+    },
+    addMessage(state, { payload }) {
+      if (!payload) return;
+      const chatIdx = state.chats.findIndex(
+        (chat) => chat.id === payload.chatId
+      );
+      if (chatIdx < 0) {
+        console.log("[addMessage reducer] chat not found", payload);
+        return;
+      }
+      if (state.chats[chatIdx].messages.find((msg) => msg.id === payload.id))
+        return;
+      state.chats[chatIdx].messages.push(payload);
     },
     updateMessage(state, { payload }) {
-      const selectedChat =
+      console.log(payload);
+      const selectedChatId =
         state.chat || state.chats.find((ch) => ch.id === payload.chatId)?.id;
-      if (!selectedChat) {
+      if (!selectedChatId) {
         console.log("[updateMessage] chat not found. payload:", payload);
         return;
       }
 
-      const chatIdx = state.chats.findIndex((chat) => chat.id === selectedChat);
+      const chatIdx = state.chats.findIndex(
+        (chat) => chat.id === selectedChatId
+      );
       const msgIdx = state.chats[chatIdx].messages.findIndex(
         (msg) => msg.id === payload.id
       );
 
       console.log(`chatIdx: ${chatIdx}, msgIdx: ${msgIdx}`);
       if (msgIdx === -1) {
-        state.chats[chatIdx].messages.push({ ...payload });
+        state.chats[chatIdx].messages.push(payload);
       } else {
-        state.chats[chatIdx].messages = [
-          ...state.chats[chatIdx].messages.slice(0, msgIdx),
-          { ...payload },
-          ...state.chats[chatIdx].messages.slice(msgIdx + 1),
-        ];
+        state.chats[chatIdx].messages[msgIdx].text = payload.text;
+        state.chats[chatIdx].messages[msgIdx].status = payload.status;
       }
     },
-    setDeleteMessage(state, { payload }) {
-      const selectedChat =
+    deleteMessage(state, { payload }) {
+      const selectedChatId =
         state.chat || state.chats.find((ch) => ch.id === payload.chatId)?.id;
-      const chatIdx = state.chats.findIndex((chat) => chat.id === selectedChat);
+      const chatIdx = state.chats.findIndex(
+        (chat) => chat.id === selectedChatId
+      );
       const messageIndex = state.chats[chatIdx].messages.findIndex(
         (msg) => msg.id === payload.id
       );
       if (messageIndex !== -1) {
-        state.chat.messages = [
-          ...state.chat.messages.slice(0, messageIndex),
-          ...state.chat.messages.slice(messageIndex + 1),
-        ];
+        state.chat.messages.slpice(messageIndex, 1);
       }
     },
     upadateChatMessages(state, { payload }) {
       if (!state.chat) return;
       const chatIdx = state.chats.findIndex((chat) => chat.id === state.chat);
       state.chats[chatIdx].messages = payload;
-    },
-    setChatById(state, { payload }) {
-      state.chat = payload;
     },
     resetState() {
       return initialState;
@@ -90,12 +113,13 @@ const chatSlice = createSlice({
 export const {
   setChat,
   setChats,
-  setChatById,
-  removeChat,
+  setChatByUserId,
+  deleteChat,
   addChat,
   resetState,
+  addMessage,
   updateMessage,
-  setDeleteMessage,
+  deleteMessage,
   upadateChatMessages,
 } = chatSlice.actions;
 

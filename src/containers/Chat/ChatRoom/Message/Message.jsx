@@ -37,8 +37,8 @@ const useStyles = makeStyles({
   Icon: {
     marginLeft: "0.3rem",
     fontSize: "0.7rem",
-    color: ({ state }) =>
-      state === CONSTANTS.MESSAGE.SENT_MESSAGE
+    color: ({ status }) =>
+      status === CONSTANTS.MESSAGE_STATUS.STATUS_NEW
         ? primaryColor.contrastTextLighter
         : secondaryColor.main,
   },
@@ -60,8 +60,8 @@ const getDate = (date) => {
 };
 
 const Message = (props) => {
-  const { self, text, image, name, date, state } = { ...props };
-  const classes = useStyles({ self, state });
+  const { self, text, image, name, date, status } = { ...props };
+  const classes = useStyles({ self, status });
 
   return (
     <Grid container className={classes.Container}>
@@ -76,7 +76,7 @@ const Message = (props) => {
           <Typography component="span" className={classes.Date}>
             {getDate(date)}
           </Typography>
-          {state === CONSTANTS.MESSAGE.READ_MESSAGE ? (
+          {status === CONSTANTS.MESSAGE_STATUS.STATUS_READ ? (
             <DoneAllRounded className={classes.Icon} />
           ) : (
             <DoneRounded className={classes.Icon} />

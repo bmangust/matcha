@@ -9,7 +9,12 @@ import {
   Typography,
 } from "@material-ui/core";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { useChat } from "../../../hooks/useChat.hook";
+import { setChat } from "../../../store/chatSlice";
+import { setCompanion } from "../../../store/UISlice";
 import { borderRadius } from "../../../theme";
 
 const useStyles = makeStyles({
@@ -33,10 +38,25 @@ const useStyles = makeStyles({
   },
 });
 
-const ChatList = ({ chats, handleChatSelect }) => {
+const ChatList = () => {
   const classes = useStyles();
+  const chats = useSelector((state) => state.chat.chats);
   const users = useSelector((state) => state.users.users);
   const myId = useSelector((state) => state.general.id);
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const { getChatsInfo } = useChat();
+
+  useEffect(() => {
+    getChatsInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleChatSelect = (chatId, user) => {
+    dispatch(setChat({ id: chatId }));
+    dispatch(setCompanion({ companion: user }));
+    history.push(`/chat/${chatId}`);
+  };
 
   const chatList = chats.map((chat) => {
     const newChatItem = { ...chat };
@@ -50,14 +70,14 @@ const ChatList = ({ chats, handleChatSelect }) => {
     <List className={classes.List}>
       {chatList.length ? (
         chatList.map((chat) => {
-          const chatId = chat.id;
-          const { id, name, image, messages, newMessages } = { ...chat.user };
+          console.log(chat);
+          const { name, image, messages, newMessages } = { ...chat.user };
           return (
             <ListItem
               className={classes.ListItem}
               button
-              onClick={() => handleChatSelect(id, chatId)}
-              key={chatId}
+              onClick={() => handleChatSelect(chat.id, chat.user)}
+              key={chat.id}
             >
               <Badge
                 color="secondary"

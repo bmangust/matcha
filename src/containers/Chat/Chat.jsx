@@ -4,7 +4,7 @@ import ChatList from "./ChatList/ChatList";
 import ChatRoom from "./ChatRoom/ChatRoom";
 import { useSelector } from "react-redux";
 import { Route, Switch } from "react-router-dom";
-import { useChat } from "../../hooks/useChat.hook";
+// import { useChat } from "../../hooks/useChat.hook";
 
 const useStyles = makeStyles({
   Grid: {
@@ -13,36 +13,19 @@ const useStyles = makeStyles({
   },
 });
 
-const Chat = (props) => {
+const Chat = () => {
   const classes = useStyles();
   const chats = useSelector((state) => state.chat.chats);
-  const {
-    getChatsInfo,
-    selectChat,
-    createChat,
-    getChatInfo,
-    newMessage,
-  } = useChat();
-  const [id, setId] = useState("");
-  const [message, setMessage] = useState("");
+  // const { getChatsInfo, createChat, newMessage } = useChat();
+  // const [id, setId] = useState("");
+  // const [message, setMessage] = useState("");
 
-  const handleIdChange = (e) => {
-    setId(e.target.value);
-  };
-  const handleMessageChange = (e) => {
-    setMessage(e.target.value);
-  };
-
-  useEffect(() => {
-    getChatsInfo();
-  }, []);
-
-  const handleChatSelect = (id, chatId) => {
-    // console.log(id, chatId);
-    selectChat(id, chatId);
-    props.history.push(`/chat/${chatId}`);
-  };
-  // console.log(chats);
+  // const handleIdChange = (e) => {
+  //   setId(e.target.value);
+  // };
+  // const handleMessageChange = (e) => {
+  //   setMessage(e.target.value);
+  // };
 
   return (
     <Grid
@@ -59,16 +42,10 @@ const Chat = (props) => {
             render={() => <ChatRoom />}
           />
         ))}
-        <Route
-          path="/chat"
-          exact
-          render={() => (
-            <ChatList chats={chats} handleChatSelect={handleChatSelect} />
-          )}
-        />
+        <Route path="/chat" exact render={() => <ChatList />} />
       </Switch>
       {/* chat debug */}
-      <Grid container>
+      {/* <Grid container>
         <Button onClick={() => createChat(id)}>Create chat</Button>
         <Button onClick={() => getChatsInfo()}>Get chats info</Button>
         <TextField placeholder="id" onChange={handleIdChange} value={id} />
@@ -77,9 +54,8 @@ const Chat = (props) => {
           onChange={handleMessageChange}
           value={message}
         />
-        <Button onClick={() => getChatInfo(id)}>Get chat info</Button>
         <Button onClick={() => newMessage(id, message)}>Send message</Button>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 };

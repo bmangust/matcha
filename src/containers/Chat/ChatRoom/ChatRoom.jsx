@@ -1,5 +1,6 @@
 import { makeStyles, Grid, List, ListItem } from "@material-ui/core";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useRef } from "react";
 import { useSelector } from "react-redux";
 import { useChat } from "../../../hooks/useChat.hook";
 import { CONSTANTS } from "../../../models/ws";
@@ -31,42 +32,20 @@ const useStyles = makeStyles({
 
 let cnt = 0;
 
-const ChatRoom = (props) => {
+const ChatRoom = React.memo(() => {
   const { name, avatar, images } = useSelector((state) => state.UI.companion);
   const { chat, chats } = useSelector((state) => state.chat);
   const messages = chats.find((ch) => ch.id === chat).messages;
   const myId = useSelector((state) => state.general.id);
   const classes = useStyles();
-  const { readMessage } = useChat();
+  const { readMsg } = useChat();
   const [mappedMessages, setMappedMessages] = useState([]);
+  const messagesEndRef = useRef(null);
   console.log(`[ChatRoom ${cnt}] mappedMessages`, mappedMessages);
   console.log(`[ChatRoom ${cnt}] messages`, messages);
 
-  const readAllMessages = useCallback(() => {
-    messages.forEach((message) => {
-      if (message.sender !== myId) {
-        switch (message.state) {
-          case CONSTANTS.MESSAGE.SENT_MESSAGE:
-          case CONSTANTS.MESSAGE.DELIVERED_MESSAGE:
-            readMessage(message);
-            return;
-          case CONSTANTS.MESSAGE.READ_MESSAGE:
-          default:
-            return;
-        }
-      }
-    });
-  }, [messages]);
-
-  useEffect(() => {
-    // if (cnt === 5) return;
-    if (!messages || !messages.length) return;
-    readAllMessages();
-  }, [messages]);
-
-  useEffect(() => {
-    // if (cnt === 5) return;
-    const formatedMessages = () =>
+  const formatedMessages = useMemo(
+    () =>
       !messages || !messages.length
         ? []
         : messages.map((el) => (
@@ -77,12 +56,43 @@ const ChatRoom = (props) => {
                 image={avatar?.image || images[0]?.image}
                 name={name}
                 date={el.date}
-                state={el.state}
+                status={el.status}
               />
             </ListItem>
-          ));
+          )),
+    [avatar, classes.ListItem, images, messages, myId, name]
+  );
+
+  useEffect(() => {
     setMappedMessages(formatedMessages);
-  }, [messages]);
+  }, [formatedMessages]);
+
+  useEffect(() => {
+    const readAllMessages = () => {
+      messages.forEach((message) => {
+        if (message.sender !== myId) {
+          switch (message.status) {
+            case CONSTANTS.MESSAGE_STATUS.STATUS_NEW:
+            case CONSTANTS.MESSAGE_STATUS.STATUS_DELIVERED:
+              readMsg(message);
+              return;
+            case CONSTANTS.MESSAGE_STATUS.STATUS_READ:
+            default:
+              return;
+          }
+        }
+      });
+    };
+    const scrollToBottom = () => {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    };
+
+    // if (cnt === 5) return;
+    if (!messages || !messages.length) return;
+    readAllMessages();
+    scrollToBottom();
+  }, [messages, myId, readMsg]);
+
   cnt++;
 
   return (
@@ -96,12 +106,13 @@ const ChatRoom = (props) => {
     >
       <List className={classes.List}>
         {mappedMessages.length ? mappedMessages : "No messages yet"}
+        <div ref={messagesEndRef} />
       </List>
       <Grid item className={classes.SendForm}>
         <SendForm />
       </Grid>
     </Grid>
   );
-};
+});
 
 export default ChatRoom;

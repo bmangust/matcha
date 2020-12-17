@@ -3,7 +3,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Switch, Route, useHistory, withRouter, Link } from "react-router-dom";
 import { logout } from "../../store/generalSlice";
-import { setCompanion, setHeader, setSelectedTab } from "../../store/UISlice";
+import {
+  setCompanion,
+  setHeader,
+  setParent,
+  setSelectedTab,
+} from "../../store/UISlice";
 
 import {
   AppBar,
@@ -22,7 +27,9 @@ import Profile from "../../pages/Profile/Profile";
 import Header from "../../components/Header/Header";
 import Chat from "../Chat/Chat";
 import { useNotifications } from "../../hooks/useNotifications";
-import { checkStatusAndReconnect, useWS } from "../../hooks/useWS.hook";
+import { useWS } from "../../hooks/useWS.hook";
+import { setChat } from "../../store/chatSlice";
+import { useChat } from "../../hooks/useChat.hook";
 
 const useStyles = makeStyles({
   selectedTab: {
@@ -93,6 +100,7 @@ const Main = () => {
   const classes = useStyles();
   const [notification, setNotification] = useState(null);
   useWS();
+  const { getChatsInfo } = useChat();
 
   const handleChange = async (e, url) => {
     if (url === "/logout") {
@@ -104,6 +112,8 @@ const Main = () => {
     dispatch(setHeader({ header: tab.label }));
     dispatch(setCompanion({ companion: null }));
     dispatch(setSelectedTab({ selectedTab: tab }));
+    dispatch(setChat(null));
+    dispatch(setParent({ parent: url.substr(1) }));
     history.push(url);
   };
 
@@ -117,10 +127,10 @@ const Main = () => {
     setNotification(lookedBySet);
   }, [lookedBy, id]);
 
-  // check WS status on every tab change and user visit
   useEffect(() => {
-    checkStatusAndReconnect();
-  }, [selectedTab, companion]);
+    getChatsInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const renderedTabs = tabs.map((el) => {
     return (

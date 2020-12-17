@@ -35,12 +35,11 @@ const SendForm = () => {
   const classes = useStyles();
   const [message, setMessage] = React.useState("");
   const id = useSelector((state) => state.UI.companion.id);
-  const { newMessage } = useChat();
+  const { newMsg } = useChat();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(message);
-    newMessage(id, message);
+    newMsg(id, message);
     setMessage("");
   };
 

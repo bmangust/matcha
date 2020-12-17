@@ -41,11 +41,18 @@ const UserProfile = (props) => {
     ...user,
   };
   const defaultBio = "UFO flew here and dropped this message here";
-  const { selectChat } = useChat();
+  const { selectChat, createChat } = useChat();
   const chat = useSelector((state) => state.chat.chat);
 
   const handleChat = (e) => {
-    selectChat(id);
+    if (!selectChat(id)) {
+      createChat(id);
+      // TODO: replace with post handler
+      // wait for NEW_CHAT message, go to new chat
+      setTimeout(() => {
+        selectChat(id);
+      }, 500);
+    }
   };
 
   useEffect(() => {
