@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useChat } from "../../../hooks/useChat.hook";
+import { CONSTANTS } from "../../../models/ws";
 import { setChat } from "../../../store/chatSlice";
 import { setCompanion } from "../../../store/UISlice";
 import { borderRadius } from "../../../theme";
@@ -70,9 +71,14 @@ const ChatList = () => {
     <List className={classes.List}>
       {chatList.length ? (
         chatList.map((chat) => {
-          const { name, avatar, images, messages, newMessages } = {
+          const { name, avatar, images } = {
             ...chat.user,
           };
+          const { messages } = { ...chat };
+          const newMessages = messages.find(
+            (el) => el.status !== CONSTANTS.MESSAGE_STATUS.STATUS_READ
+          )?.text;
+          console.log(chat);
           const img = avatar?.image || images[0]?.image || null;
           return (
             <ListItem

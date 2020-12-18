@@ -41,6 +41,9 @@ const useStyles = makeStyles({
       "& $Fab": {
         opacity: 1,
       },
+      "& $Stepper": {
+        opacity: 1,
+      },
     },
   },
   Info: {
@@ -50,6 +53,7 @@ const useStyles = makeStyles({
     color: "white",
     left: "-10px",
     background: "linear-gradient(#00000000, #000000aa)",
+    transition: "0.3s",
   },
   InfoHeader: {
     justifyContent: "space-between",
@@ -72,6 +76,8 @@ const useStyles = makeStyles({
     backgroundColor: "#ffffff00",
     position: "absolute",
     width: "100%",
+    transition: "0.3s",
+    opacity: 0,
   },
   StepperButton: {
     backgroundColor: "#ffffff00",
@@ -120,9 +126,7 @@ const UserCard = (props) => {
   };
 
   const handleBan = (e) => {
-    console.log("[UserCard] handleBan 1");
     e.stopPropagation();
-    console.log("[UserCard] handleBan 2");
     banAndUpdate(id);
   };
 
@@ -137,10 +141,10 @@ const UserCard = (props) => {
   };
 
   const LeftButtonDisabled =
-    images?.length === 0 || displayedImage === images?.length - 1 || true;
-  const RightButtonDisabled =
-    displayedImage === 0 || images?.length === 0 || true;
+    images?.length === 0 || displayedImage === images?.length - 1;
+  const RightButtonDisabled = displayedImage === 0 || images?.length === 0;
 
+  console.log(images);
   return (
     <Grid item xs={12} sm={6} lg={4}>
       <Card className={classes.UserCard} onClick={showUserProfile}>
@@ -155,6 +159,7 @@ const UserCard = (props) => {
               nextButton={
                 LeftButtonDisabled ? null : (
                   <Button
+                    color="secondary"
                     className={classes.StepperButton}
                     size="small"
                     onClick={handleNextImage}
@@ -166,6 +171,7 @@ const UserCard = (props) => {
               backButton={
                 RightButtonDisabled ? null : (
                   <Button
+                    color="secondary"
                     className={classes.StepperButton}
                     size="small"
                     onClick={handlePrevImage}
