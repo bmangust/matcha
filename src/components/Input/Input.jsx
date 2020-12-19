@@ -7,9 +7,15 @@ import {
   Typography,
   makeStyles,
   Grid,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import TagInput from "../TagInput/TagInput";
+import { capitalize } from "lodash";
 
 const useStyles = makeStyles({
   ButtonListItem: {
@@ -21,6 +27,19 @@ const useStyles = makeStyles({
   SmallSelector: {
     minWidth: "100px",
     padding: "10px",
+  },
+  FormControl: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  RadioGroup: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
   },
 });
 
@@ -126,6 +145,31 @@ const Input = (props) => {
           ))}
         </TextField>
       );
+    case "radio":
+      return (
+        <FormControl
+          className={classes.FormControl}
+          key={name}
+          component="fieldset"
+        >
+          <FormLabel component="legend">{capitalize(name)}</FormLabel>
+          <RadioGroup
+            className={classes.RadioGroup}
+            defaultValue={value}
+            aria-label={name}
+            name={name}
+          >
+            {values.map((el) => (
+              <FormControlLabel
+                key={el}
+                value={el}
+                control={<Radio color="primary" />}
+                label={capitalize(el)}
+              />
+            ))}
+          </RadioGroup>
+        </FormControl>
+      );
     case "date":
       return (
         <TextField
@@ -206,6 +250,7 @@ Input.propTypes = {
     "email",
     "select",
     "date",
+    "radio",
     "slider",
     "doubleSelector",
     "autocomplete",

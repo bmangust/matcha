@@ -9,8 +9,14 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { useNotifications } from "../../hooks/useNotifications";
+import {
+  changeUseLocation,
+  updateInfo,
+} from "../../pages/AdditionalInfo/additionalSlice";
+import { setNewState } from "../../store/generalSlice";
 import { handleBack } from "../../store/UISlice";
 
 const useStyles = makeStyles((theme) => ({
@@ -26,10 +32,12 @@ const ProfileSettings = () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
+  const { useLocation } = useSelector((state) => state.general);
   const [state, setState] = useState({
-    location: true,
+    location: useLocation,
     email: true,
   });
+  const notif = useNotifications();
 
   const { location, email } = state;
 
@@ -40,7 +48,10 @@ const ProfileSettings = () => {
     dispatch(handleBack(history, "profile"));
   };
   const handleSave = () => {
-    // update info on server
+    console.log("[ProfileSettings]", state);
+    dispatch(setNewState({ useLocation: state.location }));
+    dispatch(changeUseLocation(state.location));
+    dispatch(updateInfo({ useLocation: state.location }, notif));
   };
 
   return (
@@ -53,6 +64,7 @@ const ProfileSettings = () => {
               <Checkbox
                 checked={location}
                 onChange={handleChange}
+                color="primary"
                 name="location"
               />
             }
@@ -60,7 +72,12 @@ const ProfileSettings = () => {
           />
           <FormControlLabel
             control={
-              <Checkbox checked={email} onChange={handleChange} name="email" />
+              <Checkbox
+                checked={email}
+                onChange={handleChange}
+                color="primary"
+                name="email"
+              />
             }
             label="Send email notification"
           />

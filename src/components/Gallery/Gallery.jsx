@@ -1,6 +1,5 @@
 import {
   Card,
-  CardContent,
   CardMedia,
   Fab,
   Grid,
@@ -22,9 +21,6 @@ const useStyles = makeStyles({
       "& $Media": {
         transform: "scale(1.2)",
       },
-      "& $Info": {
-        transform: "translateY(0rem)",
-      },
       "& $Fab": {
         opacity: 1,
       },
@@ -35,15 +31,6 @@ const useStyles = makeStyles({
   },
   Grid: {
     marginTop: "10px",
-  },
-  Info: {
-    position: "absolute",
-    transform: "translateY(-10rem)",
-    width: "100%",
-    textAlign: "center",
-    color: "#fafafa",
-    background: "linear-gradient(#000000aa, #00000000)",
-    zIndex: 2,
   },
   Fab: {
     position: "absolute",
@@ -65,21 +52,9 @@ const Gallery = (props) => {
   console.log(images);
   console.log(props);
 
-  const setAvatar = async (image) => {
-    // let avatar changing only when Gallery is rendered with images from general redux slice
-    console.log("setAvatar");
-    if (props.images) return;
-    try {
-      const res = await media.put("avatar", { imageId: image.id });
-      if (res.data.status) {
-        dispatch(saveNewState({ avatar: image }));
-      }
-    } catch (e) {}
-  };
-
   const handleRemove = async (e, imageId) => {
-    if (props.images) return;
     e.stopPropagation();
+    if (props.images) return;
     try {
       const res = await media.delete(`img/${imageId}`);
       if (res.data.status) {
@@ -107,14 +82,10 @@ const Gallery = (props) => {
                   >
                     <DeleteOutlineRounded />
                   </Fab>
-                  <CardContent className={classes.Info}>
-                    <Typography>Click to set avatar</Typography>
-                  </CardContent>
                 </>
               )}
 
               <CardMedia
-                onClick={() => setAvatar(el)}
                 className={classes.Media}
                 image={el.image || defaultAvatar}
               />

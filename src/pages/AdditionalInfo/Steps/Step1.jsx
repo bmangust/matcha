@@ -92,7 +92,7 @@ const Step1 = () => {
     },
     {
       name: "gender",
-      type: "select",
+      type: "radio",
       label: "I'm",
       values: ["male", "female"],
       value: gender,

@@ -127,8 +127,8 @@ const UpdatePublicInfo = () => {
     },
     {
       name: "gender",
-      type: "select",
-      label: "I'm",
+      type: "radio",
+      label: "I am",
       values: ["male", "female"],
       value: gender,
       onChange: (e) => {

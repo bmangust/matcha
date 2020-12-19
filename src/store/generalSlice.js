@@ -26,6 +26,7 @@ const initialGeneralState = {
   maxAge: 0,
   images: [],
   avatar: null,
+  useLocation: false,
   likedBy: [],
   matches: [],
   position: { lat: 0, lon: 0 },
@@ -107,6 +108,7 @@ const checkInfo = (info) => {
         "avatar",
         "images",
         "bio",
+        "useLocation",
       ].indexOf(key) !== -1
     )
       return;

@@ -16,7 +16,7 @@ const Step3 = () => {
   const inputs = [
     {
       name: "lookFor",
-      type: "select",
+      type: "radio",
       label: "I look for",
       values: ["male", "female", "both"],
       value: lookFor,
@@ -28,8 +28,8 @@ const Step3 = () => {
       name: "maxDistance",
       type: "slider",
       label: "Search distance, km",
-      step: 100,
-      min: 0,
+      step: 10,
+      min: 10,
       max: 10000,
       value: maxDist,
       onChange: (value) => {

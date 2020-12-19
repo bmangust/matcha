@@ -22,6 +22,7 @@ const initialAdditionalState = {
   minAge: 0,
   maxAge: 100,
   tags: null,
+  useLocation: false,
 
   emailValid: false,
   usernameValid: false,
@@ -94,6 +95,9 @@ const additionalSlice = createSlice({
     changeTags(state, { payload: { value } }) {
       state.tags = value;
     },
+    changeUseLocation(state, { payload }) {
+      state.useLocation = payload;
+    },
 
     changeEmailValid(state, { payload }) {
       state.emailValid = payload;
@@ -146,6 +150,7 @@ export const {
   changeLookFor,
   changeSearchAgeRange,
   changeTags,
+  changeUseLocation,
 
   changeEmailValid,
   changeUsernameValid,
@@ -176,6 +181,7 @@ export const updateInfo = (
     minAge,
     maxAge,
     tags,
+    useLocation,
   },
   showNotif
 ) => async (dispatch, getState) => {
@@ -198,8 +204,9 @@ export const updateInfo = (
     lookFor: lookFor || additionalState.lookFor,
     minAge: minAge || additionalState.minAge,
     maxAge: maxAge || additionalState.maxAge,
+    useLocation: useLocation || additionalState.useLocation,
   };
-  console.log("[AdditionalInfoSlice] update user info");
+  console.log("[AdditionalInfoSlice] update user info", useLocation);
   const position = getState().general.position;
   if (position.lat !== 0 && position.lon !== 0) {
     body.position = position;
