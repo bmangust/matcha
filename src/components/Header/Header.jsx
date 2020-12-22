@@ -21,6 +21,7 @@ import PropTypes from "prop-types";
 import { loadUsers } from "../../store/usersSlice";
 import ClickableUsersList from "../ClickableUsersList/ClickableUsersList";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
+import { setAdditionalState } from "../../pages/AdditionalInfo/additionalSlice";
 
 function ElevationScroll({ children }) {
   const trigger = useScrollTrigger({
@@ -61,6 +62,7 @@ const useStyles = makeStyles({
 const Header = ({ header, notification }) => {
   const classes = useStyles();
   const allUsers = useSelector((state) => state.users.users);
+  const general = useSelector((state) => state.general);
   const [users, setUsers] = useState([]);
   const loc = useLocation();
   const history = useHistory();
@@ -86,6 +88,9 @@ const Header = ({ header, notification }) => {
 
   const handleBackButton = () => {
     const parent = loc.pathname.split("/")[1];
+    if (parent === "profile") {
+      dispatch(setAdditionalState(general));
+    }
     dispatch(handleBack(history, parent));
   };
 

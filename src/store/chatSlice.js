@@ -10,9 +10,9 @@ const chatSlice = createSlice({
   initialState,
   reducers: {
     setChats(state, { payload }) {
-      console.log(payload);
+      // console.log(payload);
       if (payload && payload.length) {
-        console.log("payload is not null");
+        // console.log("payload is not null");
         state.chats = payload.map((chat) => ({
           ...chat,
           messages: chat.messages || [],
@@ -20,9 +20,9 @@ const chatSlice = createSlice({
       }
     },
     addChat(state, { payload }) {
-      console.log(payload);
+      // console.log(payload);
       if (!state.chats.find((chat) => chat.id === payload.id)) {
-        console.log("chat not found, adding", payload);
+        // console.log("chat not found, adding", payload);
         state.chats.push({ ...payload, messages: payload.messages || [] });
       }
     },
@@ -30,7 +30,7 @@ const chatSlice = createSlice({
       state.chats = state.chats?.filter((chat) => chat.id !== payload.id);
     },
     setChat(state, { payload }) {
-      console.log(payload);
+      // console.log(payload);
       if (!state.chats.length) return;
       if (!payload) {
         state.chat = null;
@@ -39,7 +39,7 @@ const chatSlice = createSlice({
       // just to be sure that chat exsist
       // actually we can just set chat to payload.id
       const chat = state.chats.find((ch) => ch.id === payload.id);
-      console.log(chat);
+      // console.log(chat);
       state.chat = chat ? chat.id : null;
     },
     setChatByUserId(state, { payload }) {
@@ -55,7 +55,7 @@ const chatSlice = createSlice({
         (chat) => chat.id === payload.chatId
       );
       if (chatIdx < 0) {
-        console.log("[addMessage reducer] chat not found", payload);
+        // console.log("[addMessage reducer] chat not found", payload);
         return;
       }
       if (state.chats[chatIdx].messages.find((msg) => msg.id === payload.id))
@@ -63,11 +63,10 @@ const chatSlice = createSlice({
       state.chats[chatIdx].messages.push(payload);
     },
     updateMessage(state, { payload }) {
-      console.log(payload);
       const selectedChatId =
         state.chat || state.chats.find((ch) => ch.id === payload.chatId)?.id;
       if (!selectedChatId) {
-        console.log("[updateMessage] chat not found. payload:", payload);
+        // console.log("[updateMessage reducer] chat not found. payload:", payload);
         return;
       }
 

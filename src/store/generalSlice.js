@@ -85,12 +85,11 @@ export const {
 
 const checkAuth = async (data, dispatch) => {
   // console.log(data);
-  console.log(data.data);
   dispatch(saveNewState(data.data));
   dispatch(authSuccess());
   dispatch(setAdditionalState(data.data));
   const user = await Promise.resolve(prepareUsers([data.data])[0]);
-  console.log(user);
+  // console.log(user);
   if (user) {
     dispatch(saveNewState(user));
     dispatch(setAdditionalState(user));
@@ -174,7 +173,7 @@ export const auth = (email, password, showNotif) => async (
       showNotif(res.data.data, "error");
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     dispatch(authFail());
     showNotif("Server error", "error");
   }

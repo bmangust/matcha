@@ -144,7 +144,6 @@ const UserCard = (props) => {
     images?.length === 0 || displayedImage === images?.length - 1;
   const RightButtonDisabled = displayedImage === 0 || images?.length === 0;
 
-  console.log(images);
   return (
     <Grid item xs={12} sm={6} lg={4}>
       <Card className={classes.UserCard} onClick={showUserProfile}>

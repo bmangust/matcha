@@ -12,11 +12,9 @@ const host = local ? ip : "aim-love.ga";
 const port = 8080;
 const url = local ? `ws://${host}:${port}` : `wss://${host}:3001`;
 let socket = null;
-localStorage.debug = "*";
+// localStorage.debug = "*";
 
 const newConnection = (id) => {
-  // const cookie = getCookie("session_id");
-  // return io(url);
   return io(url, {
     path: "/api/socket/connect",
     reconnectionDelayMax: 10000,
@@ -45,9 +43,7 @@ export const useWS = () => {
   socket = socket ? socket : newConnection(id);
 
   useEffect(() => {
-    socket.on("connect", (e) => {
-      console.log(e);
-      console.log(socket.connected);
+    socket.on("connect", () => {
       console.log("[open] Соединение установлено");
 
       if (socket.disconnected) {
@@ -73,11 +69,6 @@ export const useWS = () => {
     socket.on("disconnect", (reason) => {
       console.log(reason);
       socket.connect();
-      // if (reason === "io server disconnect") {
-      //   // the disconnection was initiated by the server, you need to reconnect manually
-      //   socket.connect();
-      // }
-      // else the socket will automatically try to reconnect
     });
 
     socket.on("close", (reason) => {
@@ -87,7 +78,6 @@ export const useWS = () => {
     socket.onerror = (error) => {
       console.log(error);
       socket.connect();
-      // checkStatusAndReconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
