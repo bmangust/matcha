@@ -16,6 +16,20 @@ export const xssSanitize = (value) => {
     : "";
 };
 
+export const unsanitaze = (value) => {
+  var lt = [/&lt;/g, "<"],
+    gt = [/&gt;/g, ">"],
+    ap = [/&#39;/g, "'"],
+    ic = [/&#34;/g, '"'];
+  return value
+    ? value
+        .replace(lt[0], lt[1])
+        .replace(gt[0], gt[1])
+        .replace(ap[0], ap[1])
+        .replace(ic[0], ic[1])
+    : "";
+};
+
 const source = CancelToken.source();
 
 export const capitalize = (str) => {

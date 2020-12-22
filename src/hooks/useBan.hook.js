@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "../axios";
 import { loadUsers, setStrangers } from "../store/usersSlice";

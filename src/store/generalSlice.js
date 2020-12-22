@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { api } from "../axios";
-import { prepareUsers, xssSanitize } from "../utils";
+import { prepareUsers, unsanitaze, xssSanitize } from "../utils";
 import { resetUIState, setIsInfoMissing } from "./UISlice";
 import { resetFilter } from "../components/Filter/filterSlice";
 import { setAdditionalState } from "../pages/AdditionalInfo/additionalSlice";
@@ -62,6 +62,10 @@ const generalSlice = createSlice({
           if (payload.position.lon) state.position.lon = payload.position.lon;
         } else if (key === "images" && payload.images) {
           state.images = [...payload.images];
+        } else if (
+          ["name", "surname", "bio", "country", "city"].includes(key)
+        ) {
+          state[key] = unsanitaze(payload[key]);
         } else {
           state[key] = payload[key];
         }
@@ -93,7 +97,7 @@ const checkAuth = async (data, dispatch) => {
   }
 };
 
-const checkInfo = (info) => {
+export const checkInfo = (info) => {
   let isInfoMissing = false;
   let isAgeRangeMissing = false;
   Object.keys(info).forEach((key) => {

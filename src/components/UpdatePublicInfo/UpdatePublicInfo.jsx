@@ -17,12 +17,14 @@ import {
   changeCountryValid,
   changeCityValid,
   updateInfo,
+  setAdditionalState,
 } from "../../pages/AdditionalInfo/additionalSlice";
 import { useNotifications } from "../../hooks/useNotifications";
 import { handleBack } from "../../store/UISlice";
 import { useHistory } from "react-router-dom";
 
 const UpdatePublicInfo = () => {
+  const general = useSelector((state) => state.general);
   const {
     username,
     name,
@@ -57,6 +59,7 @@ const UpdatePublicInfo = () => {
   };
 
   const handleBackClick = () => {
+    dispatch(setAdditionalState(general));
     dispatch(handleBack(history, "profile"));
   };
 

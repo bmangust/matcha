@@ -1,7 +1,7 @@
 import { api } from "../../axios";
 import { saveNewState } from "../../store/generalSlice";
 import { startLoading, stopLoading } from "../../store/generalSlice";
-import { xssSanitize } from "../../utils";
+import { unsanitaze, xssSanitize } from "../../utils";
 
 const { createSlice } = require("@reduxjs/toolkit");
 
@@ -41,7 +41,12 @@ const additionalSlice = createSlice({
   reducers: {
     setAdditionalState(state, { payload }) {
       Object.keys(initialAdditionalState).forEach((key) => {
-        state[key] = payload[key] || initialAdditionalState[key];
+        if (["name", "surname", "bio", "country", "city"].includes(key)) {
+          const value = payload[key] || initialAdditionalState[key];
+          state[key] = unsanitaze(value);
+        } else {
+          state[key] = payload[key] || initialAdditionalState[key];
+        }
       });
     },
     resetAdditionalState: () => initialAdditionalState,

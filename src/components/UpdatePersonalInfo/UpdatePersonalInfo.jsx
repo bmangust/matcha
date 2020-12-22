@@ -16,6 +16,7 @@ import {
   changeEmailValid,
   changePhoneValid,
   updateInfo,
+  setAdditionalState,
 } from "../../pages/AdditionalInfo/additionalSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -62,6 +63,7 @@ const UpdatePersonalInfo = () => {
     emailValid,
     phoneValid,
   } = useSelector((state) => state.additional);
+  const general = useSelector((state) => state.general);
 
   const changeEmailRequest = () => {};
   const changeUsernameRequest = () => {};
@@ -75,6 +77,7 @@ const UpdatePersonalInfo = () => {
   };
   const [formValid, setFormValid] = useState(true);
   const handleBackClick = () => {
+    dispatch(setAdditionalState(general));
     dispatch(handleBack(history, "profile"));
   };
 

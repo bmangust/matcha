@@ -11,10 +11,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useNotifications } from "../../hooks/useNotifications";
 import { updateInfo } from "./additionalSlice";
+import { setIsInfoMissing } from "../../store/UISlice";
+
 import Step0 from "./Steps/Step0";
 import Step1 from "./Steps/Step1";
 import Step2 from "./Steps/Step2";
 import Step3 from "./Steps/Step3";
+import { checkInfo } from "../../store/generalSlice";
 
 const useStyles = makeStyles({
   Grid: {
@@ -82,27 +85,29 @@ const AdditionalInfo = () => {
         "[AdditionalInfo] updateSuccess before dispatch",
         updateSuccess
       );
-      dispatch(
-        updateInfo(
-          {
-            id,
-            name,
-            surname,
-            username,
-            birthDate,
-            phone,
-            gender,
-            country,
-            city,
-            maxDist,
-            lookFor,
-            minAge,
-            maxAge,
-          },
-          showNotif
-        )
-      );
-      history.push("/");
+      const data = {
+        id,
+        name,
+        surname,
+        username,
+        birthDate,
+        phone,
+        gender,
+        country,
+        city,
+        maxDist,
+        lookFor,
+        minAge,
+        maxAge,
+      };
+      const isInfoMissing = checkInfo(data);
+      if (isInfoMissing) {
+        showNotif("Please, fill all the fields", "error");
+      } else {
+        dispatch(updateInfo(data, showNotif));
+        dispatch(setIsInfoMissing(isInfoMissing));
+        history.push("/");
+      }
     } else {
       setActiveStep((prev) => prev + 1);
     }

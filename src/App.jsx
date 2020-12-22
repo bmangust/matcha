@@ -78,7 +78,7 @@ function App() {
         </Switch>
       );
     }
-  }, [isAuth, isLoading, classes.Grid]);
+  }, [isAuth, isLoading, classes.Grid, isInfoMissing]);
 
   return (
     <ThemeProvider theme={theme}>

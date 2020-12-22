@@ -146,6 +146,7 @@ const Input = (props) => {
         </TextField>
       );
     case "radio":
+      console.log(values, value);
       return (
         <FormControl
           className={classes.FormControl}
@@ -155,15 +156,17 @@ const Input = (props) => {
           <FormLabel component="legend">{capitalize(name)}</FormLabel>
           <RadioGroup
             className={classes.RadioGroup}
-            defaultValue={value}
+            // defaultValue={value}
+            value={value}
             aria-label={name}
             name={name}
+            onChange={(e) => onChange(e)}
           >
             {values.map((el) => (
               <FormControlLabel
                 key={el}
                 value={el}
-                control={<Radio color="primary" />}
+                control={<Radio checked={value === el} color="primary" />}
                 label={capitalize(el)}
               />
             ))}
