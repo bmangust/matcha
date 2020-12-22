@@ -46,6 +46,18 @@ const Sort = () => {
   const sortByRatingDesc = (userA, userB) => {
     return userB.rating - userA.rating;
   };
+  const sortByLocationAsc = (userA, userB) => {
+    return (
+      userA.country.localeCompare(userB.country) ||
+      userA.city.localeCompare(userB.city)
+    );
+  };
+  const sortByLocationDesc = (userA, userB) => {
+    return (
+      userB.country.localeCompare(userA.country) ||
+      userB.city.localeCompare(userA.city)
+    );
+  };
   const compFn = useCallback(() => {
     switch (sortingParam) {
       case "username":
@@ -54,6 +66,8 @@ const Sort = () => {
         return isAsc ? sortByAgeAsc : sortByAgeDesc;
       case "rating":
         return isAsc ? sortByRatingAsc : sortByRatingDesc;
+      case "location":
+        return isAsc ? sortByLocationAsc : sortByLocationDesc;
       default:
         return;
     }
@@ -88,6 +102,12 @@ const Sort = () => {
           onClick={() => setSortingParam("rating")}
         >
           rating
+        </Button>
+        <Button
+          className={sortingParam === "location" && classes.Active}
+          onClick={() => setSortingParam("location")}
+        >
+          location
         </Button>
       </ButtonGroup>
 

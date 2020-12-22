@@ -6,7 +6,7 @@ import {
   Paper,
 } from "@material-ui/core";
 import React, { useState } from "react";
-import { ExpandLessRounded } from "@material-ui/icons";
+import { ExpandMoreRounded } from "@material-ui/icons";
 import Filter from "../Filter/Filter";
 import Sort from "../Sort/Sort";
 import { secondaryColor } from "../../theme";
@@ -90,7 +90,7 @@ const FilterSortWrapper = () => {
               </Button>
             </ButtonGroup>
             <Button onClick={handleShow} size="small" color="secondary">
-              <ExpandLessRounded
+              <ExpandMoreRounded
                 className={
                   show ? classes.Arrow : cn(classes.Arrow, classes.Less)
                 }
