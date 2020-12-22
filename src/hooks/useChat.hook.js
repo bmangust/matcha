@@ -85,7 +85,7 @@ export const useChat = () => {
     console.log("[hadleChat]", wsMessage);
     if (wsMessage.type === CONSTANTS.MESSAGE_TYPES.NEW_MESSAGE) {
       dispatch(addMessage(wsMessage.payload));
-      // showNotif(wsMessage.payload);
+      showNotif(wsMessage.payload);
     } else if (wsMessage.type === CONSTANTS.MESSAGE_TYPES.UPDATE_MESSAGE) {
       dispatch(updateMessage(wsMessage.payload));
     } else if (wsMessage.type === CONSTANTS.MESSAGE_TYPES.DELETE_MESSAGE) {

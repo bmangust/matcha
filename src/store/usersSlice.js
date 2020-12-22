@@ -9,6 +9,7 @@ const initialUsersState = {
   error: null,
   users: [],
   strangers: [],
+  banned: [],
 };
 
 const loadedIds = new Set();
@@ -68,6 +69,9 @@ const usersSlice = createSlice({
     },
     setStrangers(state, { payload }) {
       state.strangers = [...payload];
+    },
+    setBanned(state, { payload }) {
+      state.banned = [...payload];
     },
     failLoading(state, { payload }) {
       state.isLoading = false;
@@ -188,6 +192,7 @@ export const {
   successLoading,
   addUsers,
   setUsers,
+  setBanned,
   updateUsers,
   sortStrangers,
   setStrangers,

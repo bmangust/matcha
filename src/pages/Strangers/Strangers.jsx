@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import UserCard from "../../components/UserCard/UserCard";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import UserProfile from "../../containers/UserProfile/UserProfile";
 import { useDispatch, useSelector } from "react-redux";
 import { useNotifications } from "../../hooks/useNotifications";
@@ -28,6 +28,7 @@ const Strangers = () => {
   const allUsers = useSelector((state) => state.users.users);
   const strangers = useSelector((state) => state.users.strangers);
   const filter = useSelector((state) => state.filter);
+  const location = useLocation();
   const [cards, setCards] = useState(null);
   const [routes, setRoutes] = useState(null);
   const classes = useStyles();
@@ -36,6 +37,7 @@ const Strangers = () => {
   // load strangers on component mount
   useEffect(() => {
     dispatch(loadStrangers(showNotif));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // filter users and set cards
@@ -50,6 +52,7 @@ const Strangers = () => {
           )
         : filteredUsers;
 
+    if (location.pathname.length > 1) return;
     const cards =
       filteredUsers && filteredUsers.length ? (
         filteredUsers.map((el) => <UserCard user={el} key={el.id} />)
@@ -57,10 +60,10 @@ const Strangers = () => {
         <Typography className={classes.Text}>No users to display</Typography>
       );
     setCards(cards);
-  }, [filter, classes.Text, strangers]);
+  }, [filter, classes.Text, strangers, location.pathname]);
 
-  useEffect(() => {
-    const routes =
+  const memorizedRoutes = useMemo(
+    () =>
       allUsers &&
       allUsers.map((el) => (
         <Route
@@ -68,9 +71,13 @@ const Strangers = () => {
           path={`/strangers/:id`}
           render={() => <UserProfile user={el} />}
         />
-      ));
-    setRoutes(routes);
-  }, [allUsers]);
+      )),
+    [allUsers]
+  );
+
+  useEffect(() => {
+    setRoutes(memorizedRoutes);
+  }, [memorizedRoutes]);
 
   return (
     <Grid
