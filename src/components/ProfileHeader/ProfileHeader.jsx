@@ -4,7 +4,8 @@ import defaultImage from "../../Images/default-avatar.png";
 
 const useStyles = makeStyles({
   Card: {
-    width: "90%",
+    width: "100%",
+    maxHeight: 200,
   },
   Media: {
     paddingTop: "30%",

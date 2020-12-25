@@ -17,6 +17,9 @@ import { useNotifications } from "../../hooks/useNotifications";
 const useStyles = makeStyles({
   Card: {
     position: "relative",
+    maxWidth: 350,
+    minWidth: 220,
+    margin: "0 auto",
     "&:hover": {
       "& $Media": {
         transform: "scale(1.2)",
