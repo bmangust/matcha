@@ -37,6 +37,12 @@ const useStyles = makeStyles({
   Text: {
     fontSize: "1rem",
   },
+  Secondary: {
+    display: "-webkit-box",
+    lineClamp: 1,
+    boxOrient: "vertical",
+    overflow: "hidden",
+  },
 });
 
 const ChatList = () => {
@@ -103,6 +109,7 @@ const ChatList = () => {
                 secondary={
                   messages ? messages[messages.length - 1]?.text || "" : ""
                 }
+                secondaryTypographyProps={{ className: classes.Secondary }}
               />
             </ListItem>
           );
