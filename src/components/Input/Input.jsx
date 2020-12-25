@@ -153,10 +153,9 @@ const Input = (props) => {
           key={name}
           component="fieldset"
         >
-          <FormLabel component="legend">{capitalize(name)}</FormLabel>
+          <FormLabel component="legend">{capitalize(label)}</FormLabel>
           <RadioGroup
             className={classes.RadioGroup}
-            // defaultValue={value}
             value={value}
             aria-label={name}
             name={name}
