@@ -1,5 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import { chatApi } from "../axios";
 import { Chat, CONSTANTS, Message, WSmessage } from "../models/ws";
 import {
@@ -17,10 +16,9 @@ import { send } from "./useWS.hook";
 export const useChat = () => {
   const myId = useSelector((state) => state.general.id);
   const dispatch = useDispatch();
-  const location = useLocation();
-  const users = useSelector((state) => state.users.users);
   const { chat } = useSelector((state) => state.chat);
   const notif = useNotifications();
+  const store = useStore();
 
   const getChatsInfo = async () => {
     try {
@@ -61,7 +59,6 @@ export const useChat = () => {
   const handleChat = (wsMessage) => {
     console.log("[hadleChat]", wsMessage);
     if (wsMessage.type === CONSTANTS.CHAT_TYPES.NEW_CHAT) {
-      // add new chat
       dispatch(addChat(wsMessage.payload));
     } else if (wsMessage.type === CONSTANTS.CHAT_TYPES.DELETE_CHAT) {
       dispatch(deleteChat(wsMessage.payload));
@@ -69,16 +66,12 @@ export const useChat = () => {
   };
 
   const showNotif = (message) => {
-    console.log(`[showNotif] location path: ${location.pathname}`);
-    const pathMatch = location.pathname.match(message.chatId);
-    console.log(pathMatch);
+    const users = store.getState().users?.users;
+    const pathMatch = window.location.pathname.match(message.chatId);
     if (pathMatch && pathMatch[0] !== "") return;
-    const user = users.find((user) => user.id === message.sender);
-    const username = user ? `${user.username}` : null;
-    console.log(`[showNotif] username: ${username}`);
-    if (username) {
-      notif({ header: username, text: message.text });
-    }
+    const user = users && users.find((user) => user.id === message.sender);
+    const username = user ? `${user.username}` : "new message";
+    notif({ header: username, text: message.text });
   };
 
   const handleMessage = (wsMessage) => {
