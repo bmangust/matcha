@@ -1,11 +1,20 @@
-import { Avatar, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
+import {
+  Avatar,
+  Badge,
+  Grid,
+  makeStyles,
+  Paper,
+  Typography,
+} from "@material-ui/core";
 import { DoneAllRounded, DoneRounded } from "@material-ui/icons";
 import React from "react";
+import { useSelector } from "react-redux";
 import { CONSTANTS } from "../../../../models/ws";
 import {
   backgroundColor,
   primaryColor,
   secondaryColor,
+  theme,
 } from "../../../../theme";
 
 const useStyles = makeStyles({
@@ -42,6 +51,22 @@ const useStyles = makeStyles({
         ? primaryColor.contrastTextLighter
         : secondaryColor.main,
   },
+  Badge: {
+    backgroundColor: "#44b700",
+    color: "#44b700",
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    transform: "translate(0px, 0px)",
+    "&::after": {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      border: "1px solid currentColor",
+      content: '""',
+    },
+  },
   "@media (max-width: 600px)": {
     Avatar: {
       display: "none",
@@ -61,12 +86,20 @@ const getDate = (date) => {
 
 const Message = (props) => {
   const { self, text, image, name, date, status } = { ...props };
+  const isOnline = useSelector((state) => state.UI.companion.isOnline);
   const classes = useStyles({ self, status });
 
   return (
     <Grid container className={classes.Container}>
       {self ? null : (
-        <Avatar className={classes.Avatar} src={image} alt={name} />
+        <Badge
+          color="primary"
+          variant="dot"
+          badgeContent={isOnline ? 1 : 0}
+          classes={{ badge: classes.Badge }}
+        >
+          <Avatar className={classes.Avatar} src={image} alt={name} />
+        </Badge>
       )}
       <Paper elevation={1} className={classes.Paper}>
         <Grid container>

@@ -19,7 +19,7 @@ import {
 } from "@material-ui/icons";
 import defaultImage from "../../Images/default-avatar.png";
 import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   sendVisit,
   sendLike,
@@ -28,9 +28,14 @@ import {
 } from "../../store/UISlice";
 import cn from "classnames";
 import { useBan } from "../../hooks/useBan.hook";
+import { theme } from "../../theme";
+import { Skeleton } from "@material-ui/lab";
 
 const useStyles = makeStyles({
   UserCard: {
+    maxWidth: 350,
+    minWidth: 220,
+    margin: "0 auto",
     position: "relative",
     overflow: "hidden",
     "&:hover": {
@@ -101,12 +106,28 @@ const useStyles = makeStyles({
   Ban: {
     right: "10px",
   },
+  Status: {
+    position: "absolute",
+    bottom: "5px",
+    left: "50%",
+    marginLeft: -20,
+    width: 40,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: theme.palette.grey[500],
+  },
+  Online: {
+    backgroundColor: theme.palette.success.main,
+  },
 });
 
 const UserCard = (props) => {
   const classes = useStyles();
   const [displayedImage, setDisplayedImage] = useState(0);
-  const { id, username, images, age } = { ...props.user };
+  const { id } = { ...props.user };
+  const { username, images, age, isOnline } = useSelector(
+    (state) => state.users.users
+  ).find((user) => user.id === id);
   const tags = props.user.tags || ["No tags"];
   const history = useHistory();
   const dispatch = useDispatch();
@@ -138,6 +159,15 @@ const UserCard = (props) => {
   const handlePrevImage = (e) => {
     e.stopPropagation();
     setDisplayedImage((prev) => prev - 1);
+  };
+
+  const currentImage = () => {
+    let img = defaultImage;
+    if (images && images.length) {
+      if (images[displayedImage].image) img = images[displayedImage].image;
+      else return <Skeleton variant="rect" className={classes.CardMedia} />;
+    }
+    return <CardMedia className={classes.CardMedia} image={img} />;
   };
 
   const LeftButtonDisabled =
@@ -202,11 +232,12 @@ const UserCard = (props) => {
             <RemoveCircleOutlineRounded />
           </Fab>
 
-          <CardMedia
-            className={classes.CardMedia}
-            image={
-              (images && images.length && images[displayedImage].image) ||
-              defaultImage
+          {/* cardMedia */}
+          {currentImage()}
+
+          <div
+            className={
+              isOnline ? cn(classes.Status, classes.Online) : classes.Status
             }
           />
 

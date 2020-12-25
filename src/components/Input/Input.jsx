@@ -146,7 +146,6 @@ const Input = (props) => {
         </TextField>
       );
     case "radio":
-      console.log(values, value);
       return (
         <FormControl
           className={classes.FormControl}

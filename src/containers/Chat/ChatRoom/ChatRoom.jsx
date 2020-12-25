@@ -30,9 +30,7 @@ const useStyles = makeStyles({
   },
 });
 
-let cnt = 0;
-
-const ChatRoom = React.memo(() => {
+const ChatRoom = () => {
   const { name, avatar, images } = useSelector((state) => state.UI.companion);
   const { chat, chats } = useSelector((state) => state.chat);
   const messages = chats.find((ch) => ch.id === chat).messages;
@@ -41,8 +39,8 @@ const ChatRoom = React.memo(() => {
   const { readMsg } = useChat();
   const [mappedMessages, setMappedMessages] = useState([]);
   const messagesEndRef = useRef(null);
-  console.log(`[ChatRoom ${cnt}] mappedMessages`, mappedMessages);
-  console.log(`[ChatRoom ${cnt}] messages`, messages);
+  console.log(`[ChatRoom] mappedMessages`, mappedMessages);
+  console.log(`[ChatRoom] messages`, messages);
 
   const formatedMessages = useMemo(
     () =>
@@ -87,13 +85,10 @@ const ChatRoom = React.memo(() => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     };
 
-    // if (cnt === 5) return;
     if (!messages || !messages.length) return;
     readAllMessages();
     scrollToBottom();
   }, [messages, myId, readMsg]);
-
-  cnt++;
 
   return (
     <Grid
@@ -113,6 +108,6 @@ const ChatRoom = React.memo(() => {
       </Grid>
     </Grid>
   );
-});
+};
 
 export default ChatRoom;

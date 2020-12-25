@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { CancelToken, api } from "../axios";
+import { api } from "../axios";
 import { addAge, loadImages, prepareUsers } from "../utils";
 import { resetGeneralState } from "./generalSlice";
 import { resetUIState } from "./UISlice";
 
 const initialUsersState = {
   isLoading: false,
+  isUpdating: false,
   error: null,
   users: [],
   strangers: [],
@@ -23,6 +24,10 @@ const usersSlice = createSlice({
     },
     successLoading(state) {
       state.isLoading = false;
+    },
+    failLoading(state, { payload }) {
+      state.isLoading = false;
+      state.error = payload;
     },
     /**
      * Adds all users, filters already added users by id
@@ -52,11 +57,22 @@ const usersSlice = createSlice({
       users.forEach((user) => {
         const userInState = state.users.find((el) => user.id === el.id);
         if (userInState) {
-          Object.keys(userInState).forEach(
-            (key) => (userInState[key] = user[key])
-          );
+          Object.keys(user).forEach((key) => {
+            if (key === "isOnline" && userInState[key]) return;
+            else userInState[key] = user[key];
+          });
         } else {
           state.users.push(user);
+        }
+      });
+    },
+    setUsersOnline(state, { payload }) {
+      const users = [...payload];
+      if (!users.length) return;
+      users.forEach((user) => {
+        const userInState = state.users.find((el) => user.id === el.id);
+        if (userInState) {
+          userInState.isOnline = user.isOnline;
         }
       });
     },
@@ -73,8 +89,14 @@ const usersSlice = createSlice({
     setBanned(state, { payload }) {
       state.banned = [...payload];
     },
-    failLoading(state, { payload }) {
-      state.isLoading = false;
+    startUpdating(state) {
+      state.isUpdating = true;
+    },
+    successUpdating(state) {
+      state.isUpdating = false;
+    },
+    failUpdating(state, { payload }) {
+      state.isUpdating = false;
       state.error = payload;
     },
     resetError(state) {
@@ -84,13 +106,11 @@ const usersSlice = createSlice({
   },
 });
 
-const source = CancelToken.source();
-
 const getUserIds = (users) => users.map((user) => user.id);
 
 const getStrangers = async (showNotif) => {
   try {
-    const res = await api.get("strangers", { cancelToken: source.token });
+    const res = await api.get("strangers");
     if (res.data.status) {
       // console.log("[userSlice] starngers", res.data.data);
       return res.data.data || [];
@@ -131,13 +151,17 @@ export const loadStrangers = (showNotif) => async (dispatch, getState) => {
     dispatch(resetUIState());
     return;
   }
+
+  dispatch(successLoading());
+  dispatch(startUpdating());
+
   strangers = strangers.map((stranger) => addAge(stranger));
   // console.log(strangers);
   dispatch(setStrangers(strangers));
   dispatch(addUsers(strangers));
   // console.log(strangers);
 
-  // load unly those, who was not loaded before
+  // load only those, who was not loaded before
   const uncashed = getUncashedUsers(strangers);
   let preparedUsers = await Promise.all(prepareUsers(uncashed));
   // console.log(preparedUsers);
@@ -154,14 +178,14 @@ export const loadStrangers = (showNotif) => async (dispatch, getState) => {
   // console.log(loadedIds);
   dispatch(setStrangers(preparedStrangers));
 
-  dispatch(successLoading());
+  dispatch(successUpdating());
 };
 
 /**
  * Recieves Set of strings, loads only uncashed ones
  * @param {Set<string>} users
  */
-export const loadUsers = (users) => async (dispatch, getState) => {
+export const loadUsers = (users) => async (dispatch) => {
   if (!users) return;
   const notYetLoaded = [...users].filter((id) => !loadedIds.has(id));
   // console.log(notYetLoaded);
@@ -194,9 +218,13 @@ export const {
   setUsers,
   setBanned,
   updateUsers,
+  setUsersOnline,
   sortStrangers,
   setStrangers,
   failLoading,
+  startUpdating,
+  successUpdating,
+  failUpdating,
   resetError,
   resetUsersState,
 } = usersSlice.actions;

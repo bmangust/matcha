@@ -25,7 +25,7 @@ export const useChat = () => {
       const res = await chatApi("chats", {
         params: { id: myId },
       });
-      console.log("[getChatsInfo]", res);
+      // console.log("[getChatsInfo]", res);
       if (res.data.status) {
         dispatch(setChats(res.data.data));
       }
@@ -36,23 +36,23 @@ export const useChat = () => {
    * @param {string} userId user id to chat with
    */
   const createChat = async (userId) => {
-    console.log("newChat");
+    // console.log("newChat");
     const chat = new Chat({ userIds: [userId, myId] });
     try {
       const res = await chatApi.post("chat", chat);
-      console.log(res.data);
+      // console.log(res.data);
       if (res.data.status) {
         await getChatsInfo();
       }
       return res.data.data;
     } catch (e) {
-      console.log(e);
+      notif("Server error when creating chat", "error");
       return null;
     }
   };
 
   const selectChat = (userId) => {
-    console.log("[selectChat]");
+    // console.log("[selectChat]");
     dispatch(setChatByUserId({ id: userId }));
   };
 

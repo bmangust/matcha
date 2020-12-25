@@ -18,7 +18,7 @@ import { setChat } from "../../../store/chatSlice";
 import { setCompanion } from "../../../store/UISlice";
 import { borderRadius } from "../../../theme";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   List: {
     width: "100%",
     textAlign: "center",
@@ -43,7 +43,42 @@ const useStyles = makeStyles({
     boxOrient: "vertical",
     overflow: "hidden",
   },
-});
+  Status: { border: `3px solid theme.palette.grey[500]` },
+  Online: {
+    backgroundColor: theme.palette.success.main,
+  },
+  Badge: {
+    backgroundColor: "#44b700",
+    color: "#44b700",
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    "&::after": {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      animation: "$ripple 1.2s infinite ease-in-out",
+      border: "1px solid currentColor",
+      content: '""',
+    },
+  },
+  "@keyframes ripple": {
+    "0%": {
+      transform: "scale(.8)",
+      opacity: 1,
+    },
+    "100%": {
+      transform: "scale(2.4)",
+      opacity: 0,
+    },
+  },
+  NewMessages: {
+    padding: "5px 8px",
+    borderRadius: 20,
+    backgroundColor: theme.palette.primary.light,
+  },
+}));
 
 const ChatList = () => {
   const classes = useStyles();
@@ -77,13 +112,13 @@ const ChatList = () => {
     <List className={classes.List}>
       {chatList.length ? (
         chatList.map((chat) => {
-          const { name, avatar, images } = {
+          const { name, avatar, images, isOnline } = {
             ...chat.user,
           };
           const { messages } = { ...chat };
-          const newMessages = messages.find(
+          const newMessages = messages.filter(
             (el) => el.status !== CONSTANTS.MESSAGE_STATUS.STATUS_READ
-          )?.text;
+          );
           console.log(chat);
           const img = avatar?.image || images[0]?.image || null;
           return (
@@ -94,10 +129,11 @@ const ChatList = () => {
               key={chat.id}
             >
               <Badge
-                color="secondary"
+                color="primary"
                 overlap="circle"
                 variant="dot"
-                badgeContent={newMessages || 0}
+                badgeContent={isOnline ? 1 : 0}
+                classes={{ badge: classes.Badge }}
               >
                 <ListItemAvatar>
                   <Avatar src={img} alt={name} />
@@ -111,6 +147,9 @@ const ChatList = () => {
                 }
                 secondaryTypographyProps={{ className: classes.Secondary }}
               />
+              {newMessages.length > 0 && (
+                <div className={classes.NewMessages}>{newMessages.length}</div>
+              )}
             </ListItem>
           );
         })

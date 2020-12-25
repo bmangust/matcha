@@ -18,7 +18,6 @@ const useStyles = makeStyles({
   Card: {
     position: "relative",
     maxWidth: 350,
-    minWidth: 220,
     margin: "0 auto",
     "&:hover": {
       "& $Media": {
@@ -73,7 +72,7 @@ const Gallery = (props) => {
     <Grid className={classes.Grid} container justify="center" spacing={1}>
       {images.length > 0 ? (
         images.map((el) => (
-          <Grid item xs={10} sm={4} key={el.id || el}>
+          <Grid item xs={10} sm={6} md={4} key={el.id || el}>
             <Card className={classes.Card}>
               {!props.images && (
                 <>

@@ -1,18 +1,18 @@
 import { useChat } from "./useChat.hook";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
-import { stubTrue } from "lodash";
 import { CONSTANTS } from "../models/ws";
 import { useEffect } from "react";
+import { useOnline } from "./useOnline.hook";
 
 // const ip = "192.168.43.151";
 const ip = "localhost";
-const local = stubTrue;
+const local = true;
 const host = local ? ip : "aim-love.ga";
 const port = 8080;
 const url = local ? `ws://${host}:${port}` : `wss://${host}:3001`;
 let socket = null;
-// localStorage.debug = "*";
+localStorage.debug = "*";
 
 const newConnection = (id) => {
   return io(url, {
@@ -39,6 +39,7 @@ export const checkStatusAndReconnect = () => {
 export const useWS = () => {
   const id = useSelector((state) => state.general.id);
   const { handleMessage, handleChat } = useChat();
+  const { updateOnline } = useOnline();
 
   socket = socket ? socket : newConnection(id);
 
@@ -59,6 +60,12 @@ export const useWS = () => {
     socket.on(CONSTANTS.WS.MESSAGE, (message) => {
       const json = JSON.parse(message);
       handleMessage(json);
+    });
+
+    socket.on(CONSTANTS.WS.UPDATE, (message) => {
+      const json = JSON.parse(message);
+      if (json.type === CONSTANTS.UPDATE_TYPES.USER_STATUS_UPDATE)
+        updateOnline(json.payload);
     });
 
     socket.onAny((event, ...args) => {
