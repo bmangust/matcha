@@ -69,7 +69,7 @@ const SnackMessage = React.forwardRef(({ id }, ref) => {
         <CardActions classes={{ root: classes.actionRoot }}>
           {header && (
             <Typography variant="subtitle2" className={classes.header}>
-              {header}
+              {header}:
             </Typography>
           )}
           {text && (

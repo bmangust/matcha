@@ -39,6 +39,7 @@ const SendForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!message.length) return;
     newMsg(id, message);
     setMessage("");
   };
