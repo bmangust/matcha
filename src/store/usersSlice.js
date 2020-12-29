@@ -108,9 +108,29 @@ const usersSlice = createSlice({
 
 const getUserIds = (users) => users.map((user) => user.id);
 
-const getStrangers = async (showNotif) => {
+const getStrangers = async (showNotif, queryParams = {}) => {
+  // console.log(queryParams, Object.entries(queryParams));
+  const params = Object.entries(queryParams).reduce((acc, [key, value]) => {
+    if (key === "tags") {
+      if (!value || value.length === 0) return acc;
+      const tags = value.reduce((curr, acc) => `${acc},${curr}`);
+      acc[key] = tags;
+      return acc;
+    } else if (key === "age") {
+      return { ...acc, minAge: value.minAge, maxAge: value.maxAge };
+    } else if (key === "gender") {
+      if (value !== "both") acc[key] = value;
+      return acc;
+    } else {
+      // ignore empty values and username (no api endpint)
+      if (value !== "" && key !== "username") acc[key] = value;
+      return acc;
+    }
+  }, {});
   try {
-    const res = await api.get("strangers");
+    const res = await api.get("strangers", {
+      params,
+    });
     if (res.data.status) {
       // console.log("[userSlice] starngers", res.data.data);
       return res.data.data || [];
@@ -142,9 +162,12 @@ const getUncashedUsers = (users) => {
  * Loads all strangers and saves to store
  * @param {function} showNotif cunsom hook to show notification
  */
-export const loadStrangers = (showNotif) => async (dispatch, getState) => {
+export const loadStrangers = (showNotif, queryParams) => async (
+  dispatch,
+  getState
+) => {
   dispatch(startLoading());
-  let strangers = await getStrangers(showNotif);
+  let strangers = await getStrangers(showNotif, queryParams);
   if (!strangers) {
     dispatch(resetGeneralState());
     dispatch(resetUsersState());

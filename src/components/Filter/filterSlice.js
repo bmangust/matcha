@@ -2,6 +2,10 @@ const { createSlice } = require("@reduxjs/toolkit");
 
 const inititalFilterState = {
   username: "",
+  city: "",
+  country: "",
+  gender: "",
+  tags: [],
   age: { minAge: 0, maxAge: 100 },
 };
 
@@ -9,11 +13,17 @@ const filterSlice = createSlice({
   name: "filter",
   initialState: inititalFilterState,
   reducers: {
-    changeUsername(state, { payload }) {
-      state.username = payload;
-    },
-    changeSearchAgeRange(state, { payload }) {
-      state.age = { ...state.age, ...payload };
+    changeFilterState(state, { payload }) {
+      for (let key in payload) {
+        if (["username", "city", "country", "gender", "tags"].includes(key)) {
+          state[key] = key === "tags" ? payload[key].value : payload[key];
+        } else if (key === "age") {
+          state.age.minAge = payload.age[0];
+          state.age.maxAge = payload.age[1];
+        } else {
+          throw new Error(`Key <<${key}>> is not allowed`);
+        }
+      }
     },
     resetFilter(state) {
       state = { ...inititalFilterState };
@@ -21,6 +31,6 @@ const filterSlice = createSlice({
   },
 });
 
-export const { changeUsername, changeSearchAgeRange, resetFilter } = filterSlice.actions;
+export const { changeFilterState, resetFilter } = filterSlice.actions;
 
 export default filterSlice.reducer;

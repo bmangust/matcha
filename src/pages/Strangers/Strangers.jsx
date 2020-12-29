@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import UserCard from "../../components/UserCard/UserCard";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
 import { Route, Switch, useLocation } from "react-router-dom";
@@ -41,15 +41,37 @@ const Strangers = () => {
   }, []);
 
   // filter users and set cards
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // filter strangers by age
     let filteredUsers = strangers.filter(
       (user) => user.age >= filter.age.minAge && user.age <= filter.age.maxAge
     );
+    // filter strangers by keys
+    for (let key of ["username", "city", "country"]) {
+      filteredUsers =
+        filter[key].length > 0
+          ? filteredUsers.filter((user) =>
+              user[key].toLowerCase().includes(filter[key].toLowerCase())
+            )
+          : filteredUsers;
+    }
     filteredUsers =
-      filter.username.length > 0
-        ? filteredUsers.filter((user) =>
-            user.username.toLowerCase().includes(filter.username.toLowerCase())
-          )
+      filter.gender.length > 0 && filter.gender !== "both"
+        ? filteredUsers.filter((user) => user.gender === filter.gender)
+        : filteredUsers;
+    filteredUsers =
+      filter.tags.length > 0
+        ? filteredUsers.filter((user) => {
+            const regexString = new RegExp(
+              filter.tags
+                .reduce((prev, acc) => `${acc}|${prev}`)
+                .replace(/\\/g, "\\\\")
+                .replace("(", "\\(")
+                .replace(")", "\\)")
+            );
+            if (!user.tags || user.tags.length === 0) return true;
+            return user.tags.find((tag) => regexString.test(tag));
+          })
         : filteredUsers;
 
     if (location.pathname.length > 1) return;

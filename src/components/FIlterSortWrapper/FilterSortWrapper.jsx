@@ -20,8 +20,10 @@ const useStyles = makeStyles({
     zIndex: 6,
   },
   Paper: {
-    padding: "10px",
+    padding: "10px 40px",
     width: "70vw",
+    minWidth: 400,
+    maxWidth: 700,
   },
   ButtonLabel: {
     fontFamily: "Righteous",

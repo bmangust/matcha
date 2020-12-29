@@ -203,8 +203,9 @@ const Input = (props) => {
       return (
         <Box key={name} className={classes.Input}>
           <Grid container justify="space-evenly" alignItems="center">
-            <Grid item xs={3}>
+            <Grid item xs={4}>
               <TextField
+                shrink
                 id={"min" + name}
                 type="number"
                 value={value.minAge}
@@ -214,8 +215,9 @@ const Input = (props) => {
                 {...rest}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={4}>
               <TextField
+                shrink
                 id={"max" + name}
                 type="number"
                 value={value.maxAge}
