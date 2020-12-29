@@ -47,7 +47,7 @@ const registerSlice = createSlice({
     },
 
     onRegisterSuccess(state) {
-      state.registerSuccess = true;
+      state = { ...initialRegisterState, registerSuccess: true };
     },
     onRegisterFail(state) {
       state.registerSuccess = false;
@@ -95,6 +95,7 @@ export const register = (
       showNotif(response.data.data, "error");
     }
   } catch (e) {
+    console.log(e);
     showNotif("server error", "error");
   }
   dispatch(stopLoading());

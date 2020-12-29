@@ -159,12 +159,16 @@ export const auth = (email, password, showNotif) => async (
       email: xssSanitize(email),
       password: xssSanitize(password),
     };
-    const res = await api.post("/signin", body, {
-      headers: {
-        latitude: position.lat,
-        longitude: position.lon,
-      },
-    });
+    const params =
+      position.lat === 0 || position.lon === 0
+        ? {}
+        : {
+            headers: {
+              latitude: position.lat,
+              longitude: position.lon,
+            },
+          };
+    const res = await api.post("/signin", body, params);
     if (res.data.status) {
       checkAuth(res.data, dispatch);
     } else {

@@ -121,13 +121,21 @@ const useStyles = makeStyles({
   },
 });
 
+const defaultUser = {
+  username: "",
+  images: null,
+  age: 0,
+  isOnline: false,
+};
+
 const UserCard = (props) => {
   const classes = useStyles();
   const [displayedImage, setDisplayedImage] = useState(0);
   const { id } = { ...props.user };
-  const { username, images, age, isOnline } = useSelector(
-    (state) => state.users.users
-  ).find((user) => user.id === id);
+  const user = useSelector((state) => state.users.users).find(
+    (user) => user.id === id
+  );
+  const { username, images, age, isOnline } = user ? user : defaultUser;
   const tags = props.user.tags || ["No tags"];
   const history = useHistory();
   const dispatch = useDispatch();

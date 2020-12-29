@@ -32,6 +32,9 @@ import { setChat } from "../../store/chatSlice";
 import { useChat } from "../../hooks/useChat.hook";
 
 const useStyles = makeStyles({
+  root: {
+    minWidth: 500,
+  },
   selectedTab: {
     color: "red",
   },
@@ -42,6 +45,7 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    minWidth: 500,
   },
   View: {
     display: "flex",
@@ -145,7 +149,7 @@ const Main = () => {
   });
 
   return (
-    <Container>
+    <Container className={classes.root}>
       {isLoading ? (
         <Grid
           container

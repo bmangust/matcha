@@ -10,7 +10,7 @@ const ip = "localhost";
 const local = true;
 const host = local ? ip : "aim-love.ga";
 const port = 8080;
-const url = local ? `ws://${host}:${port}` : `wss://${host}:3001`;
+const url = local ? `ws://${host}:${port}` : `wss://${host}`;
 let socket = null;
 localStorage.debug = "*";
 
