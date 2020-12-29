@@ -9,7 +9,7 @@ import {
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { media } from "../../axios";
-import { saveNewState } from "../../store/generalSlice";
+import { setNewState } from "../../store/generalSlice";
 import defaultAvatar from "../../Images/default-avatar.png";
 import { DeleteOutlineRounded } from "@material-ui/icons";
 import { useNotifications } from "../../hooks/useNotifications";
@@ -47,7 +47,7 @@ const useStyles = makeStyles({
 const Gallery = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  let images = useSelector((state) => state.general.images);
+  let { images, avatar } = useSelector((state) => state.general);
   // props are set when Gallery is rendered in user profile
   if (props.images) images = props.images;
   const notif = useNotifications();
@@ -58,12 +58,18 @@ const Gallery = (props) => {
     e.stopPropagation();
     if (props.images) return;
     try {
-      const res = await media.delete(`img/${imageId}`);
+      const res = await media.delete(`img/${imageId}`, {
+        responseType: "json",
+      });
+      console.log(res);
       if (res.data.status) {
         const newImages = images.filter((img) => img.id !== imageId);
-        dispatch(saveNewState({ images: newImages }));
+        const newAvatar = imageId === avatar.id ? newImages[0] : avatar;
+        console.log(newImages, newAvatar);
+        dispatch(setNewState({ images: newImages, avatar: newAvatar }));
       }
     } catch (e) {
+      console.log(e);
       notif("Server error, try again later", "error");
     }
   };

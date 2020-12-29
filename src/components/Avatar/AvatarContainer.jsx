@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import PublishIcon from "@material-ui/icons/Publish";
 import { mediaUpload } from "../../axios";
 import { Avatar, Badge, Fab, makeStyles } from "@material-ui/core";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import defaultAvatar from "../../Images/default-avatar.png";
-import { saveNewState } from "../../store/generalSlice";
+import { setNewState } from "../../store/generalSlice";
 import { useNotifications } from "../../hooks/useNotifications";
 
 const useStyles = makeStyles({
@@ -16,6 +16,7 @@ const useStyles = makeStyles({
 
 const AvatarContainer = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const { id, images, avatar } = useSelector((state) => state.general);
   const showNotif = useNotifications();
   const [displayedAvatar, setDisplayedAvatar] = useState(null);
@@ -34,8 +35,9 @@ const AvatarContainer = () => {
       const avatar = { id: res.data.data.id, image: objectUrl };
 
       if (res.data.status && res.data.data) {
+        console.log(avatar);
         setDisplayedAvatar(avatar);
-        saveNewState({ images: [...images, avatar] });
+        dispatch(setNewState({ images: [...images, avatar] }));
         showNotif("The file was uploaded", "success");
       } else {
         URL.revokeObjectURL(objectUrl);
