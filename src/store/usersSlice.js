@@ -87,7 +87,7 @@ const usersSlice = createSlice({
       state.strangers = [...payload];
     },
     setBanned(state, { payload }) {
-      state.banned = [...payload];
+      state.banned = payload;
     },
     startUpdating(state) {
       state.isUpdating = true;
@@ -197,7 +197,7 @@ export const loadStrangers = (showNotif, queryParams) => async (
     .map((user) => allUsers.find((u) => u.id === user.id))
     .filter((el) => el !== null);
   // console.log(preparedStrangers);
-  loadedIds.add(getUserIds(preparedStrangers));
+  getUserIds(preparedStrangers).forEach((el) => loadedIds.add(el));
   // console.log(loadedIds);
   dispatch(setStrangers(preparedStrangers));
 
@@ -205,13 +205,13 @@ export const loadStrangers = (showNotif, queryParams) => async (
 };
 
 /**
- * Recieves Set of strings, loads only uncashed ones
- * @param {Set<string>} users
+ * Recieves arrays of strings, loads only uncashed ones
+ * @param {Array<string>} users
  */
 export const loadUsers = (users) => async (dispatch) => {
   if (!users) return;
   const notYetLoaded = [...users].filter((id) => !loadedIds.has(id));
-  // console.log(notYetLoaded);
+  console.log(loadedIds);
 
   try {
     const promises = notYetLoaded.map((el) => api(`/data/${el}`));
@@ -224,8 +224,9 @@ export const loadUsers = (users) => async (dispatch) => {
     const loadedUsers = await Promise.all(userPromises);
     // console.log(loadedUsers);
     const preparedUsers = loadedUsers.map((user) => user && addAge(user));
+    if (!preparedUsers.length) return;
     // console.log("loadedUsers", loadedUsers);
-    loadedIds.add(getUserIds(preparedUsers));
+    getUserIds(preparedUsers).forEach((el) => loadedIds.add(el));
     // console.log(loadedIds);
     dispatch(addUsers(preparedUsers));
   } catch (e) {

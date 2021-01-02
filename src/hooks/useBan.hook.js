@@ -26,7 +26,6 @@ export const useBan = () => {
       const res = await api("ban");
       if (res.data.status) {
         const data = res.data.data || [];
-        // console.log(data);
         dispatch(loadUsers(data));
         dispatch(setBanned(data));
       }
@@ -39,7 +38,6 @@ export const useBan = () => {
   }, []);
 
   const banAndUpdate = async (userId) => {
-    console.log("[useBan]banAndUpdate");
     await banUser(userId);
     const filteredStrangers = strangers.filter((user) => user.id !== userId);
     dispatch(setStrangers(filteredStrangers));
@@ -51,7 +49,7 @@ export const useBan = () => {
     const res = await unbanUser(userId);
     if (banned.length && res) {
       const updatedBanned = banned.filter((id) => id !== userId);
-      setBanned(updatedBanned);
+      dispatch(setBanned(updatedBanned));
     }
   };
 
