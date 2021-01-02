@@ -21,7 +21,7 @@ const UpdatePassword = (props) => {
   );
   const dispatch = useDispatch();
   const location = useLocation();
-  const notif = useNotifications();
+  const { notif } = useNotifications();
   const formValid = passwordValid && confirmValid;
   const queryParams = queryString.parse(location.search);
 

@@ -24,7 +24,7 @@ export default function DialogMessage({
 }) {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
-  const showNotif = useNotifications();
+  const { notif } = useNotifications();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -35,7 +35,7 @@ export default function DialogMessage({
   };
 
   const handleDelete = () => {
-    dispatch(deleteAccount(showNotif));
+    dispatch(deleteAccount(notif));
     setOpen(false);
   };
 

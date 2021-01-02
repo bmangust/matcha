@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { setCompanion, setParent } from "../../store/UISlice";
 import { borderRadius } from "../../theme";
+import NotificationListItem from "../NotificationListItem/NotificationListItem";
 import ProfileListItem from "../ProfileListItem/ProfileListItem";
 
 const useStyles = makeStyles({
@@ -25,7 +26,7 @@ const useStyles = makeStyles({
 });
 
 const ClickableUsersList = (
-  { users, autoFocusItem, defaultText, setOpen, action },
+  { items, autoFocusItem, defaultText, setOpen, action },
   ref
 ) => {
   const classes = useStyles();
@@ -40,13 +41,12 @@ const ClickableUsersList = (
     }
   }
 
-  const handleItemClick = (id) => {
-    if (!users.length) return;
-    const user = users.find((el) => el.id === id);
+  const handleItemClick = (user) => {
+    if (!items.length) return;
     const parent = location.pathname.split("/")[1];
     dispatch(setParent({ parent }));
     dispatch(setCompanion({ companion: user }));
-    history.push(`/strangers/${id}`);
+    history.push(`/strangers/${user.id}`);
     if (setOpen) setOpen(false);
   };
 
@@ -63,26 +63,36 @@ const ClickableUsersList = (
       id="users-list"
       onKeyDown={handleListKeyDown}
     >
-      {users.length > 0 ? (
-        users.map((el) => (
-          <MenuItem
-            className={classes.ListItem}
-            onClick={() => handleItemClick(el.id)}
-            key={el.id}
-          >
-            <ProfileListItem user={el} />
-            {action && (
-              <Button
-                className={classes.Button}
-                color={action.color}
-                endIcon={action.icon}
-                onClick={(e) => handleActionClick(e, el.id)}
-              >
-                unban user
-              </Button>
-            )}
-          </MenuItem>
-        ))
+      {items && items.length > 0 ? (
+        items.map((el) =>
+          el.user ? (
+            <MenuItem
+              className={classes.ListItem}
+              onClick={() => handleItemClick(el.user)}
+              key={el.id}
+            >
+              <NotificationListItem notification={el} />
+            </MenuItem>
+          ) : (
+            <MenuItem
+              className={classes.ListItem}
+              onClick={() => handleItemClick(el)}
+              key={el.id}
+            >
+              <ProfileListItem user={el} />
+              {action && (
+                <Button
+                  className={classes.Button}
+                  color={action.color}
+                  endIcon={action.icon}
+                  onClick={(e) => handleActionClick(e, el.id)}
+                >
+                  unban user
+                </Button>
+              )}
+            </MenuItem>
+          )
+        )
       ) : (
         <Typography>{defaultText}</Typography>
       )}

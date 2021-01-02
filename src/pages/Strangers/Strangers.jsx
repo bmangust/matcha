@@ -24,7 +24,7 @@ const useStyles = makeStyles({
 });
 
 const Strangers = () => {
-  const showNotif = useNotifications();
+  const { notif } = useNotifications();
   const allUsers = useSelector((state) => state.users.users);
   const strangers = useSelector((state) => state.users.strangers);
   const filter = useSelector((state) => state.filter);
@@ -36,7 +36,7 @@ const Strangers = () => {
 
   // load strangers on component mount
   useEffect(() => {
-    dispatch(loadStrangers(showNotif));
+    dispatch(loadStrangers(notif));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

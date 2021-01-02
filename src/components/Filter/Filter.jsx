@@ -19,7 +19,7 @@ const Filter = () => {
     (state) => state.filter
   );
   const dispatch = useDispatch();
-  const notif = useNotifications();
+  const { notif } = useNotifications();
 
   const inputs = [
     {

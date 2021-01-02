@@ -17,7 +17,7 @@ export const useChat = () => {
   const myId = useSelector((state) => state.general.id);
   const dispatch = useDispatch();
   const { chat } = useSelector((state) => state.chat);
-  const notif = useNotifications();
+  const { notif } = useNotifications();
   const store = useStore();
 
   const getChatsInfo = async () => {
@@ -75,7 +75,7 @@ export const useChat = () => {
   };
 
   const handleMessage = (wsMessage) => {
-    console.log("[hadleChat]", wsMessage);
+    // console.log("[hadleChat]", wsMessage);
     if (wsMessage.type === CONSTANTS.MESSAGE_TYPES.NEW_MESSAGE) {
       dispatch(addMessage(wsMessage.payload));
       showNotif(wsMessage.payload);

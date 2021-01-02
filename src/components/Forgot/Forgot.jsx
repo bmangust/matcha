@@ -9,7 +9,7 @@ import Form from "../Form/Form";
 
 const Forgot = () => {
   const classes = useStyles();
-  const notif = useNotifications();
+  const { notif } = useNotifications();
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(false);
   const history = useHistory();

@@ -18,7 +18,7 @@ const AvatarContainer = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { id, images, avatar } = useSelector((state) => state.general);
-  const showNotif = useNotifications();
+  const { notif } = useNotifications();
   const [displayedAvatar, setDisplayedAvatar] = useState(null);
 
   const changeAvatarHandler = async (e) => {
@@ -27,7 +27,7 @@ const AvatarContainer = () => {
     }
     const image = e.target.files[0];
     if (image.size > 1000000) {
-      showNotif("The file is larger than 1MB", "error");
+      notif("The file is larger than 1MB", "error");
     }
     try {
       const res = await mediaUpload(id, image);
@@ -35,16 +35,15 @@ const AvatarContainer = () => {
       const avatar = { id: res.data.data.id, image: objectUrl };
 
       if (res.data.status && res.data.data) {
-        console.log(avatar);
         setDisplayedAvatar(avatar);
         dispatch(setNewState({ images: [...images, avatar] }));
-        showNotif("The file was uploaded", "success");
+        notif("The file was uploaded", "success");
       } else {
         URL.revokeObjectURL(objectUrl);
         throw new Error("Unable to upload a photo");
       }
     } catch (e) {
-      showNotif(e, "error");
+      notif(e, "error");
     }
   };
 

@@ -50,7 +50,7 @@ const Gallery = (props) => {
   let { images, avatar } = useSelector((state) => state.general);
   // props are set when Gallery is rendered in user profile
   if (props.images) images = props.images;
-  const notif = useNotifications();
+  const { notif } = useNotifications();
   console.log(images);
   console.log(props);
 

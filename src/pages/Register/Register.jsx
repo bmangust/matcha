@@ -18,7 +18,7 @@ import { useNotifications } from "../../hooks/useNotifications";
 import { useStyles } from "../../style";
 
 const Register = () => {
-  const showNotif = useNotifications();
+  const { notif } = useNotifications();
   const dispatch = useDispatch();
   const classes = useStyles();
   const history = useHistory();
@@ -48,7 +48,7 @@ const Register = () => {
 
   const onRegisterHandler = async (e) => {
     e.preventDefault();
-    dispatch(register(username, email, password, showNotif, history));
+    dispatch(register(username, email, password, notif, history));
   };
 
   const inputs = [

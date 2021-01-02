@@ -57,7 +57,7 @@ const steps = [
 const AdditionalInfo = () => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
-  const showNotif = useNotifications();
+  const { notif } = useNotifications();
   const history = useHistory();
   const dispatch = useDispatch();
   const info = useSelector((state) => state.additional);
@@ -102,9 +102,9 @@ const AdditionalInfo = () => {
       };
       const isInfoMissing = checkInfo(data);
       if (isInfoMissing) {
-        showNotif("Please, fill all the fields", "error");
+        notif("Please, fill all the fields", "error");
       } else {
-        dispatch(updateInfo(data, showNotif));
+        dispatch(updateInfo(data, notif));
         dispatch(setIsInfoMissing(isInfoMissing));
         history.push("/");
       }

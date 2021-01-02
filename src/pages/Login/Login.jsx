@@ -16,7 +16,7 @@ import { useStyles } from "../../style";
 import { useGPS } from "../../hooks/useGPS.hook";
 
 const Login = () => {
-  const showNotif = useNotifications();
+  const { notif } = useNotifications();
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -43,7 +43,7 @@ const Login = () => {
 
   const onLoginHandler = async (e) => {
     e.preventDefault();
-    dispatch(auth(email, password, showNotif));
+    dispatch(auth(email, password, notif));
   };
 
   const inputs = [

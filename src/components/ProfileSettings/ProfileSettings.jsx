@@ -37,7 +37,7 @@ const ProfileSettings = () => {
     location: useLocation,
     email: true,
   });
-  const notif = useNotifications();
+  const { notif } = useNotifications();
 
   const { location, email } = state;
 

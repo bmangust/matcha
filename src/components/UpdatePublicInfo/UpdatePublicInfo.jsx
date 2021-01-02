@@ -42,7 +42,7 @@ const UpdatePublicInfo = () => {
   } = useSelector((state) => state.additional);
   const dispatch = useDispatch();
   const history = useHistory();
-  const showNotif = useNotifications();
+  const { notif } = useNotifications();
 
   const [formValid, setFormValid] = useState(true);
 
@@ -55,7 +55,7 @@ const UpdatePublicInfo = () => {
   const saveUserInfo = async (e) => {
     e.preventDefault();
     const body = { username, name, surname, gender, country, city, bio, tags };
-    dispatch(updateInfo(body, showNotif));
+    dispatch(updateInfo(body, notif));
   };
 
   const handleBackClick = () => {

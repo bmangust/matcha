@@ -50,7 +50,7 @@ const UpdatePersonalInfo = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
-  const notif = useNotifications();
+  const { notif } = useNotifications();
 
   const {
     email,
