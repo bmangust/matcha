@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Divider, Fab, Grid, makeStyles, Typography } from "@material-ui/core";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Gallery from "../../components/Gallery/Gallery";
 import Tags from "../../components/Tags/Tags";
 import ProfileHeader from "../../components/ProfileHeader/ProfileHeader";
@@ -8,8 +8,9 @@ import Bio from "../../components/Bio/Bio";
 import { useHistory } from "react-router-dom";
 import { useChat } from "../../hooks/useChat.hook";
 import defaultAvatar from "../../Images/default-avatar.png";
-import { ChatRounded } from "@material-ui/icons";
+import { ChatRounded, Favorite } from "@material-ui/icons";
 import cn from "classnames";
+import { sendLike } from "../../store/UISlice";
 
 const useStyles = makeStyles((theme) => ({
   Typography: {
@@ -27,11 +28,16 @@ const useStyles = makeStyles((theme) => ({
   },
   Message: {
     position: "fixed",
-    right: "10vw",
+    right: "1rem",
     bottom: "4rem",
   },
   FabIcon: {
     marginRight: "10px",
+  },
+  Like: {
+    position: "fixed",
+    right: "1rem",
+    bottom: "8rem",
   },
   Status: {
     position: "absolute",
@@ -69,6 +75,7 @@ const UserProfile = () => {
   const defaultBio = "UFO flew here and dropped this message here";
   const { selectChat, createChat } = useChat();
   const chat = useSelector((state) => state.chat.chat);
+  const dispatch = useDispatch();
 
   const handleChat = async (e) => {
     if (!selectChat(id)) {
@@ -76,8 +83,12 @@ const UserProfile = () => {
     }
   };
 
+  const handleLike = (e) => {
+    e.stopPropagation();
+    dispatch(sendLike(id));
+  };
+
   useEffect(() => {
-    console.log("UserProfile useEffect push to chat");
     if (!chat) return;
     history.push(`/chat/${chat}`);
   }, [chat, history]);
@@ -134,6 +145,15 @@ const UserProfile = () => {
         >
           <ChatRounded className={classes.FabIcon} />
           Send message
+        </Fab>
+        <Fab
+          variant="extended"
+          color="secondary"
+          className={classes.Like}
+          onClick={handleLike}
+        >
+          <Favorite className={classes.FabIcon} />
+          Fave user
         </Fab>
       </Grid>
     </Grid>
