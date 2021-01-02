@@ -16,6 +16,10 @@ export const CONSTANTS = {
     NEW_LOOK: "NEW_LOOK",
     NEW_MATCH: "NEW_MATCH",
   },
+  UPDATE_STATUS: {
+    NEW: "UPDATE_STATUS_NEW",
+    READ: "UPDATE_STATUS_READ",
+  },
   MESSAGE_TYPES: {
     NEW_MESSAGE: "NEW_MESSAGE",
     UPDATE_MESSAGE: "UPDATE_MESSAGE",
@@ -52,5 +56,21 @@ export class Message {
     this.date = date || new Date().getTime();
     this.text = text || "";
     this.status = status;
+  }
+}
+
+export class WSNotification {
+  constructor({ id, userId, type }) {
+    this.id = id || uuid();
+    this.date = new Date().getTime();
+    this.userId = userId;
+    this.type = type;
+    this.status = CONSTANTS.UPDATE_STATUS.NEW;
+  }
+
+  equals(obj) {
+    return (
+      this.id === obj.id && this.userId === obj.userId && this.tye === obj.type
+    );
   }
 }

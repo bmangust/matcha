@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { CONSTANTS } from "../models/ws";
 import { useEffect } from "react";
 import { useOnline } from "./useOnline.hook";
+import { useNotifications } from "./useNotifications";
 
 // const ip = "192.168.43.151";
 const ip = "localhost";
@@ -39,6 +40,7 @@ export const checkStatusAndReconnect = () => {
 export const useWS = () => {
   const id = useSelector((state) => state.general.id);
   const { handleMessage, handleChat } = useChat();
+  const { handleNotification } = useNotifications();
   const { updateOnline } = useOnline();
 
   socket = socket ? socket : newConnection(id);
@@ -66,6 +68,7 @@ export const useWS = () => {
       const json = JSON.parse(message);
       if (json.type === CONSTANTS.UPDATE_TYPES.USER_STATUS_UPDATE)
         updateOnline(json.payload);
+      else handleNotification(json);
     });
 
     socket.onAny((event, ...args) => {

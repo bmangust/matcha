@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { Switch, Route, useHistory, withRouter, Link } from "react-router-dom";
@@ -96,19 +96,18 @@ const tabs = [
 ];
 
 const Main = () => {
-  const showNotif = useNotifications();
+  const { notif } = useNotifications();
   const { header, selectedTab, companion } = useSelector((state) => state.UI);
-  const { id, isLoading, lookedBy } = useSelector((state) => state.general);
+  const { isLoading } = useSelector((state) => state.general);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
-  const [notification, setNotification] = useState(null);
-  useWS();
   const { getChatsInfo } = useChat();
+  useWS();
 
   const handleChange = async (e, url) => {
     if (url === "/logout") {
-      dispatch(logout(showNotif));
+      dispatch(logout(notif));
       history.push("/login");
       return;
     }
@@ -120,16 +119,6 @@ const Main = () => {
     dispatch(setParent({ parent: url.substr(1) }));
     history.push(url);
   };
-
-  // filter out myself and remove duplicates
-  useEffect(() => {
-    // console.log(lookedBy);
-    const lookedBySet = lookedBy
-      ? new Set(lookedBy.filter((el) => el !== id))
-      : new Set();
-    if (lookedBySet.size === 0) return;
-    setNotification(lookedBySet);
-  }, [lookedBy, id]);
 
   useEffect(() => {
     getChatsInfo();
@@ -168,10 +157,7 @@ const Main = () => {
           spacing={1}
           className={classes.Container}
         >
-          <Header
-            header={companion?.username || header || tabs[0].label}
-            notification={notification}
-          />
+          <Header header={companion?.username || header || tabs[0].label} />
           <Switch>
             <Route path="/chat" component={Chat} />
             <Route path="/profile" component={Profile} />

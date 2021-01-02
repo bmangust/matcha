@@ -51,7 +51,7 @@ const useStyles = makeStyles({
     textAlign: "center",
   },
   PopperPaper: {
-    padding: "1rem",
+    padding: "1rem 1.5rem",
   },
   Category: {
     fontSize: "1rem",
@@ -59,11 +59,12 @@ const useStyles = makeStyles({
   },
 });
 
-const Header = ({ header, notification }) => {
+const Header = ({ header }) => {
   const classes = useStyles();
   const allUsers = useSelector((state) => state.users.users);
   const general = useSelector((state) => state.general);
-  const [users, setUsers] = useState([]);
+  const { notifications } = useSelector((state) => state.WS);
+  const [filledNotifications, setFilledNotifications] = useState(null);
   const loc = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -71,16 +72,19 @@ const Header = ({ header, notification }) => {
   const anchorRef = useRef(null);
 
   useEffect(() => {
-    dispatch(loadUsers(notification));
-  }, [dispatch, notification]);
+    const usersIds = notifications.map((el) => el.userId);
+    dispatch(loadUsers(usersIds));
+  }, [dispatch, notifications]);
 
   useEffect(() => {
-    if (!notification) return;
-    const users = allUsers.filter((user) =>
-      [...notification].includes(user.id)
-    );
-    if (users) setUsers(users);
-  }, [allUsers, notification]);
+    if (!notifications || !notifications.length) return;
+    const filledNotifications = notifications.map((notification) => {
+      const user = allUsers.find((user) => user.id === notification.userId);
+      return { ...notification, user };
+    });
+    console.log(filledNotifications);
+    if (filledNotifications) setFilledNotifications(filledNotifications);
+  }, [allUsers, notifications]);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -134,7 +138,7 @@ const Header = ({ header, notification }) => {
                 color="secondary"
                 overlap="circle"
                 variant="dot"
-                badgeContent={notification || 0}
+                badgeContent={filledNotifications?.length || 0}
               >
                 <NotificationsIcon
                   style={{ color: primaryColor.dark }}
@@ -154,15 +158,19 @@ const Header = ({ header, notification }) => {
                 <Fade {...TransitionProps}>
                   <Paper className={classes.PopperPaper}>
                     <Typography className={classes.Category}>
-                      Visitors
+                      Notifications
                     </Typography>
-                    <ClickAwayListener onClickAway={handleClose}>
-                      <ClickableUsersList
-                        users={users}
-                        autoFocusItem={open}
-                        setOpen={setOpen}
-                      />
-                    </ClickAwayListener>
+                    {filledNotifications ? (
+                      <ClickAwayListener onClickAway={handleClose}>
+                        <ClickableUsersList
+                          items={filledNotifications}
+                          autoFocusItem={open}
+                          setOpen={setOpen}
+                        />
+                      </ClickAwayListener>
+                    ) : (
+                      <Typography>No recent actions yet</Typography>
+                    )}
                   </Paper>
                 </Fade>
               )}
@@ -177,7 +185,7 @@ const Header = ({ header, notification }) => {
 Header.propTypes = {
   header: PropTypes.string,
   notification: PropTypes.oneOfType([
-    PropTypes.instanceOf(Set),
+    PropTypes.arrayOf(PropTypes.string),
     // PropTypes.shape({
     //   id: PropTypes.string,
     //   avatarImg: PropTypes.string,
