@@ -53,6 +53,12 @@ const WSSlice = createSlice({
         state.notifications = newNotifications;
       }
     },
+    readAllNotifications: (state) => {
+      state.notifications = state.notifications.map((notification) => ({
+        ...notification,
+        status: CONSTANTS.UPDATE_STATUS.READ,
+      }));
+    },
   },
 });
 
@@ -61,5 +67,6 @@ export const {
   addNotification,
   removeNotification,
   readNotification,
+  readAllNotifications,
 } = WSSlice.actions;
 export default WSSlice.reducer;

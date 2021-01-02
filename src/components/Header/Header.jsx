@@ -23,6 +23,7 @@ import ClickableUsersList from "../ClickableUsersList/ClickableUsersList";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 import { setAdditionalState } from "../../pages/AdditionalInfo/additionalSlice";
 import { CONSTANTS } from "../../models/ws";
+import { readAllNotifications } from "../../store/WSSlice";
 
 function ElevationScroll({ children }) {
   const trigger = useScrollTrigger({
@@ -54,9 +55,31 @@ const useStyles = makeStyles({
   PopperPaper: {
     padding: "1rem 1.5rem",
   },
+  Notifications: {
+    overflowY: "scroll",
+    maxHeight: 500,
+    maxWidth: 300,
+    scrollbarWidth: "none",
+    "&hover": {
+      scrollbarWidth: "auto",
+    },
+    "&:hover>&::-webkit-scrollbar": {
+      opacity: 1,
+    },
+    "&::-webkit-scrollbar": {
+      width: 3,
+      opacity: 0,
+    },
+    "&::-webkit-scrollbar-thumb": {
+      borderRadius: 3,
+    },
+  },
   Category: {
     fontSize: "1rem",
     fontWeight: 700,
+  },
+  Button: {
+    marginLeft: 20,
   },
 });
 
@@ -79,10 +102,12 @@ const Header = ({ header }) => {
 
   useEffect(() => {
     if (!notifications || !notifications.length) return;
-    const filledNotifications = notifications.map((notification) => {
-      const user = allUsers.find((user) => user.id === notification.userId);
-      return { ...notification, user };
-    });
+    const filledNotifications = notifications
+      .map((notification) => {
+        const user = allUsers.find((user) => user.id === notification.userId);
+        return { ...notification, user };
+      })
+      .reverse();
     if (filledNotifications) setFilledNotifications(filledNotifications);
   }, [allUsers, notifications]);
 
@@ -96,6 +121,10 @@ const Header = ({ header }) => {
       dispatch(setAdditionalState(general));
     }
     dispatch(handleBack(history, parent));
+  };
+
+  const readAll = () => {
+    dispatch(readAllNotifications());
   };
 
   //show backbutton only if we're in submenu
@@ -170,13 +199,27 @@ const Header = ({ header }) => {
                       Notifications
                     </Typography>
                     {filledNotifications ? (
-                      <ClickAwayListener onClickAway={handleClose}>
-                        <ClickableUsersList
-                          items={filledNotifications}
-                          autoFocusItem={open}
-                          setOpen={setOpen}
-                        />
-                      </ClickAwayListener>
+                      <Grid
+                        container
+                        justify="center"
+                        alignItems="center"
+                        className={classes.Notifications}
+                      >
+                        <ClickAwayListener onClickAway={handleClose}>
+                          <ClickableUsersList
+                            items={filledNotifications}
+                            autoFocusItem={open}
+                            setOpen={setOpen}
+                          />
+                        </ClickAwayListener>
+                        <Button
+                          size="small"
+                          onClick={readAll}
+                          className={classes.Button}
+                        >
+                          Read all
+                        </Button>
+                      </Grid>
                     ) : (
                       <Typography>No recent actions yet</Typography>
                     )}
