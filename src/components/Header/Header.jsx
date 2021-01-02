@@ -22,6 +22,7 @@ import { loadUsers } from "../../store/usersSlice";
 import ClickableUsersList from "../ClickableUsersList/ClickableUsersList";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 import { setAdditionalState } from "../../pages/AdditionalInfo/additionalSlice";
+import { CONSTANTS } from "../../models/ws";
 
 function ElevationScroll({ children }) {
   const trigger = useScrollTrigger({
@@ -82,7 +83,6 @@ const Header = ({ header }) => {
       const user = allUsers.find((user) => user.id === notification.userId);
       return { ...notification, user };
     });
-    console.log(filledNotifications);
     if (filledNotifications) setFilledNotifications(filledNotifications);
   }, [allUsers, notifications]);
 
@@ -107,6 +107,15 @@ const Header = ({ header }) => {
     }
     setOpen(false);
   };
+
+  const unreadNotifications =
+    filledNotifications && filledNotifications.length
+      ? filledNotifications.reduce(
+          (acc, cur) =>
+            acc + (cur.status === CONSTANTS.UPDATE_STATUS.NEW ? 1 : 0),
+          0
+        )
+      : 0;
 
   return (
     <ElevationScroll>
@@ -138,7 +147,7 @@ const Header = ({ header }) => {
                 color="secondary"
                 overlap="circle"
                 variant="dot"
-                badgeContent={filledNotifications?.length || 0}
+                badgeContent={unreadNotifications}
               >
                 <NotificationsIcon
                   style={{ color: primaryColor.dark }}

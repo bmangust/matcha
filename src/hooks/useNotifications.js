@@ -9,7 +9,7 @@ export const useNotifications = () => {
   const dispatch = useDispatch();
 
   const handleNotification = (wsNotification) => {
-    console.log("[useNotifications] handleNotification", wsNotification);
+    // console.log("[useNotifications] handleNotification", wsNotification);
     if (
       wsNotification.type === CONSTANTS.UPDATE_TYPES.NEW_LIKE ||
       wsNotification.type === CONSTANTS.UPDATE_TYPES.NEW_LOOK ||
@@ -19,10 +19,8 @@ export const useNotifications = () => {
         type: wsNotification.type,
         userId: wsNotification.payload.userId,
       });
-      console.log(newWSNotification);
+      // console.log(newWSNotification);
       dispatch(addNotification({ notification: newWSNotification }));
-      // } else if (wsNotification.type === CONSTANTS.UPDATE_TYPES.DELETE_MESSAGE) {
-      //   dispatch(removeNotification(wsNotification.payload));
     }
   };
 

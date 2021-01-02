@@ -51,8 +51,6 @@ const Gallery = (props) => {
   // props are set when Gallery is rendered in user profile
   if (props.images) images = props.images;
   const { notif } = useNotifications();
-  console.log(images);
-  console.log(props);
 
   const handleRemove = async (e, imageId) => {
     e.stopPropagation();

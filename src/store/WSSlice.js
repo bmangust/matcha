@@ -29,11 +29,29 @@ const WSSlice = createSlice({
       if (!payload.notification) throw new Error("No notification in payload");
       if (!payload.notification.id) throw new Error("No id in payload");
       // check if notification is already there
-      const index = state.notifications.findINdex((el) =>
+      const index = state.notifications.findIndex((el) =>
         el.equals(payload.notification)
       );
       if (index !== -1)
         return state.notifications.filter((_, idx) => idx !== index);
+    },
+    /**
+     * payload: { id }
+     */
+    readNotification: (state, { payload }) => {
+      // some checks for development
+      if (!payload.id) throw new Error("No id in payload");
+      // check if notification is already there
+      const index = state.notifications.findIndex((el) => el.id === payload.id);
+      if (index !== -1) {
+        const updated = state.notifications[index];
+        updated.status = CONSTANTS.UPDATE_STATUS.READ;
+        const newNotifications = state.notifications
+          .slice(0, index)
+          .concat(updated)
+          .concat(state.notifications.slice(index + 1));
+        state.notifications = newNotifications;
+      }
     },
   },
 });

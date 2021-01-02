@@ -10,12 +10,12 @@ export const useOnline = () => {
     const users = store.getState().users?.users;
     if (!users) return [];
     const online = users.filter((user) => user.isOnline);
-    console.log("[useOnline] getonlineUsers", online);
+    // console.log("[useOnline] getonlineUsers", online);
     return online;
   };
 
   const updateOnline = ({ userId, isOnline }) => {
-    console.log("[useOnline] updateOnline", userId, isOnline);
+    // console.log("[useOnline] updateOnline", userId, isOnline);
     dispatch(setUsersOnline([{ id: userId, isOnline }]));
     const companion = store.getState().UI.companion;
     if (!companion || companion.id !== userId) return;

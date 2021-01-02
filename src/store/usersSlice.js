@@ -211,7 +211,7 @@ export const loadStrangers = (showNotif, queryParams) => async (
 export const loadUsers = (users) => async (dispatch) => {
   if (!users) return;
   const notYetLoaded = [...users].filter((id) => !loadedIds.has(id));
-  console.log(loadedIds);
+  // console.log(loadedIds);
 
   try {
     const promises = notYetLoaded.map((el) => api(`/data/${el}`));
