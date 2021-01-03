@@ -28,6 +28,7 @@ const TagInput = (props) => {
           options={allTags}
           getOptionLabel={(option) => option}
           defaultValue={props.tags}
+          value={props.tags}
           onChange={(e, value, reason) => props.onChange({ value })}
           filterSelectedOptions
           renderInput={(params) => (

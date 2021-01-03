@@ -204,7 +204,7 @@ const UpdatePublicInfo = () => {
     {
       name: "tags",
       type: "autocomplete",
-      values: [],
+      values: tags,
       onChange: (values) => dispatch(changeTags(values)),
     },
   ];
