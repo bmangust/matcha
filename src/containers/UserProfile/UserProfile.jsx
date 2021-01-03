@@ -8,9 +8,13 @@ import Bio from "../../components/Bio/Bio";
 import { useHistory } from "react-router-dom";
 import { useChat } from "../../hooks/useChat.hook";
 import defaultAvatar from "../../Images/default-avatar.png";
-import { ChatRounded, Favorite } from "@material-ui/icons";
+import {
+  ChatRounded,
+  Favorite,
+  FavoriteBorderOutlined,
+} from "@material-ui/icons";
 import cn from "classnames";
-import { sendLike } from "../../store/UISlice";
+import { sendLike, removeLike } from "../../store/UISlice";
 
 const useStyles = makeStyles((theme) => ({
   Typography: {
@@ -72,10 +76,17 @@ const UserProfile = () => {
   } = {
     ...user,
   };
-  const defaultBio = "UFO flew here and dropped this message here";
+  const defaultBio = "UFO flew around and dropped this message here";
   const { selectChat, createChat } = useChat();
-  const chat = useSelector((state) => state.chat.chat);
   const dispatch = useDispatch();
+  const chat = useSelector((state) => state.chat.chat);
+  const { likes } = useSelector((state) => state.general);
+  const [like, setLike] = React.useState(false);
+
+  useEffect(() => {
+    const isLiked = () => likes.includes(id);
+    setLike(isLiked);
+  }, [likes, id]);
 
   const handleChat = async (e) => {
     if (!selectChat(id)) {
@@ -85,7 +96,11 @@ const UserProfile = () => {
 
   const handleLike = (e) => {
     e.stopPropagation();
-    dispatch(sendLike(id));
+    if (like) {
+      dispatch(removeLike(id));
+    } else {
+      dispatch(sendLike(id));
+    }
   };
 
   useEffect(() => {
@@ -152,8 +167,17 @@ const UserProfile = () => {
           className={classes.Like}
           onClick={handleLike}
         >
-          <Favorite className={classes.FabIcon} />
-          Fave user
+          {like ? (
+            <>
+              <FavoriteBorderOutlined className={classes.FabIcon} />
+              Unlike user
+            </>
+          ) : (
+            <>
+              <Favorite className={classes.FabIcon} />
+              Like user
+            </>
+          )}
         </Fab>
       </Grid>
     </Grid>

@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardMedia,
@@ -10,12 +10,14 @@ import {
   CardContent,
   Typography,
   Fab,
+  Tooltip,
 } from "@material-ui/core";
 import {
   FavoriteOutlined,
   RemoveCircleOutlineRounded,
   ChevronLeftRounded,
   ChevronRightRounded,
+  FavoriteBorderOutlined,
 } from "@material-ui/icons";
 import defaultImage from "../../Images/default-avatar.png";
 import { useHistory } from "react-router-dom";
@@ -25,6 +27,7 @@ import {
   sendLike,
   setCompanion,
   setParent,
+  removeLike,
 } from "../../store/UISlice";
 import cn from "classnames";
 import { useBan } from "../../hooks/useBan.hook";
@@ -56,7 +59,7 @@ const useStyles = makeStyles({
     padding: "10px 30px 20px",
     position: "absolute",
     color: "white",
-    left: "-10px",
+    left: -10,
     background: "linear-gradient(#00000000, #000000aa)",
     transition: "0.3s",
   },
@@ -94,21 +97,21 @@ const useStyles = makeStyles({
   },
   Fab: {
     position: "absolute",
-    bottom: "10px",
-    right: "10px",
+    bottom: 10,
+    right: 10,
     transition: "0.3s",
     opacity: 0,
     zIndex: 3,
   },
   Like: {
-    right: "70px",
+    right: 70,
   },
   Ban: {
-    right: "10px",
+    right: 10,
   },
   Status: {
     position: "absolute",
-    bottom: "5px",
+    bottom: 5,
     left: "50%",
     marginLeft: -20,
     width: 40,
@@ -118,6 +121,11 @@ const useStyles = makeStyles({
   },
   Online: {
     backgroundColor: theme.palette.success.main,
+  },
+  Tooltip: {
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.grey[700],
+    padding: 20,
   },
 });
 
@@ -140,6 +148,13 @@ const UserCard = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { banAndUpdate } = useBan();
+  const { likes } = useSelector((state) => state.general);
+  const [like, setLike] = useState(false);
+
+  useEffect(() => {
+    const isLiked = () => likes.includes(id);
+    setLike(isLiked);
+  }, [likes, id]);
 
   const showUserProfile = (e) => {
     const parent = "strangers";
@@ -151,7 +166,12 @@ const UserCard = (props) => {
 
   const handleLike = (e) => {
     e.stopPropagation();
-    dispatch(sendLike(id));
+    if (like) {
+      dispatch(removeLike(id));
+    } else {
+      dispatch(sendLike(id));
+    }
+    setLike((like) => !like);
   };
 
   const handleBan = (e) => {
@@ -221,24 +241,36 @@ const UserCard = (props) => {
           )}
 
           {images && images.length > 0 && (
-            <Fab
-              color="secondary"
-              className={cn(classes.Fab, classes.Like)}
-              size="small"
-              onClick={(e) => handleLike(e)}
+            <Tooltip
+              style={{ tooltip: classes.Tooltip }}
+              title={like ? "Unlike user" : "Like user"}
+              aria-label={like ? "Unlike user" : "Like user"}
             >
-              <FavoriteOutlined />
-            </Fab>
+              <Fab
+                color={"secondary"}
+                className={cn(classes.Fab, classes.Like)}
+                size="small"
+                onClick={(e) => handleLike(e)}
+              >
+                {like ? <FavoriteBorderOutlined /> : <FavoriteOutlined />}
+              </Fab>
+            </Tooltip>
           )}
 
-          <Fab
-            color="secondary"
-            className={cn(classes.Fab, classes.Ban)}
-            size="small"
-            onClick={(e) => handleBan(e)}
+          <Tooltip
+            style={{ tooltip: classes.Tooltip }}
+            title={"Ban user"}
+            aria-label={"Ban user"}
           >
-            <RemoveCircleOutlineRounded />
-          </Fab>
+            <Fab
+              color="secondary"
+              className={cn(classes.Fab, classes.Ban)}
+              size="small"
+              onClick={(e) => handleBan(e)}
+            >
+              <RemoveCircleOutlineRounded />
+            </Fab>
+          </Tooltip>
 
           {/* cardMedia */}
           {currentImage()}
@@ -267,4 +299,4 @@ const UserCard = (props) => {
   );
 };
 
-export default memo(UserCard);
+export default UserCard;

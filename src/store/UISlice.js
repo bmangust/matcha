@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { api } from "../axios";
 import { setChat } from "./chatSlice";
+import { saveNewState } from "./generalSlice";
 
 const initialUIState = {
   showBackButton: false,
@@ -64,17 +65,31 @@ export const handleBack = (history, parent) => (dispatch, useState) => {
     : history.push(`/${backLocation}`);
 };
 
-export const sendVisit = (watchedId) => (dispatch) => {
+export const sendVisit = (id) => (dispatch) => {
   try {
-    api.post(`/look`, { id: watchedId });
+    api.post(`/look`, { id });
   } catch (e) {
     console.log(e);
   }
 };
 
-export const sendLike = (watchedId) => (dispatch) => {
+export const sendLike = (id) => (dispatch, getState) => {
   try {
-    api.post(`/like`, { id: watchedId });
+    api.post(`/like`, { id });
+    const { likes } = getState().general;
+    const newLikes = [...likes, id];
+    dispatch(saveNewState({ likes: newLikes }));
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const removeLike = (id) => (dispatch, getState) => {
+  try {
+    api.delete(`/like/${id}`);
+    const { likes } = getState().general;
+    const newLikes = likes.filter((ids) => ids !== id);
+    dispatch(saveNewState({ likes: newLikes }));
   } catch (e) {
     console.log(e);
   }

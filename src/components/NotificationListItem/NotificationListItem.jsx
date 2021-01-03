@@ -25,7 +25,7 @@ const NotificationListItem = ({ notification }) => {
       case CONSTANTS.UPDATE_TYPES.NEW_LOOK:
         return `${notification.user.name} has visited you`;
       case CONSTANTS.UPDATE_TYPES.NEW_MATCH:
-        return `You have new match with ${notification.user.name}`;
+        return `Match with ${notification.user.name}!`;
       default:
         throw new Error("[NotificationListItem] No such type in notification");
     }

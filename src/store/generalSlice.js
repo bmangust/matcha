@@ -29,6 +29,7 @@ const initialGeneralState = {
   useLocation: false,
   likedBy: [],
   matches: [],
+  likes: [],
   position: { lat: 0, lon: 0 },
 };
 
@@ -94,6 +95,10 @@ const checkAuth = async (data, dispatch) => {
     dispatch(saveNewState(user));
     dispatch(setAdditionalState(user));
   }
+  try {
+    const myLikes = await api.get("like");
+    myLikes.data.status && dispatch(saveNewState({ likes: myLikes.data.data }));
+  } catch (e) {}
 };
 
 export const checkInfo = (info) => {
