@@ -289,7 +289,7 @@ const UserCard = (props) => {
             </Container>
             <div className={classes.Tags}>
               {tags.map((el) => (
-                <span key={el}>{el}</span>
+                <span key={el}>#{el}</span>
               ))}
             </div>
           </CardContent>

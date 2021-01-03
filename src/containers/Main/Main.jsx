@@ -18,7 +18,13 @@ import {
   Grid,
   CircularProgress,
 } from "@material-ui/core";
-import { Search, Message, Settings, ExitToApp } from "@material-ui/icons";
+import {
+  Search,
+  Message,
+  Settings,
+  ExitToApp,
+  People,
+} from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { backgroundColor } from "../../theme";
 
@@ -30,6 +36,7 @@ import { useNotifications } from "../../hooks/useNotifications";
 import { useWS } from "../../hooks/useWS.hook";
 import { setChat } from "../../store/chatSlice";
 import { useChat } from "../../hooks/useChat.hook";
+import Social from "../Social/Social";
 
 const useStyles = makeStyles({
   root: {
@@ -81,13 +88,20 @@ const tabs = [
   },
   {
     index: 2,
+    label: "Social",
+    icon: <People />,
+    content: <Social />,
+    url: "/social",
+  },
+  {
+    index: 3,
     label: "Settings",
     icon: <Settings />,
     content: <Profile />,
     url: "/profile",
   },
   {
-    index: 3,
+    index: 4,
     label: "Logout",
     icon: <ExitToApp />,
     content: null,
@@ -161,6 +175,7 @@ const Main = () => {
           <Switch>
             <Route path="/chat" component={Chat} />
             <Route path="/profile" component={Profile} />
+            <Route path="/social" component={Social} />
             <Route path="/" component={Strangers} />
           </Switch>
           <AppBar className={classes.AppBar} position="static">

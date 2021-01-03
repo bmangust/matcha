@@ -115,7 +115,6 @@ export const checkInfo = (info) => {
         "matches",
         "avatar",
         "images",
-        "bio",
         "useLocation",
       ].indexOf(key) !== -1
     )

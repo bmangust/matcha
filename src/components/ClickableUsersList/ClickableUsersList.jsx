@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
   Unread: {
     backgroundColor: theme.palette.grey[200],
   },
+  Center: {
+    textAlign: "center",
+  },
 }));
 
 const ClickableUsersList = (
@@ -41,6 +44,7 @@ const ClickableUsersList = (
   const location = useLocation();
 
   function handleListKeyDown(event) {
+    if (!setOpen) return;
     if (event.key === "Tab") {
       event.preventDefault();
       if (setOpen) setOpen(false);
@@ -105,7 +109,7 @@ const ClickableUsersList = (
           )
         )
       ) : (
-        <Typography>{defaultText}</Typography>
+        <Typography className={classes.Center}>{defaultText}</Typography>
       )}
     </MenuList>
   );

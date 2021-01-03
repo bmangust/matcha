@@ -8,11 +8,15 @@ import {
   changeCountryValid,
   changePhone,
   changePhoneValid,
+  changeBio,
+  changeBioValid,
 } from "../additionalSlice";
 
 const Step2 = () => {
   const dispatch = useDispatch();
-  const { phone, country, city } = useSelector((state) => state.additional);
+  const { phone, country, city, bio } = useSelector(
+    (state) => state.additional
+  );
 
   const inputs = [
     {
@@ -74,6 +78,28 @@ const Step2 = () => {
           minLength: 2,
           maxLength: 20,
           regex: /^[\w-.]+$/,
+        },
+      },
+    },
+    {
+      name: "bio",
+      type: "text",
+      label: "Bio",
+      value: bio,
+      ignoreUntouched: true,
+      inputProps: { autoFocus: true },
+      onChange: (e) => {
+        dispatch(changeBio(e.target.value));
+      },
+      onValidate: (isValid) => {
+        dispatch(changeBioValid(isValid));
+      },
+      rules: {
+        helperText: "invalid phone",
+        rule: {
+          minLength: 2,
+          maxLength: 256,
+          regex: /^.+$/,
         },
       },
     },
