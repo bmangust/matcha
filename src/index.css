@@ -5,6 +5,7 @@
   src: url("./fonts/Righteous-Regular.ttf"); /* IE9 Compat Modes */
   src: local("Righteous"), local("Righteous"),
     url("./fonts/Righteous-Regular.ttf") format("truetype");
+  font-display: swap;
 }
 
 @font-face {
@@ -14,6 +15,7 @@
   src: url("./fonts/Quicksand-Light.ttf"); /* IE9 Compat Modes */
   src: local("Quicksand"), local("Quicksand"),
     url("./fonts/Quicksand-Light.ttf") format("truetype");
+  font-display: swap;
 }
 
 @font-face {
@@ -23,6 +25,7 @@
   src: url("./fonts/Quicksand-Regular.ttf"); /* IE9 Compat Modes */
   src: local("Quicksand"), local("Quicksand"),
     url("./fonts/Quicksand-Regular.ttf") format("truetype");
+  font-display: swap;
 }
 
 @font-face {
@@ -32,6 +35,7 @@
   src: url("./fonts/Quicksand-Bold.ttf"); /* IE9 Compat Modes */
   src: local("Quicksand"), local("Quicksand"),
     url("./fonts/Quicksand-Bold.ttf") format("truetype");
+  font-display: swap;
 }
 
 * {
