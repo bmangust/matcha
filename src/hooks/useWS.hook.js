@@ -18,7 +18,6 @@ localStorage.debug = "*";
 const newConnection = (id) => {
   return io(url, {
     path: "/api/socket/connect",
-    reconnectionDelayMax: 10000,
     withCredentials: true,
     reconnection: false,
     query: {
@@ -28,7 +27,7 @@ const newConnection = (id) => {
 };
 
 export const WSdisconnect = () => {
-  socket = null;
+  socket.disconnect();
 };
 
 export const checkStatusAndReconnect = () => {
@@ -43,9 +42,8 @@ export const useWS = () => {
   const { handleNotification } = useNotifications();
   const { updateOnline } = useOnline();
 
-  socket = socket ? socket : newConnection(id);
-
   useEffect(() => {
+    socket = newConnection(id);
     socket.on("connect", () => {
       console.log("[open] Соединение установлено");
 
@@ -77,18 +75,18 @@ export const useWS = () => {
     });
 
     socket.on("disconnect", (reason) => {
-      console.log(reason);
-      socket.connect();
+      console.log(`[disconnect] ${reason}`);
+      if (reason !== "io client disconnect") socket.connect();
     });
 
     socket.on("close", (reason) => {
       console.log(`[close] ${reason}`);
     });
 
-    socket.onerror = (error) => {
+    socket.on("error", (error) => {
       console.log(error);
       socket.connect();
-    };
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
