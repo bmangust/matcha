@@ -15,7 +15,7 @@ const useStyles = makeStyles({
 
 const Filter = () => {
   const classes = useStyles();
-  const { username, city, country, gender, tags, age } = useSelector(
+  const { username, city, country, gender, tags, age, rating } = useSelector(
     (state) => state.filter
   );
   const dispatch = useDispatch();
@@ -67,9 +67,19 @@ const Filter = () => {
       },
     },
     {
+      name: "rating",
+      type: "slider",
+      label: "Rating range",
+      value: [rating.min, rating.max],
+      min: 0,
+      max: 1,
+      step: 0.05,
+      onChange: (value) => dispatch(changeFilterState({ rating: value })),
+    },
+    {
       name: "tags",
       type: "autocomplete",
-      values: [],
+      values: tags,
       onChange: (values) => {
         dispatch(changeFilterState({ tags: values }));
       },
@@ -84,7 +94,7 @@ const Filter = () => {
 
   return (
     <>
-      {inputs.map(({ name, type, label, value, values, onChange }) => (
+      {inputs.map(({ name, type, label, value, values, onChange, ...rest }) => (
         <Grid className={classes.Inputs} key={name} item xs={12}>
           <Input
             name={name}
@@ -93,6 +103,7 @@ const Filter = () => {
             value={value}
             values={values}
             onChange={onChange}
+            {...rest}
           />
         </Grid>
       ))}

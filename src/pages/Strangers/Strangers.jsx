@@ -44,7 +44,11 @@ const Strangers = () => {
   useLayoutEffect(() => {
     // filter strangers by age
     let filteredUsers = strangers.filter(
-      (user) => user.age >= filter.age.minAge && user.age <= filter.age.maxAge
+      (user) =>
+        user.age >= filter.age.minAge &&
+        user.age <= filter.age.maxAge &&
+        user.rating >= filter.rating.min &&
+        user.rating <= filter.rating.max
     );
     // filter strangers by keys
     for (let key of ["username", "city", "country"]) {
