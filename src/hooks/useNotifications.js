@@ -4,6 +4,7 @@ import { v4 as uuid } from "uuid/dist";
 import { CONSTANTS } from "../models/ws";
 import { addNotification } from "../store/WSSlice";
 import { WSNotification } from "../models/ws";
+import { addGeneralValues, removeGeneralValues } from "../store/generalSlice";
 
 export const useNotifications = () => {
   const dispatch = useDispatch();
@@ -13,7 +14,9 @@ export const useNotifications = () => {
     if (
       wsNotification.type === CONSTANTS.UPDATE_TYPES.NEW_LIKE ||
       wsNotification.type === CONSTANTS.UPDATE_TYPES.NEW_LOOK ||
-      wsNotification.type === CONSTANTS.UPDATE_TYPES.NEW_MATCH
+      wsNotification.type === CONSTANTS.UPDATE_TYPES.NEW_MATCH ||
+      wsNotification.type === CONSTANTS.UPDATE_TYPES.DELETE_MATCH ||
+      wsNotification.type === CONSTANTS.UPDATE_TYPES.DELETE_LIKE
     ) {
       const newWSNotification = new WSNotification({
         type: wsNotification.type,
@@ -21,6 +24,50 @@ export const useNotifications = () => {
       });
       // console.log(newWSNotification);
       dispatch(addNotification({ notification: newWSNotification }));
+    }
+    switch (wsNotification.type) {
+      case CONSTANTS.UPDATE_TYPES.NEW_LIKE:
+        dispatch(
+          addGeneralValues({
+            key: "likedBy",
+            values: [wsNotification.userId],
+          })
+        );
+        return;
+      case CONSTANTS.UPDATE_TYPES.NEW_LOOK:
+        dispatch(
+          addGeneralValues({
+            key: "lookedBy",
+            values: [wsNotification.userId],
+          })
+        );
+        return;
+      case CONSTANTS.UPDATE_TYPES.NEW_MATCH:
+        dispatch(
+          addGeneralValues({
+            key: "matches",
+            values: [wsNotification.userId],
+          })
+        );
+        return;
+      case CONSTANTS.UPDATE_TYPES.DELETE_LIKE:
+        dispatch(
+          removeGeneralValues({
+            key: "likedBy",
+            values: [wsNotification.userId],
+          })
+        );
+        return;
+      case CONSTANTS.UPDATE_TYPES.DELETE_MATCH:
+        dispatch(
+          removeGeneralValues({
+            key: "matches",
+            values: [wsNotification.userId],
+          })
+        );
+        return;
+      default:
+        return;
     }
   };
 
@@ -31,7 +78,7 @@ export const useNotifications = () => {
         text: message.text || message,
         header: message.header,
         variant: variant || "default",
-        options,
+        options: { ...options, autoHideDuration: 3000 },
       })
     );
   };

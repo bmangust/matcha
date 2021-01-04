@@ -69,6 +69,9 @@ const useStyles = makeStyles({
     maxWidth: "100vw",
     width: "100%",
   },
+  Tab: {
+    minWidth: 100,
+  },
 });
 
 const tabs = [
@@ -147,6 +150,7 @@ const Main = () => {
         key={el.index}
         component={Link}
         to={el.url}
+        className={classes.Tab}
       />
     );
   });

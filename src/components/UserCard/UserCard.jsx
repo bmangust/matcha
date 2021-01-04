@@ -144,7 +144,7 @@ const UserCard = (props) => {
     (user) => user.id === id
   );
   const { username, images, age, isOnline } = user ? user : defaultUser;
-  const tags = props.user.tags || ["No tags"];
+  const tags = props.user.tags;
   const history = useHistory();
   const dispatch = useDispatch();
   const { banAndUpdate } = useBan();
@@ -288,9 +288,11 @@ const UserCard = (props) => {
               </Typography>
             </Container>
             <div className={classes.Tags}>
-              {tags.map((el) => (
-                <span key={el}>#{el}</span>
-              ))}
+              {tags ? (
+                tags.map((el) => <span key={el}>#{el}</span>)
+              ) : (
+                <span>No tags</span>
+              )}
             </div>
           </CardContent>
         </div>

@@ -10,7 +10,7 @@ const initialUsersState = {
   error: null,
   users: [],
   strangers: [],
-  banned: [],
+  banned: null,
 };
 
 const loadedIds = new Set();

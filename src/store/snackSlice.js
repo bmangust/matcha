@@ -19,7 +19,6 @@ const snackSlice = createSlice({
       );
     },
     removeSnack(state, { payload }) {
-      console.log(payload);
       state.notifications = state.notifications.filter(
         (el) => el.key !== payload.key
       );

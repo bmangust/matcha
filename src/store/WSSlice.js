@@ -18,7 +18,10 @@ const WSSlice = createSlice({
       if (!payload.notification) throw new Error("No notification in payload");
       if (!payload.notification.id) throw new Error("No id in payload");
       // check if notification is already there
-      if (!state.notifications.some((el) => el.equals(payload.notification)))
+      if (
+        !state.notifications.length ||
+        !state.notifications.some((el) => el.equals(payload.notification))
+      )
         state.notifications.push(new WSNotification(payload.notification));
     },
     /**

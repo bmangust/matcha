@@ -58,7 +58,6 @@ const useStyles = makeStyles({
   Notifications: {
     overflowY: "scroll",
     maxHeight: 500,
-    maxWidth: 300,
     scrollbarWidth: "none",
     "&hover": {
       scrollbarWidth: "auto",
