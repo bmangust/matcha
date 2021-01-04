@@ -21,11 +21,12 @@ const useStyles = makeStyles({
 
 const Social = () => {
   const classes = useStyles();
-  const { lookedBy, likedBy } = useSelector((state) => state.general);
+  const { lookedBy, likedBy, matches } = useSelector((state) => state.general);
   const { users } = useSelector((state) => state.users);
 
   const [looked, setLooked] = useState([]);
   const [liked, setLiked] = useState([]);
+  const [matched, setMatched] = useState([]);
 
   useEffect(() => {
     if (!lookedBy || !lookedBy.length) return;
@@ -42,6 +43,14 @@ const Social = () => {
     );
     setLiked(lookedUsers);
   }, [users, likedBy]);
+
+  useEffect(() => {
+    if (!matches || !matches.length) return;
+    const matchedUsers = matches.map((id) =>
+      users.find((user) => user.id === id)
+    );
+    setMatched(matchedUsers);
+  }, [users, matches]);
 
   return (
     <Grid
@@ -73,6 +82,18 @@ const Social = () => {
           People, who liked me
         </Typography>
         <ClickableUsersList items={liked} defaultText={"No one liked you"} />
+      </Grid>
+      <Grid
+        container
+        direction="column"
+        alignItems="center"
+        wrap="nowrap"
+        className={classes.List}
+      >
+        <Typography variant="h2" className={classes.Header}>
+          People, who matched with me
+        </Typography>
+        <ClickableUsersList items={matched} defaultText={"No one liked you"} />
       </Grid>
     </Grid>
   );

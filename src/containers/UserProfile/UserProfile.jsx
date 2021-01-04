@@ -15,6 +15,10 @@ import {
 } from "@material-ui/icons";
 import cn from "classnames";
 import { sendLike, removeLike } from "../../store/UISlice";
+import {
+  addGeneralValues,
+  removeGeneralValues,
+} from "../../store/generalSlice";
 
 const useStyles = makeStyles((theme) => ({
   Typography: {
@@ -98,8 +102,10 @@ const UserProfile = () => {
     e.stopPropagation();
     if (like) {
       dispatch(removeLike(id));
+      dispatch(removeGeneralValues({ key: "likes", values: [id] }));
     } else {
       dispatch(sendLike(id));
+      dispatch(addGeneralValues({ key: "likes", values: [id] }));
     }
   };
 

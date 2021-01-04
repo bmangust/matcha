@@ -72,6 +72,20 @@ const generalSlice = createSlice({
         }
       });
     },
+    addGeneralValues(state, { payload }) {
+      console.log(payload);
+      if (!payload.key || !payload.values)
+        throw new Error("[addGeneralValues] no key or value in payload");
+      state[payload.key].concat([...payload.values]);
+    },
+    removeGeneralValues(state, { payload }) {
+      console.log(payload);
+      if (!payload.key || !payload.values)
+        throw new Error("[addGeneralValues] no key or value in payload");
+      state[payload.key] = state[payload.key].filter(
+        (el) => !payload.values.includes(el)
+      );
+    },
   },
 });
 
@@ -82,6 +96,8 @@ export const {
   authFail,
   resetGeneralState,
   setNewState,
+  addGeneralValues,
+  removeGeneralValues,
 } = generalSlice.actions;
 
 const checkAuth = async (data, dispatch) => {
@@ -89,15 +105,15 @@ const checkAuth = async (data, dispatch) => {
   dispatch(saveNewState(data.data));
   dispatch(authSuccess());
   dispatch(setAdditionalState(data.data));
-  const user = await Promise.resolve(prepareUsers([data.data])[0]);
-  // console.log(user);
-  if (user) {
-    dispatch(saveNewState(user));
-    dispatch(setAdditionalState(user));
-  }
   try {
+    const user = await Promise.resolve(prepareUsers([data.data])[0]);
     const myLikes = await api.get("like");
-    myLikes.data.status && dispatch(saveNewState({ likes: myLikes.data.data }));
+    user.likes = myLikes.data.status ? myLikes.data.data : [];
+    // console.log(user);
+    if (user) {
+      dispatch(saveNewState(user));
+      dispatch(setAdditionalState(user));
+    }
   } catch (e) {}
 };
 
