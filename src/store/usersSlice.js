@@ -167,6 +167,7 @@ export const loadStrangers = (showNotif, queryParams) => async (
   getState
 ) => {
   dispatch(startLoading());
+  loadBanned(dispatch);
   let strangers = await getStrangers(showNotif, queryParams);
   if (!strangers) {
     dispatch(resetGeneralState());
@@ -233,6 +234,17 @@ export const loadUsers = (users) => async (dispatch) => {
     console.log(e);
     throw new Error("Fetching users failed");
   }
+};
+
+const loadBanned = async (dispatch) => {
+  try {
+    const res = await api("ban");
+    if (res.data.status) {
+      const data = res.data.data || [];
+      dispatch(loadUsers(data));
+      dispatch(setBanned(data));
+    }
+  } catch (e) {}
 };
 
 export const {

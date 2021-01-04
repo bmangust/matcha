@@ -1,23 +1,23 @@
+import React, { useState, useEffect } from "react";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import ClickableUsersList from "../../components/ClickableUsersList/ClickableUsersList";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   Grid: {
     overflow: "hidden",
     width: "100%",
   },
   Header: {
-    fontSize: "2rem",
+    fontSize: "1.5rem",
     marginTop: 30,
+    fontFamily: "Righteous",
+    color: theme.palette.primary.dark,
   },
   List: {
     width: "80%",
   },
-});
+}));
 
 const Social = () => {
   const classes = useStyles();
