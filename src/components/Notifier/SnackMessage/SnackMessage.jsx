@@ -14,6 +14,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       minWidth: "344px !important",
     },
+    [theme.breakpoints.up("xs")]: {
+      position: "absolute",
+      bottom: 45,
+    },
   },
   card: {
     display: "flex",
