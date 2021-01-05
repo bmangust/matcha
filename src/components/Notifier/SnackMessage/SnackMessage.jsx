@@ -6,8 +6,15 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import classnames from "classnames";
+import { CheckRounded } from "@material-ui/icons";
+import { getLocationByIp, useGPS } from "../../../hooks/useGPS.hook";
+import { setNewState } from "../../../store/generalSlice";
+import {
+  changeUseLocation,
+  updateInfo,
+} from "../../../pages/AdditionalInfo/additionalSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,6 +32,10 @@ const useStyles = makeStyles((theme) => ({
   },
   default: {
     backgroundColor: theme.palette.grey[800],
+  },
+  prompt: {
+    backgroundColor: theme.palette.grey[800],
+    width: 550,
   },
   info: {
     backgroundColor: theme.palette.info.main,
@@ -57,13 +68,30 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SnackMessage = React.forwardRef(({ id }, ref) => {
+  const classes = useStyles();
+  const { getCurrentLocaion } = useGPS();
   const { closeSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
   const notifications = useSelector((state) => state.snack.notifications);
   const selected = notifications.find((el) => el.key === id);
   const { text, variant, header } = { ...selected };
-  const classes = useStyles();
+  const isPrompt = variant === "prompt";
 
   const handleDismiss = () => {
+    if (isPrompt) {
+      dispatch(setNewState({ useLocation: false }));
+      dispatch(changeUseLocation(false));
+      dispatch(updateInfo({ useLocation: false }));
+      getLocationByIp();
+    }
+    closeSnackbar(id);
+  };
+
+  const handleAccept = () => {
+    dispatch(setNewState({ useLocation: true }));
+    dispatch(changeUseLocation(true));
+    dispatch(updateInfo({ useLocation: true }));
+    getCurrentLocaion();
     closeSnackbar(id);
   };
 
@@ -82,6 +110,12 @@ const SnackMessage = React.forwardRef(({ id }, ref) => {
             </Typography>
           )}
         </CardActions>
+
+        {isPrompt && (
+          <IconButton className={classes.close} onClick={handleAccept}>
+            <CheckRounded color="inherit" />
+          </IconButton>
+        )}
         <IconButton className={classes.close} onClick={handleDismiss}>
           <CloseIcon color="inherit" />
         </IconButton>

@@ -26,7 +26,7 @@ const initialGeneralState = {
   maxAge: 0,
   images: [],
   avatar: null,
-  useLocation: false,
+  useLocation: null,
   likedBy: [],
   matches: [],
   likes: [],
@@ -100,7 +100,7 @@ export const {
   removeGeneralValues,
 } = generalSlice.actions;
 
-const checkAuth = async (data, dispatch) => {
+const updateSelfInfo = async (data, dispatch) => {
   // console.log(data);
   dispatch(saveNewState(data.data));
   dispatch(authSuccess());
@@ -148,12 +148,12 @@ export const checkInfo = (info) => {
   return isInfoMissing || isAgeRangeMissing;
 };
 
-export const getSelfInfo = () => async (dispatch) => {
+export const checkAuth = () => async (dispatch) => {
   try {
     dispatch(startLoading());
     const res = await api("account");
     if (res.data.status) {
-      await checkAuth(res.data, dispatch);
+      await updateSelfInfo(res.data, dispatch);
     } else {
       dispatch(authFail());
     }
@@ -179,6 +179,7 @@ export const auth = (email, password, showNotif) => async (
       email: xssSanitize(email),
       password: xssSanitize(password),
     };
+    if (position.lat) body.useLocation = true;
     const params =
       position.lat === 0 || position.lon === 0
         ? {}
@@ -190,7 +191,7 @@ export const auth = (email, password, showNotif) => async (
           };
     const res = await api.post("/signin", body, params);
     if (res.data.status) {
-      checkAuth(res.data, dispatch);
+      updateSelfInfo(res.data, dispatch);
     } else {
       dispatch(authFail());
       dispatch(resetGeneralState());

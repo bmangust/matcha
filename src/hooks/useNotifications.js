@@ -82,5 +82,17 @@ export const useNotifications = () => {
       })
     );
   };
-  return { notif, handleNotification };
+
+  const showPrompt = (message, options = {}) => {
+    dispatch(
+      addSnack({
+        key: "message_" + uuid(),
+        text: message.text || message,
+        header: message.header,
+        variant: "prompt",
+        options: { ...options, persist: true },
+      })
+    );
+  };
+  return { notif, handleNotification, showPrompt };
 };

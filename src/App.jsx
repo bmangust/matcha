@@ -11,12 +11,18 @@ import Main from "./containers/Main/Main";
 import { SnackbarProvider } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import AdditionalInfo from "./pages/AdditionalInfo/AdditionalInfo";
-import { getSelfInfo } from "./store/generalSlice";
+import { checkAuth, setNewState } from "./store/generalSlice";
 import { CircularProgress, Grid } from "@material-ui/core";
 import Forgot from "./components/Forgot/Forgot";
 import UpdatePassword from "./components/UpdatePassword/UpdatePassword";
 import SnackMessage from "./components/Notifier/SnackMessage/SnackMessage";
 import Notifier from "./components/Notifier/Notifier";
+import { useNotifications } from "./hooks/useNotifications";
+import { getLocationByIp } from "./hooks/useGPS.hook";
+import {
+  changeUseLocation,
+  updateInfo,
+} from "./pages/AdditionalInfo/additionalSlice";
 
 const useStyles = makeStyles({
   Grid: {
@@ -27,13 +33,34 @@ const useStyles = makeStyles({
 
 function App() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const { showPrompt } = useNotifications();
   const { isAuth, isLoading } = useSelector((state) => state.general);
   const { isInfoMissing } = useSelector((state) => state.UI);
-  const dispatch = useDispatch();
   const [content, setContent] = useState(<CircularProgress />);
 
   useEffect(() => {
-    dispatch(getSelfInfo());
+    dispatch(checkAuth());
+    navigator.permissions
+      .query({ name: "geolocation" })
+      .then(function (result) {
+        console.log(result);
+        if (result.state === "granted") {
+          dispatch(setNewState({ useLocation: true }));
+          dispatch(changeUseLocation(true));
+          dispatch(updateInfo());
+        } else if (result.state === "prompt") {
+          showPrompt(
+            "We use geolocation on this site to provide better results and optimize your experience. Allow using GPS?"
+          );
+        } else {
+          dispatch(setNewState({ useLocation: false }));
+          dispatch(changeUseLocation(false));
+          dispatch(updateInfo());
+          getLocationByIp();
+        }
+        // Don't do anything if the permission was denied.
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

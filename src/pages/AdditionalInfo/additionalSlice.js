@@ -1,6 +1,5 @@
 import { api } from "../../axios";
 import { saveNewState } from "../../store/generalSlice";
-import { startLoading, stopLoading } from "../../store/generalSlice";
 import { unsanitaze, xssSanitize } from "../../utils";
 
 const { createSlice } = require("@reduxjs/toolkit");
@@ -187,12 +186,11 @@ export const updateInfo = (
     maxAge,
     tags,
     useLocation,
-  },
+  } = {},
   showNotif
 ) => async (dispatch, getState) => {
-  dispatch(startLoading());
-
   const additionalState = getState().additional;
+  const generalState = getState().general;
 
   const body = {
     id: id || additionalState.id,
@@ -211,12 +209,20 @@ export const updateInfo = (
     maxAge: maxAge || additionalState.maxAge,
     useLocation: useLocation || additionalState.useLocation,
   };
-  console.log("[AdditionalInfoSlice] update user info", useLocation);
-  const position = getState().general.position;
-  if (position.lat !== 0 && position.lon !== 0) {
-    body.position = position;
+  if (generalState.position.lat !== 0 && generalState.position.lon !== 0) {
+    body.position = generalState.position;
   }
-  console.log(body);
+  console.log(
+    "[AdditionalInfoSlice] update user info",
+    additionalState,
+    generalState,
+    body
+  );
+  if (!body.id) {
+    // if didn't get self info yet - try lo send updated info later
+    setTimeout(() => dispatch(updateInfo(body)), 1000);
+    return;
+  }
   let message;
   try {
     const response = await api.put("account", body);
@@ -232,8 +238,7 @@ export const updateInfo = (
     if (response.data.status) {
       dispatch(saveNewState(body));
       dispatch(onUpdateSuccess());
-      showNotif("Successfully saved!", "success");
-      dispatch(stopLoading());
+      showNotif && showNotif("Successfully saved!", "success");
       return;
     } else {
       message = response.data;
@@ -242,9 +247,8 @@ export const updateInfo = (
     console.log(e);
     message = "Server error";
   }
-  showNotif(message, "error");
+  showNotif && showNotif(message, "error");
   dispatch(onUpdateFail());
-  dispatch(stopLoading());
 };
 
 export default additionalSlice.reducer;
