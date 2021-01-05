@@ -23,6 +23,7 @@ import {
   changeUseLocation,
   updateInfo,
 } from "./pages/AdditionalInfo/additionalSlice";
+import VerifyEmail from "./components/VerifyEmail/VerifyEmail";
 
 const useStyles = makeStyles({
   Grid: {
@@ -59,7 +60,6 @@ function App() {
           dispatch(updateInfo());
           getLocationByIp();
         }
-        // Don't do anything if the permission was denied.
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -87,6 +87,7 @@ function App() {
       setContent(
         <Switch>
           <Route path="/reset" component={UpdatePassword} exact />
+          <Route path="/email/verify" component={VerifyEmail} exact />
           <Redirect exact from="/strangers" to="/" />
           <Redirect from="/login" to="/" />
           <Route path="/" component={Main} />
@@ -95,10 +96,10 @@ function App() {
     } else {
       setContent(
         <Switch>
+          <Route path="/login" component={Login} exact />
           <Route path="/register" component={Register} exact />
           <Route path="/forgot" component={Forgot} exact />
           <Route path="/reset" component={UpdatePassword} exact />
-          <Route path="/login" component={Login} exact />
           <Route path="/">
             <Redirect to="/login" />
           </Route>

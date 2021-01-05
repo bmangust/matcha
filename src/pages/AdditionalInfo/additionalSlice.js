@@ -39,7 +39,7 @@ const additionalSlice = createSlice({
   initialState: initialAdditionalState,
   reducers: {
     setAdditionalState(state, { payload }) {
-      Object.keys(initialAdditionalState).forEach((key) => {
+      Object.keys(payload).forEach((key) => {
         if (["name", "surname", "bio", "country", "city"].includes(key)) {
           const value = payload[key] || initialAdditionalState[key];
           state[key] = unsanitaze(value);
@@ -225,6 +225,11 @@ export const updateInfo = (
   }
   let message;
   try {
+    if (additionalState.email !== generalState.email) {
+      api.put("email/change", {
+        email: additionalState.email,
+      });
+    }
     const response = await api.put("account", body);
     if (tags && tags.length) {
       const tagsResponse = await api.put("tag", { tags: [...tags] });
