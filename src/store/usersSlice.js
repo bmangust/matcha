@@ -58,8 +58,13 @@ const usersSlice = createSlice({
         const userInState = state.users.find((el) => user.id === el.id);
         if (userInState) {
           Object.keys(user).forEach((key) => {
-            if (key === "isOnline" && userInState[key]) return;
-            else userInState[key] = user[key];
+            if (
+              // prevent overwrite socket info - it could be got earlier than http request
+              (key === "lastOnline" && user[key] > userInState[key]) ||
+              (key === "isOnline" && userInState[key])
+            )
+              return;
+            userInState[key] = user[key];
           });
         } else {
           state.users.push(user);
@@ -80,6 +85,24 @@ const usersSlice = createSlice({
       const { compareFunction } = { ...payload };
       state.strangers.sort(compareFunction);
     },
+    /**
+     * Run through all passed strangers and updates their info or addes new
+     * @param {State} state
+     * @param {action} {payload} - users to update
+     */
+    updateStrangers(state, { payload }) {
+      const users = [...payload];
+      if (!users.length) return;
+      users.forEach((user) => {
+        const userInState = state.strangers.find((el) => user.id === el.id);
+        if (userInState) {
+          Object.keys(user).forEach((key) => {
+            userInState[key] = user[key];
+          });
+        }
+      });
+    },
+
     setUsers(state, { payload }) {
       state.users = payload;
     },
@@ -212,7 +235,7 @@ export const loadStrangers = (showNotif, queryParams) => async (
 export const loadUsers = (users) => async (dispatch) => {
   if (!users) return;
   const notYetLoaded = [...users].filter((id) => !loadedIds.has(id));
-  // console.log(loadedIds);
+  // console.log(notYetLoaded, loadedIds);
 
   try {
     const promises = notYetLoaded.map((el) => api(`/data/${el}`));
@@ -229,7 +252,7 @@ export const loadUsers = (users) => async (dispatch) => {
     // console.log("loadedUsers", loadedUsers);
     getUserIds(preparedUsers).forEach((el) => loadedIds.add(el));
     // console.log(loadedIds);
-    dispatch(addUsers(preparedUsers));
+    dispatch(updateUsers(preparedUsers));
   } catch (e) {
     console.log(e);
     throw new Error("Fetching users failed");

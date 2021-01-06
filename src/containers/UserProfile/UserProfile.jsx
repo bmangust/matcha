@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { Divider, Fab, Grid, makeStyles, Typography } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import Gallery from "../../components/Gallery/Gallery";
@@ -19,6 +21,8 @@ import {
   addGeneralValues,
   removeGeneralValues,
 } from "../../store/generalSlice";
+
+dayjs.extend(relativeTime);
 
 const useStyles = makeStyles((theme) => ({
   Typography: {
@@ -77,6 +81,7 @@ const UserProfile = () => {
     bio,
     tags,
     isOnline,
+    lastOnline,
   } = {
     ...user,
   };
@@ -86,11 +91,19 @@ const UserProfile = () => {
   const chat = useSelector((state) => state.chat.chat);
   const { likes } = useSelector((state) => state.general);
   const [like, setLike] = React.useState(false);
+  const status = isOnline
+    ? "(online)"
+    : `(last seen ${dayjs(lastOnline).fromNow()})`;
 
   useEffect(() => {
     const isLiked = () => likes.includes(id);
     setLike(isLiked);
   }, [likes, id]);
+
+  useEffect(() => {
+    if (!chat) return;
+    history.push(`/chat/${chat}`);
+  }, [chat, history]);
 
   const handleChat = async (e) => {
     if (!selectChat(id)) {
@@ -108,14 +121,6 @@ const UserProfile = () => {
       dispatch(addGeneralValues({ key: "likes", values: [id] }));
     }
   };
-
-  useEffect(() => {
-    if (!chat) return;
-    history.push(`/chat/${chat}`);
-  }, [chat, history]);
-
-  const status = isOnline ? "(online)" : "(offline)";
-
   return (
     <Grid
       container
