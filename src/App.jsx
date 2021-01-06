@@ -96,6 +96,7 @@ function App() {
     } else {
       setContent(
         <Switch>
+          <Route path="/email/verify" component={VerifyEmail} exact />
           <Route path="/login" component={Login} exact />
           <Route path="/register" component={Register} exact />
           <Route path="/forgot" component={Forgot} exact />

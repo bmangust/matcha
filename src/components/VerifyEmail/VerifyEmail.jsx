@@ -1,7 +1,7 @@
 import { Grid, makeStyles } from "@material-ui/core";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { api } from "../../axios";
 import { useNotifications } from "../../hooks/useNotifications";
 import { setAdditionalState } from "../../pages/AdditionalInfo/additionalSlice";
@@ -9,33 +9,36 @@ import { checkAuth, setNewState } from "../../store/generalSlice";
 
 const useStyles = makeStyles({
   root: {
-    width: "100%",
-    height: "100%",
+    width: "100vw",
+    height: "100vh",
   },
 });
 
-const VerifyEmail = ({ key }) => {
+const VerifyEmail = () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
   const { notif } = useNotifications();
+  const location = useLocation();
 
   useEffect(() => {
     try {
-      const res = api("email/verify", { params: { key } });
+      console.log(location);
+      const key = location.search.split("=")[1];
+      const res = api(`email/verify?key=${key}`);
       console.log(res.data);
       if (res.data.status) {
-        dispatch(setNewState({ email: res.data.data }));
-        dispatch(setAdditionalState({ email: res.data.data }));
+        dispatch(setNewState({ email: res.data.data.email }));
+        dispatch(setAdditionalState({ email: res.data.data.email }));
         notif("Email successfully updated", "success");
       } else {
         notif("Email was not updated", "error");
       }
-      dispatch(checkAuth());
-      history.push("/");
     } catch (e) {
-      notif("Server error", "error");
+      // notif("Server error", "error");
     }
+    dispatch(checkAuth());
+    history.push("/");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
