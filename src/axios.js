@@ -5,6 +5,7 @@ const api = axios.create({
   baseURL: `/api/main/`,
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
+  validateStatus: (status) => status >= 200 && status < 500,
 });
 
 const media = axios.create({
@@ -12,13 +13,14 @@ const media = axios.create({
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
   responseType: "blob",
-  validateStatus: false,
+  validateStatus: (status) => status >= 200 && status < 500,
 });
 
 const chatApi = axios.create({
   baseURL: "/api/chat/",
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
+  validateStatus: (status) => status >= 200 && status < 500,
 });
 
 // media.interceptors.response.use(
