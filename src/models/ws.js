@@ -72,7 +72,7 @@ export class WSNotification {
 
   equals(obj) {
     return (
-      this.id === obj.id && this.userId === obj.userId && this.tye === obj.type
+      this.id === obj.id && this.userId === obj.userId && this.type === obj.type
     );
   }
 }

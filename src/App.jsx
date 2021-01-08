@@ -30,6 +30,9 @@ const useStyles = makeStyles({
     width: "100vw",
     height: "100vh",
   },
+  root: {
+    marginBottom: 40,
+  },
 });
 
 function App() {
@@ -113,6 +116,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <SnackbarProvider
         maxSnack={3}
+        classes={{ containerRoot: classes.root }}
         content={(key) => <SnackMessage id={key} />}
       >
         <>

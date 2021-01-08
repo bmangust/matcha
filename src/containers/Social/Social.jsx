@@ -4,6 +4,9 @@ import { useSelector } from "react-redux";
 import ClickableUsersList from "../../components/ClickableUsersList/ClickableUsersList";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    paddingBottom: 40,
+  },
   Grid: {
     overflow: "hidden",
     width: "100%",

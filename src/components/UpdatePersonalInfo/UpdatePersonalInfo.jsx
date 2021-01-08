@@ -65,8 +65,6 @@ const UpdatePersonalInfo = () => {
   } = useSelector((state) => state.additional);
   const general = useSelector((state) => state.general);
 
-  const changeEmailRequest = () => {};
-  const changeUsernameRequest = () => {};
   const changePasswordRequest = () => {
     dispatch(setParent({ parent: "profile" }));
     dispatch(setHeader({ header: "Update password" }));
@@ -197,16 +195,6 @@ const UpdatePersonalInfo = () => {
   ];
 
   const buttons = [
-    {
-      text: "update email",
-      size: "large",
-      onClick: changeEmailRequest,
-    },
-    {
-      text: "update username",
-      size: "large",
-      onClick: changeUsernameRequest,
-    },
     {
       text: "request change password link",
       size: "large",
