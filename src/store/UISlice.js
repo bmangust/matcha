@@ -75,7 +75,7 @@ export const sendVisit = (id) => (dispatch) => {
 
 export const sendLike = (userId) => (dispatch, getState) => {
   try {
-    api.post(`/like`, { userId });
+    api.post(`/like`, { id: userId });
     const { likes } = getState().general;
     const newLikes = [...likes, userId];
     dispatch(saveNewState({ likes: newLikes }));
