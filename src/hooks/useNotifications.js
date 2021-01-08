@@ -5,12 +5,13 @@ import { CONSTANTS } from "../models/ws";
 import { addNotification } from "../store/WSSlice";
 import { WSNotification } from "../models/ws";
 import { addGeneralValues, removeGeneralValues } from "../store/generalSlice";
+import { checkAndUpdateUsers } from "../store/usersSlice";
 
 export const useNotifications = () => {
   const dispatch = useDispatch();
 
   const handleNotification = (wsNotification) => {
-    // console.log("[useNotifications] handleNotification", wsNotification);
+    console.log("[useNotifications] handleNotification", wsNotification);
     if (
       wsNotification.type === CONSTANTS.UPDATE_TYPES.NEW_LIKE ||
       wsNotification.type === CONSTANTS.UPDATE_TYPES.NEW_LOOK ||
@@ -24,13 +25,15 @@ export const useNotifications = () => {
       });
       // console.log(newWSNotification);
       dispatch(addNotification({ notification: newWSNotification }));
+      dispatch(checkAndUpdateUsers([{ id: wsNotification.payload.userId }]));
     }
     switch (wsNotification.type) {
       case CONSTANTS.UPDATE_TYPES.NEW_LIKE:
+        console.log("[useNotifications] NEW_LIKE", wsNotification);
         dispatch(
           addGeneralValues({
             key: "likedBy",
-            values: [wsNotification.userId],
+            values: [wsNotification.payload.userId],
           })
         );
         return;
@@ -38,7 +41,7 @@ export const useNotifications = () => {
         dispatch(
           addGeneralValues({
             key: "lookedBy",
-            values: [wsNotification.userId],
+            values: [wsNotification.payload.userId],
           })
         );
         return;
@@ -46,7 +49,13 @@ export const useNotifications = () => {
         dispatch(
           addGeneralValues({
             key: "matches",
-            values: [wsNotification.userId],
+            values: [wsNotification.payload.userId],
+          })
+        );
+        dispatch(
+          removeGeneralValues({
+            key: "likedBy",
+            values: [wsNotification.payload.userId],
           })
         );
         return;
@@ -54,7 +63,7 @@ export const useNotifications = () => {
         dispatch(
           removeGeneralValues({
             key: "likedBy",
-            values: [wsNotification.userId],
+            values: [wsNotification.payload.userId],
           })
         );
         return;
@@ -62,7 +71,7 @@ export const useNotifications = () => {
         dispatch(
           removeGeneralValues({
             key: "matches",
-            values: [wsNotification.userId],
+            values: [wsNotification.payload.userId],
           })
         );
         return;

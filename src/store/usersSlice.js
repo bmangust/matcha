@@ -259,6 +259,19 @@ export const loadUsers = (users) => async (dispatch) => {
   }
 };
 
+export const checkAndUpdateUsers = (users) => async (dispatch, getState) => {
+  const allUsers = getState().users.users;
+  const needLoading = [];
+  users.forEach((user) => {
+    const userInState = allUsers.find((el) => el.id === user.id);
+    // console.log(user);
+    if (!userInState || !userInState.username) needLoading.push(user.id);
+  });
+  // console.log(needLoading);
+  needLoading.length && dispatch(loadUsers(needLoading));
+  dispatch(updateUsers(users));
+};
+
 const loadBanned = async (dispatch) => {
   try {
     const res = await api("ban");

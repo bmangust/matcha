@@ -75,8 +75,9 @@ const ClickableUsersList = (
       onKeyDown={handleListKeyDown}
     >
       {items && items.length > 0 ? (
-        items.map((el) =>
-          el.user ? (
+        items.map((el) => {
+          if (!el) return null;
+          return el.user ? (
             <MenuItem
               className={
                 el.status === CONSTANTS.UPDATE_STATUS.READ
@@ -106,8 +107,8 @@ const ClickableUsersList = (
                 </Button>
               )}
             </MenuItem>
-          )
-        )
+          );
+        })
       ) : (
         <Typography className={classes.Center}>{defaultText}</Typography>
       )}

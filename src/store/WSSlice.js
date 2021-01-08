@@ -20,7 +20,12 @@ const WSSlice = createSlice({
       // check if notification is already there
       if (
         !state.notifications.length ||
-        !state.notifications.some((el) => el.equals(payload.notification))
+        !state.notifications.some(
+          (el) =>
+            el.id === payload.notification.id &&
+            el.userId === payload.notification.userId &&
+            el.type === payload.notification.type
+        )
       )
         state.notifications.push(new WSNotification(payload.notification));
     },

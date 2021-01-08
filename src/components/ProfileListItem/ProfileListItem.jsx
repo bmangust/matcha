@@ -22,7 +22,11 @@ const ProfileListItem = ({ user }) => {
     <Grid container alignItems="center" wrap="nowrap">
       <Avatar
         className={classes.Avatar}
-        src={user?.avatar?.image || user?.images[0]?.image || defaultAvatar}
+        src={
+          user?.avatar?.image || user?.images
+            ? user.images[0]?.image
+            : defaultAvatar
+        }
       />
       <Grid container direction="column">
         <Typography

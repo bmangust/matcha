@@ -171,7 +171,6 @@ const UserCard = (props) => {
     } else {
       dispatch(sendLike(id));
     }
-    setLike((like) => !like);
   };
 
   const handleBan = (e) => {

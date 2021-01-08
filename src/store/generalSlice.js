@@ -76,15 +76,17 @@ const generalSlice = createSlice({
       console.log(payload);
       if (!payload.key || !payload.values)
         throw new Error("[addGeneralValues] no key or value in payload");
-      state[payload.key].concat([...payload.values]);
+      const stateValues = state[payload.key];
+      const updatedValues = [...stateValues, ...payload.values];
+      // console.log(stateValues, updatedValues);
+      state[payload.key] = [...new Set(updatedValues)];
     },
     removeGeneralValues(state, { payload }) {
       console.log(payload);
       if (!payload.key || !payload.values)
         throw new Error("[addGeneralValues] no key or value in payload");
-      state[payload.key] = state[payload.key].filter(
-        (el) => !payload.values.includes(el)
-      );
+      state[payload.key] =
+        state[payload.key].filter((el) => !payload.values.includes(el)) || [];
     },
   },
 });

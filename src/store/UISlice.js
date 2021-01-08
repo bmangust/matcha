@@ -73,23 +73,26 @@ export const sendVisit = (id) => (dispatch) => {
   }
 };
 
-export const sendLike = (id) => (dispatch, getState) => {
+export const sendLike = (userId) => (dispatch, getState) => {
   try {
-    api.post(`/like`, { id });
+    api.post(`/like`, { userId });
     const { likes } = getState().general;
-    const newLikes = [...likes, id];
+    const newLikes = [...likes, userId];
     dispatch(saveNewState({ likes: newLikes }));
   } catch (e) {
     console.log(e);
   }
 };
 
-export const removeLike = (id) => (dispatch, getState) => {
+export const removeLike = (userId) => (dispatch, getState) => {
   try {
-    api.delete(`/like/${id}`);
-    const { likes } = getState().general;
-    const newLikes = likes.filter((ids) => ids !== id);
-    dispatch(saveNewState({ likes: newLikes }));
+    api.delete(`/like/${userId}`);
+    const { likes, matches, likedBy } = getState().general;
+    const newLikes = likes.filter((id) => id !== userId);
+    const newLikedBy = matches.includes(userId)
+      ? [...likedBy, userId]
+      : likedBy;
+    dispatch(saveNewState({ likes: newLikes, likedBy: newLikedBy }));
   } catch (e) {
     console.log(e);
   }
