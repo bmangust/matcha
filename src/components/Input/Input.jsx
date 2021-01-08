@@ -120,6 +120,7 @@ const Input = (props) => {
           type={type}
           label={label}
           value={value}
+          name={name}
           className={classes.Input}
           onFocus={() => setTouched(true)}
           onChange={(e) => onChange(e)}
@@ -133,6 +134,7 @@ const Input = (props) => {
           key={name}
           label={label}
           value={value}
+          name={name}
           className={classes.Input}
           onChange={(e) => onChange(e)}
           select
@@ -177,6 +179,7 @@ const Input = (props) => {
           id={name}
           type="date"
           label="Birth Date"
+          name={name}
           className={classes.Input}
           InputLabelProps={{ shrink: true }}
           value={getDate(value)}
