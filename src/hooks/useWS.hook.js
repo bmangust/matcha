@@ -12,14 +12,19 @@ const host =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
     ? ip
     : window.location.hostname;
+const protocol = window.location.protocol === "http" ? "ws" : "wss";
 const port =
-  !process.env.NODE_ENV || process.env.NODE_ENV === "development" ? 8080 : 80;
+  !process.env.NODE_ENV ||
+  process.env.NODE_ENV === "development" ||
+  protocol === "ws"
+    ? 8080
+    : 80;
 const url =
   !process.env.NODE_ENV ||
   process.env.NODE_ENV === "development" ||
-  ip === "localhost"
-    ? `ws://${host}:${port}`
-    : `wss://${host}`;
+  protocol === "ws"
+    ? `${protocol}://${host}:${port}`
+    : `${protocol}://${host}`;
 let socket = null;
 localStorage.debug = "*";
 
