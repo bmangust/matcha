@@ -7,12 +7,13 @@ import { useOnline } from "./useOnline.hook";
 import { useNotifications } from "./useNotifications";
 
 // const ip = "192.168.43.151";
+console.log(window.location);
 const ip = "localhost";
 const host =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
     ? ip
     : window.location.hostname;
-const protocol = window.location.protocol === "http" ? "ws" : "wss";
+const protocol = window.location.protocol === "http:" ? "ws" : "wss";
 const port =
   !process.env.NODE_ENV ||
   process.env.NODE_ENV === "development" ||
@@ -23,10 +24,12 @@ const url =
   !process.env.NODE_ENV ||
   process.env.NODE_ENV === "development" ||
   protocol === "ws"
-    ? `${protocol}://${host}:${port}`
-    : `${protocol}://${host}`;
+    ? `${protocol}://`
+    : `${protocol}://`;
 let socket = null;
 localStorage.debug = "*";
+
+console.log(url);
 
 const newConnection = (id) => {
   return io(url, {
