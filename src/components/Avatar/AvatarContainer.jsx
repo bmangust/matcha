@@ -30,7 +30,6 @@ const AvatarContainer = ({ loadingDisabled }) => {
       return;
     }
     const image = e.target.files[0];
-    console.log(image);
     if (image.size > 1000000) {
       notif("The file is larger than 1MB", "error");
       return;

@@ -128,6 +128,7 @@ const AdditionalInfo = () => {
         direction="column"
         justify="center"
         alignItems="center"
+        wrap="nowrap"
         className={classes.Grid}
       >
         {steps[activeStep].view}
