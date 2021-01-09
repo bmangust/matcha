@@ -87,7 +87,6 @@ const Step2 = () => {
       label: "Bio",
       value: bio,
       ignoreUntouched: true,
-      inputProps: { autoFocus: true },
       onChange: (e) => {
         dispatch(changeBio(e.target.value));
       },

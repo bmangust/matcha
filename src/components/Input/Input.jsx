@@ -44,12 +44,13 @@ const useStyles = makeStyles({
 });
 
 const getDate = (timestamp) => {
-  const date = new Date(timestamp);
+  const now = new Date();
+  const date =
+    timestamp > now.getTime() + 1000 * 60 * 60 * 24 ? now : new Date(timestamp);
   let year = date.getFullYear();
   if (year < 10) year = "000" + year;
   else if (year < 100) year = "00" + year;
   else if (year < 1000) year = "0" + year;
-  else if (year > 3000) year = 3000;
   let month = date.getMonth() + 1;
   month = month < 10 ? "0" + month : "" + month;
   let day = date.getDate();
