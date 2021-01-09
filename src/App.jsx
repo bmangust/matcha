@@ -82,8 +82,8 @@ function App() {
     } else if (isAuth && isInfoMissing) {
       setContent(
         <Switch>
-          <Redirect from="/login" to="/add" />
           <Route path="/add" component={AdditionalInfo} exact />
+          <Redirect from="/" to="/add" />
         </Switch>
       );
     } else if (isAuth) {
