@@ -107,7 +107,9 @@ const Filter = () => {
           />
         </Grid>
       ))}
-      <Button onClick={handleSerach}>get new strangers</Button>
+      <Button style={{ margin: "10px 0" }} onClick={handleSerach}>
+        get new strangers
+      </Button>
     </>
   );
 };

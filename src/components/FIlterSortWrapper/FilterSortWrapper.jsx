@@ -24,6 +24,8 @@ const useStyles = makeStyles({
     width: "70vw",
     minWidth: 400,
     maxWidth: 700,
+    maxHeight: "80vh",
+    overflow: "auto",
   },
   ButtonLabel: {
     fontFamily: "Righteous",
