@@ -14,7 +14,7 @@ const useStyles = makeStyles({
   },
 });
 
-const AvatarContainer = () => {
+const AvatarContainer = ({ loadingDisabled }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { id, images, avatar } = useSelector((state) => state.general);
@@ -22,12 +22,22 @@ const AvatarContainer = () => {
   const [displayedAvatar, setDisplayedAvatar] = useState(null);
 
   const changeAvatarHandler = async (e) => {
+    if (loadingDisabled) {
+      notif("Cannot upload more than 5 images", "error");
+      return;
+    }
     if (!e.target.files || e.target.files.length === 0) {
       return;
     }
     const image = e.target.files[0];
+    console.log(image);
     if (image.size > 1000000) {
       notif("The file is larger than 1MB", "error");
+      return;
+    }
+    if (image.type.search(/image\/(png|jpeg)/i) < 0) {
+      notif("Only png anf jpeg files allowed", "error");
+      return;
     }
     try {
       const res = await mediaUpload(id, image);

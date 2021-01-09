@@ -11,6 +11,7 @@ import {
 import Gallery from "../../components/Gallery/Gallery";
 import Banned from "../../components/Banned/Banned";
 import Settings from "../../components/Settings/Settings";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles({
   indicator: {
@@ -62,6 +63,7 @@ export const TabContext = createContext(buttons[0].id);
 const Profile = () => {
   const classes = useStyles();
   const [currentTab, setCurrentTab] = useState(0);
+  const { images } = useSelector((state) => state.general);
 
   const selectTabHandler = (e, next) => {
     setCurrentTab(next);
@@ -71,7 +73,7 @@ const Profile = () => {
     <Tab className={classes.Tab} disableRipple label={el.text} key={index} />
   ));
 
-  const getPanel = (index) => (
+  const getPanel = () => (
     <TabPanel
       value={currentTab}
       index={buttons[currentTab].id}
@@ -91,7 +93,7 @@ const Profile = () => {
       className={classes.Profile}
     >
       <TabContext.Provider value={currentTab}>
-        <AvatarContainer />
+        <AvatarContainer loadingDisabled={images && images.length >= 5} />
         <Tabs
           classes={{ root: classes.TabPanel, indicator: classes.indicator }}
           value={currentTab}
