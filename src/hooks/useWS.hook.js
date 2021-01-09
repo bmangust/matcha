@@ -11,10 +11,13 @@ const ip = "localhost";
 const host =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
     ? ip
-    : process.env.PROJECT_HOST;
-const port = 8080;
+    : window.location.hostname;
+const port =
+  !process.env.NODE_ENV || process.env.NODE_ENV === "development" ? 8080 : 80;
 const url =
-  !process.env.NODE_ENV || process.env.NODE_ENV === "development"
+  !process.env.NODE_ENV ||
+  process.env.NODE_ENV === "development" ||
+  ip === "localhost"
     ? `ws://${host}:${port}`
     : `wss://${host}`;
 let socket = null;
