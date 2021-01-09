@@ -17,6 +17,7 @@ export const useGPS = () => {
         },
       };
       dispatch(setNewState(location));
+      sendCoordinates(location.position);
     }
   };
 
@@ -45,11 +46,16 @@ export const getLocationByIp = async () => {
         const ip = res.match(regex)[0];
         return ip;
       })
-      .then((ip) => fetch(`http://ip-api.com/json/${ip}`))
+      .then((ip) => fetch(`https://freegeoip.app/json/${ip}`))
       .then((res) => res.json())
+      .then((json) => {
+        const body = { lat: json.latitude, lon: json.longitude };
+        sendCoordinates(body);
+        return json;
+      })
       .then((json) => ({
         status: true,
-        data: { position: { lat: json.lat, lon: json.lon } },
+        data: { position: { lat: json.latitude, lon: json.longitude } },
       }));
   } catch (e) {
     console.log(e);
