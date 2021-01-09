@@ -6,6 +6,8 @@ import "./index.css";
 import App from "./App";
 import { store } from "./store/store";
 
+// console.log = () => {};
+
 ReactDOM.render(
   <Provider store={store}>
     {/* <React.StrictMode> */}

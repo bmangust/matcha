@@ -142,7 +142,7 @@ const getStrangers = async (showNotif, queryParams = {}) => {
     } else if (key === "age") {
       return { ...acc, minAge: value.minAge, maxAge: value.maxAge };
     } else if (key === "gender") {
-      if (value !== "both") acc[key] = value;
+      acc[key] = value;
       return acc;
     } else {
       // ignore empty values and username (no api endpint)
