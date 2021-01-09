@@ -8,10 +8,15 @@ import { useNotifications } from "./useNotifications";
 
 // const ip = "192.168.43.151";
 const ip = "localhost";
-const local = true;
-const host = local ? ip : "aim-love.ga";
+const host =
+  !process.env.NODE_ENV || process.env.NODE_ENV === "development"
+    ? ip
+    : process.env.PROJECT_HOST;
 const port = 8080;
-const url = local ? `ws://${host}:${port}` : `wss://${host}`;
+const url =
+  !process.env.NODE_ENV || process.env.NODE_ENV === "development"
+    ? `ws://${host}:${port}`
+    : `wss://${host}`;
 let socket = null;
 localStorage.debug = "*";
 

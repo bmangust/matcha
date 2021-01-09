@@ -33,8 +33,7 @@ export const useGPS = () => {
 };
 
 export const sendCoordinates = async (position) => {
-  const res = await api.put("location", position);
-  console.log(res.data);
+  api.put("location", position);
 };
 
 export const getLocationByIp = async () => {
