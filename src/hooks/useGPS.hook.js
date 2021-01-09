@@ -1,4 +1,5 @@
 import { useDispatch } from "react-redux";
+import { api } from "../axios";
 import { setNewState } from "../store/generalSlice";
 
 export const useGPS = () => {
@@ -29,6 +30,11 @@ export const useGPS = () => {
   };
 
   return { gps, getCurrentLocaion };
+};
+
+export const sendCoordinates = async (position) => {
+  const res = await api.put("location", { body: position });
+  console.log(res.data);
 };
 
 export const getLocationByIp = async () => {

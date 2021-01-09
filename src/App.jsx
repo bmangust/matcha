@@ -18,7 +18,7 @@ import UpdatePassword from "./components/UpdatePassword/UpdatePassword";
 import SnackMessage from "./components/Notifier/SnackMessage/SnackMessage";
 import Notifier from "./components/Notifier/Notifier";
 import { useNotifications } from "./hooks/useNotifications";
-import { getLocationByIp } from "./hooks/useGPS.hook";
+import { getLocationByIp, sendCoordinates, useGPS } from "./hooks/useGPS.hook";
 import {
   changeUseLocation,
   updateInfo,
@@ -39,9 +39,10 @@ function App() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { showPrompt } = useNotifications();
-  const { isAuth, isLoading } = useSelector((state) => state.general);
+  const { isAuth, isLoading, position } = useSelector((state) => state.general);
   const { isInfoMissing } = useSelector((state) => state.UI);
   const [content, setContent] = useState(<CircularProgress />);
+  const { getCurrentLocaion } = useGPS();
 
   useEffect(() => {
     dispatch(checkAuth());
@@ -50,6 +51,7 @@ function App() {
       .then(function (result) {
         console.log(result);
         if (result.state === "granted") {
+          getCurrentLocaion();
           dispatch(setNewState({ useLocation: true }));
           dispatch(changeUseLocation(true));
           dispatch(updateInfo());
@@ -66,6 +68,14 @@ function App() {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    console.log(position);
+    if (!position || position.lat === 0 || position.lon === 0) {
+      return;
+    }
+    sendCoordinates(position);
+  }, [position]);
 
   useEffect(() => {
     if (isLoading) {
