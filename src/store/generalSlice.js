@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { api } from "../axios";
-import { prepareUsers, unsanitaze, xssSanitize } from "../utils";
+import { getCookie, prepareUsers, unsanitaze, xssSanitize } from "../utils";
 import { resetUIState, setIsInfoMissing } from "./UISlice";
 import { resetFilter } from "../components/Filter/filterSlice";
 import { setAdditionalState } from "../pages/AdditionalInfo/additionalSlice";
@@ -152,6 +152,9 @@ export const checkInfo = (info) => {
 
 export const checkAuth = () => async (dispatch) => {
   try {
+    if (!getCookie("session_id")) {
+      return;
+    }
     dispatch(startLoading());
     const res = await api("account");
     if (res.data.status) {
