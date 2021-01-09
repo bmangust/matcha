@@ -5,10 +5,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Typography,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { api } from "../../axios";
+import { useNotifications } from "../../hooks/useNotifications";
 import Input from "../Input/Input";
 
 const Report = ({ open, onClose }) => {
@@ -18,6 +20,8 @@ const Report = ({ open, onClose }) => {
     complaint: "",
   });
   const [valid, setValid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const { notif } = useNotifications();
 
   const categories = [
     "Unacceptable behavior",
@@ -28,18 +32,34 @@ const Report = ({ open, onClose }) => {
   const handleChange = (e) => {
     e.preventDefault();
     setReport({ ...report, [e.target.name]: e.target.value });
+    if (e.target.name === "category" && e.target.value.length > 0) {
+      setErrorMessage("");
+    }
   };
 
   const handleSendReport = async (e) => {
     e.stopPropagation();
+    if (report.category.length === 0) {
+      setErrorMessage("Please, select category");
+      return;
+    }
     const body = {
-      date: (new Date().getTime() / 1000).toFixed(0),
+      date: new Date().getTime(),
       category: report.category,
       complaint: report.complaint,
       authorId: id,
     };
-    const res = await api.post("report", body);
-    console.log(res);
+    try {
+      const res = await api.post("report", body);
+      if (res.data.status) {
+        notif("Report was successfully sent", "success");
+      } else {
+        throw new Error(res.data.status || "Server error");
+      }
+      onClose();
+    } catch (e) {
+      notif(e, "error");
+    }
   };
 
   const inputs = [
@@ -86,6 +106,7 @@ const Report = ({ open, onClose }) => {
         {inputs.map((input) => (
           <Input style={{ margin: "10px 0" }} key={input.name} {...input} />
         ))}
+        <Typography style={{ color: "red" }}>{errorMessage}</Typography>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>

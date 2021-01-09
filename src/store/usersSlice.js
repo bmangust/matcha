@@ -270,6 +270,7 @@ export const checkAndUpdateUsers = (users) => async (dispatch, getState) => {
   // console.log(needLoading);
   needLoading.length && dispatch(loadUsers(needLoading));
   dispatch(updateUsers(users));
+  dispatch(updateStrangers(users));
 };
 
 const loadBanned = async (dispatch) => {
@@ -290,6 +291,7 @@ export const {
   setUsers,
   setBanned,
   updateUsers,
+  updateStrangers,
   setUsersOnline,
   sortStrangers,
   setStrangers,
