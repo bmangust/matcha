@@ -8,10 +8,16 @@ const useStyles = makeStyles((theme) => ({
   },
   Text: {
     fontSize: "1.5rem",
+    "@media (max-width: 600px)": {
+      fontSize: "inherit",
+    },
   },
   SecondaryText: {
     fontSize: "1.2rem",
     color: theme.palette.grey[500],
+    "@media (max-width: 600px)": {
+      fontSize: "inherit",
+    },
   },
 }));
 

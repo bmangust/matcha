@@ -21,11 +21,13 @@ import {
   ChatRounded,
   Favorite,
   FavoriteBorderOutlined,
+  RemoveCircleOutlineRounded,
 } from "@material-ui/icons";
 import cn from "classnames";
 import { sendLike, removeLike } from "../../store/UISlice";
 import { FemaleColorIcon, MaleColorIcon } from "../../components/Icons/Icons";
 import Report from "../../components/Report/Report";
+import { useBan } from "../../hooks/useBan.hook";
 
 dayjs.extend(relativeTime);
 
@@ -43,18 +45,21 @@ const useStyles = makeStyles((theme) => ({
   FullWidth: {
     width: "100%",
   },
-  Message: {
+  Fab: {
     position: "fixed",
     right: "1rem",
+  },
+  Message: {
+    bottom: "12rem",
+  },
+  Like: {
     bottom: "8rem",
+  },
+  Ban: {
+    bottom: "4rem",
   },
   FabIcon: {
     marginRight: "10px",
-  },
-  Like: {
-    position: "fixed",
-    right: "1rem",
-    bottom: "4rem",
   },
   Status: {
     position: "absolute",
@@ -96,8 +101,10 @@ const UserProfile = () => {
   };
   const defaultBio = "UFO flew around and dropped this message here";
   const { selectChat, createChat } = useChat();
+  const { banAndUpdate } = useBan();
   const dispatch = useDispatch();
   const chat = useSelector((state) => state.chat.chat);
+  const { banned } = useSelector((state) => state.users);
   const { likes, matches } = useSelector((state) => state.general);
   const [like, setLike] = useState(false);
   const status = isOnline
@@ -105,7 +112,7 @@ const UserProfile = () => {
     : `(last seen ${dayjs(lastOnline * 1000).fromNow()})`;
   const isMatched = matches.includes(id);
   const [openReport, setOpenReport] = useState(false);
-  // console.log(matches, id, isMatched);
+  const isBanned = !!banned.find((userId) => userId === id);
 
   useEffect(() => {
     const isLiked = () => likes.includes(id);
@@ -123,30 +130,21 @@ const UserProfile = () => {
     }
   };
 
+  const handleBan = () => {
+    banAndUpdate(id);
+  };
+
   const handleOpenReport = () => {
     setOpenReport((open) => !open);
   };
 
   const handleLike = (e) => {
     e.stopPropagation();
-    // if (like) {
-    //   if (matches.includes(id)) {
-    //     dispatch(addGeneralValues({ key: "likedBy", values: [id] }));
-    //   }
-    //   dispatch(removeLike(id));
-    // } else {
-    //   dispatch(sendLike(id));
-    //   if (likedBy.includes(id)) {
-    //     dispatch(addGeneralValues({ key: "matches", values: [id] }));
-    //     dispatch(removeGeneralValues({ key: "likedBy", values: [id] }));
-    //   }
-    // }
     if (like) {
       dispatch(removeLike(id));
     } else {
       dispatch(sendLike(id));
     }
-    // setLike((like) => !like);
   };
   return (
     <Grid
@@ -194,34 +192,47 @@ const UserProfile = () => {
         <Button className={classes.Report} onClick={handleOpenReport}>
           Report user
         </Button>
+
         {isMatched && (
           <Fab
             variant="extended"
             color="primary"
-            className={classes.Message}
+            className={cn(classes.Fab, classes.Message)}
             onClick={handleChat}
           >
             <ChatRounded className={classes.FabIcon} />
             Send message
           </Fab>
         )}
+        {images.length > 0 && (
+          <Fab
+            variant="extended"
+            color="secondary"
+            className={cn(classes.Fab, classes.Like)}
+            onClick={handleLike}
+          >
+            {like ? (
+              <>
+                <FavoriteBorderOutlined className={classes.FabIcon} />
+                Unlike user
+              </>
+            ) : (
+              <>
+                <Favorite className={classes.FabIcon} />
+                Like user
+              </>
+            )}
+          </Fab>
+        )}
         <Fab
           variant="extended"
-          color="secondary"
-          className={classes.Like}
-          onClick={handleLike}
+          color="primary"
+          className={cn(classes.Fab, classes.Ban)}
+          onClick={handleBan}
+          disabled={isBanned}
         >
-          {like ? (
-            <>
-              <FavoriteBorderOutlined className={classes.FabIcon} />
-              Unlike user
-            </>
-          ) : (
-            <>
-              <Favorite className={classes.FabIcon} />
-              Like user
-            </>
-          )}
+          <RemoveCircleOutlineRounded className={classes.FabIcon} />
+          Ban user
         </Fab>
       </Grid>
       <Report open={openReport} onClose={handleOpenReport} />

@@ -30,12 +30,13 @@ const Banned = () => {
       icon: <ReplayRounded />,
       color: "secondary",
       onClick: unbanAndUpdate,
+      text: "unban",
     }),
     [unbanAndUpdate]
   );
 
   return (
-    <Grid container justify="center">
+    <Grid container item xs={12} sm={10} alignItems="center" justify="center">
       {banned ? (
         <ClickableUsersList
           items={bannedUsers}

@@ -3,13 +3,10 @@ import { Box, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
   root: {
-    width: "70%",
-    textAlign: "center",
-  },
-  "@media (max-width: 960px)": {
-    root: {
-      width: "100%",
-    },
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

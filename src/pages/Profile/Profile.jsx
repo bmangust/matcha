@@ -31,8 +31,7 @@ const useStyles = makeStyles({
   },
   Profile: {
     minHeight: "100vh",
-    padding: "30px",
-    paddingBlockEnd: "60px",
+    paddingBottom: "60px",
   },
   Tab: {
     "&:hover,&:focus": {

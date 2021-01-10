@@ -17,14 +17,19 @@ import NotificationListItem from "../NotificationListItem/NotificationListItem";
 import ProfileListItem from "../ProfileListItem/ProfileListItem";
 
 const useStyles = makeStyles((theme) => ({
-  Button: {
-    padding: "7px 30px",
+  ButtonText: {
+    "@media (max-width: 600px)": {
+      display: "none",
+    },
   },
   Menu: {
     width: "100%",
   },
   ListItem: {
     borderRadius: borderRadius,
+    dispaly: "flex",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   Unread: {
     backgroundColor: theme.palette.grey[200],
@@ -98,12 +103,13 @@ const ClickableUsersList = (
               <ProfileListItem user={el} />
               {action && (
                 <Button
-                  className={classes.Button}
                   color={action.color}
                   endIcon={action.icon}
                   onClick={(e) => handleActionClick(e, el.id)}
                 >
-                  unban user
+                  <Typography className={classes.ButtonText}>
+                    {action.text}
+                  </Typography>
                 </Button>
               )}
             </MenuItem>

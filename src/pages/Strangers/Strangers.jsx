@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import UserCard from "../../components/UserCard/UserCard";
 import { Grid, makeStyles, Typography } from "@material-ui/core";
 import { Route, Switch, useLocation } from "react-router-dom";
@@ -25,12 +25,10 @@ const useStyles = makeStyles({
 
 const Strangers = () => {
   const { notif } = useNotifications();
-  const allUsers = useSelector((state) => state.users.users);
   const strangers = useSelector((state) => state.users.strangers);
   const filter = useSelector((state) => state.filter);
   const location = useLocation();
   const [cards, setCards] = useState(null);
-  const [routes, setRoutes] = useState(null);
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -59,10 +57,12 @@ const Strangers = () => {
             )
           : filteredUsers;
     }
+    // filter strangers by gender
     filteredUsers =
       filter.gender.length > 0 && filter.gender !== "both"
         ? filteredUsers.filter((user) => user.gender === filter.gender)
         : filteredUsers;
+    // filter strangers by tags
     filteredUsers =
       filter.tags.length > 0
         ? filteredUsers.filter((user) => {
@@ -88,23 +88,6 @@ const Strangers = () => {
     setCards(cards);
   }, [filter, classes.Text, strangers, location.pathname]);
 
-  const memorizedRoutes = useMemo(
-    () =>
-      allUsers &&
-      allUsers.map((el) => (
-        <Route
-          key={el.id}
-          path={`/strangers/:id`}
-          render={() => <UserProfile user={el} />}
-        />
-      )),
-    [allUsers]
-  );
-
-  useEffect(() => {
-    setRoutes(memorizedRoutes);
-  }, [memorizedRoutes]);
-
   return (
     <Grid
       container
@@ -113,7 +96,7 @@ const Strangers = () => {
       className={classes.Strangers}
     >
       <Switch>
-        {routes}
+        <Route path={`/strangers/:id`} render={() => <UserProfile />} />
         <Route
           path="/"
           exact

@@ -39,9 +39,6 @@ import { useChat } from "../../hooks/useChat.hook";
 import Social from "../Social/Social";
 
 const useStyles = makeStyles({
-  root: {
-    minWidth: 500,
-  },
   selectedTab: {
     color: "red",
   },
@@ -52,7 +49,6 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    minWidth: 500,
   },
   View: {
     display: "flex",
@@ -70,7 +66,12 @@ const useStyles = makeStyles({
     width: "100%",
   },
   Tab: {
-    minWidth: 100,
+    "@media (min-width: 600px)": {
+      minWidth: 100,
+    },
+    "@media (min-width: 900px)": {
+      minWidth: 160,
+    },
   },
 });
 
@@ -150,13 +151,13 @@ const Main = () => {
         key={el.index}
         component={Link}
         to={el.url}
-        className={classes.Tab}
+        classes={{ root: classes.Tab }}
       />
     );
   });
 
   return (
-    <Container className={classes.root}>
+    <Container>
       {isLoading ? (
         <Grid
           container
