@@ -9,7 +9,7 @@ import { useNotifications } from "./useNotifications";
 const protocol = window.location.protocol === "http:" ? "ws" : "wss";
 const url = `${protocol}://`;
 let socket = null;
-localStorage.debug = "*";
+// localStorage.debug = "*";
 
 const newConnection = (id) => {
   return io(url, {

@@ -77,7 +77,11 @@ const AvatarContainer = ({ loadingDisabled }) => {
     >
       <Avatar
         className={classes.Avatar}
-        src={displayedAvatar?.image || avatar?.image || defaultAvatar}
+        src={
+          displayedAvatar?.image || avatar?.image || images.length
+            ? images[0]?.image
+            : defaultAvatar
+        }
       />
     </Badge>
   );
