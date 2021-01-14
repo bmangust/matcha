@@ -1,15 +1,12 @@
 import React, { useEffect, useMemo } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import { useSelector } from "react-redux";
 import MyMarker from "./MyMarker/MyMarker";
 
 const SetBoundingRect = ({ strangers }) => {
   const map = useMap();
   const getBounds = (strangers) => {
-    if (!strangers || !strangers.length)
-      return [
-        [0, 0],
-        [0, 0],
-      ];
+    if (!strangers || !strangers.length) return null;
     return strangers.reduce(
       (accumulator, cur) => {
         const acc = [[...accumulator[0]], [...accumulator[1]]];
@@ -29,6 +26,7 @@ const SetBoundingRect = ({ strangers }) => {
   const bounds = useMemo(() => getBounds(strangers), [strangers]);
 
   useEffect(() => {
+    if (!bounds) return;
     map.fitBounds(bounds);
   });
 
@@ -36,10 +34,15 @@ const SetBoundingRect = ({ strangers }) => {
 };
 
 const Map = ({ strangers }) => {
+  const {
+    position: { lat, lon },
+  } = useSelector((state) => state.general);
+  console.log(lat, lon);
   return (
     <MapContainer
       style={{ height: "70vh", width: "100%", zIndex: 10 }}
-      center={[0, 0]}
+      center={[lat, lon]}
+      zoom={13}
       scrollWheelZoom={true}
     >
       <TileLayer
