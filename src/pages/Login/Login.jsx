@@ -30,13 +30,6 @@ const Login = () => {
     setFormValid(formValid);
   }, [emailValid, passwordValid]);
 
-  // useEffect(() => {
-  //   showPrompt(
-  //     "We use geolocation on this site to provide better results and optimize your experience. Allow using GPS?"
-  //   );
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
   const onRegisterHandler = () => {
     history.push("register");
   };
@@ -48,10 +41,11 @@ const Login = () => {
 
   const inputs = [
     {
-      name: "email",
-      type: "email",
-      label: "Email",
+      name: "login",
+      type: "text",
+      label: "Login",
       value: email,
+      placeholder: "Enter username or email",
       onValidate: (isValid) => {
         dispatch(changeEmailValid(isValid));
       },
@@ -59,11 +53,11 @@ const Login = () => {
         dispatch(changeEmail(e.target.value));
       },
       rules: {
-        helperText: "invalid email",
+        helperText: "invalid login",
         rule: {
           minLength: 3,
           maxLength: 40,
-          regex: /^([\w%+-.]+)@([\w-]+\.)+([\w]{2,})$/i,
+          regex: /^(([\w%+-.]+)@([\w-]+\.)+([\w]{2,}))|([\w%-+.]+)$/i,
         },
       },
     },

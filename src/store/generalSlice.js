@@ -180,10 +180,15 @@ export const auth = (email, password, showNotif) => async (
   dispatch(startLoading());
   const position = getState().general.position;
   try {
-    const body = {
-      email: xssSanitize(email),
-      password: xssSanitize(password),
-    };
+    const body = email.match(/([\w%+-.]+)@([\w-]+\.)+([\w]{2,})/i)
+      ? {
+          email: xssSanitize(email),
+          password: xssSanitize(password),
+        }
+      : {
+          username: xssSanitize(email),
+          password: xssSanitize(password),
+        };
     if (position.lat) body.useLocation = true;
     const params =
       position.lat === 0 || position.lon === 0

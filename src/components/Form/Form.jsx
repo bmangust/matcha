@@ -20,7 +20,7 @@ const useStyles = makeStyles({
   },
   Fab: {
     position: "fixed",
-    right: "10vw",
+    right: "2vw",
     bottom: "4rem",
     zIndex: 2,
   },
