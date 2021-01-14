@@ -94,6 +94,7 @@ const UserProfile = () => {
     age,
     bio,
     tags,
+    rating,
     isOnline,
     lastOnline,
   } = {
@@ -184,6 +185,11 @@ const UserProfile = () => {
         <Typography
           className={classes.Typography}
         >{`${age} years old`}</Typography>
+        <Grid className={classes.FullWidth}>
+          <Typography className={classes.Typography}>
+            {`Rating: ${rating.toFixed(2)}`}
+          </Typography>
+        </Grid>
         <Divider className={classes.FullWidth} />
         <Tags tags={tags} />
         <Divider className={classes.FullWidth} />
