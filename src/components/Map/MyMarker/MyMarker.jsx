@@ -15,6 +15,7 @@ const useStyles = makeStyles({
 
 const MyMarker = ({ user }) => {
   const classes = useStyles();
+
   return (
     <Marker position={[user.position.lat, user.position.lon]}>
       <Tooltip className={classes.Tooltip}>

@@ -1,8 +1,8 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import MyMarker from "./MyMarker/MyMarker";
 
-const GetBoundingRect = ({ strangers }) => {
+const SetBoundingRect = ({ strangers }) => {
   const map = useMap();
   const getBounds = (strangers) => {
     if (!strangers || !strangers.length)
@@ -26,38 +26,29 @@ const GetBoundingRect = ({ strangers }) => {
     );
   };
 
-  const getCenter = (min, max) =>
-    min < max ? min + (max - min) / 2 : max + (min - max) / 2;
-
   const bounds = useMemo(() => getBounds(strangers), [strangers]);
-  const center = [
-    getCenter(bounds[0][0], bounds[1][0]),
-    getCenter(bounds[0][1], bounds[1][1]),
-  ];
-  React.useEffect(() => {
-    // console.log(map, bounds);
+
+  useEffect(() => {
     map.fitBounds(bounds);
-  }, [bounds, center, map]);
+  });
 
   return null;
 };
 
 const Map = ({ strangers }) => {
-  console.log(strangers);
   return (
     <MapContainer
       style={{ height: "70vh", width: "100%", zIndex: 10 }}
       center={[0, 0]}
-      zoom={3}
       scrollWheelZoom={true}
     >
-      <GetBoundingRect />
       <TileLayer
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {strangers &&
         strangers.map((user) => <MyMarker key={user.id} user={user} />)}
+      <SetBoundingRect strangers={strangers} />
     </MapContainer>
   );
 };
