@@ -1,28 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { CircularProgress, Grid } from "@material-ui/core";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import { theme } from "./theme";
+import { Switch, Route, Redirect } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { SnackbarProvider } from "notistack";
 
+import { checkAuth } from "./store/generalSlice";
+import AdditionalInfo from "./pages/AdditionalInfo/AdditionalInfo";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Main from "./containers/Main/Main";
-import { SnackbarProvider } from "notistack";
-import { useDispatch, useSelector } from "react-redux";
-import AdditionalInfo from "./pages/AdditionalInfo/AdditionalInfo";
-import { checkAuth, setNewState } from "./store/generalSlice";
-import { CircularProgress, Grid } from "@material-ui/core";
 import Forgot from "./components/Forgot/Forgot";
 import UpdatePassword from "./components/UpdatePassword/UpdatePassword";
 import SnackMessage from "./components/Notifier/SnackMessage/SnackMessage";
 import Notifier from "./components/Notifier/Notifier";
-import { useNotifications } from "./hooks/useNotifications";
-import { getLocationByIp, useGPS } from "./hooks/useGPS.hook";
-import {
-  changeUseLocation,
-  updateInfo,
-} from "./pages/AdditionalInfo/additionalSlice";
 import VerifyEmail from "./components/VerifyEmail/VerifyEmail";
 
 const useStyles = makeStyles({
@@ -38,34 +32,12 @@ const useStyles = makeStyles({
 function App() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { showPrompt } = useNotifications();
   const { isAuth, isLoading } = useSelector((state) => state.general);
   const { isInfoMissing } = useSelector((state) => state.UI);
   const [content, setContent] = useState(<CircularProgress />);
-  const { getCurrentLocaion } = useGPS();
 
   useEffect(() => {
     dispatch(checkAuth());
-    navigator.permissions
-      .query({ name: "geolocation" })
-      .then(function (result) {
-        console.log(result);
-        if (result.state === "granted") {
-          getCurrentLocaion();
-          dispatch(setNewState({ useLocation: true }));
-          dispatch(changeUseLocation(true));
-          dispatch(updateInfo());
-        } else if (result.state === "prompt") {
-          showPrompt(
-            "We use geolocation on this site to provide better results and optimize your experience. Allow using GPS?"
-          );
-        } else {
-          dispatch(setNewState({ useLocation: false }));
-          dispatch(changeUseLocation(false));
-          dispatch(updateInfo());
-          getLocationByIp();
-        }
-      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

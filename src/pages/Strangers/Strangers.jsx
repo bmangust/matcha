@@ -1,17 +1,22 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import UserCard from "../../components/UserCard/UserCard";
-import { Grid, makeStyles, Typography } from "@material-ui/core";
+import { Fab, Grid, makeStyles, Typography } from "@material-ui/core";
+import { DashboardRounded, MapRounded } from "@material-ui/icons";
 import { Route, Switch, useLocation } from "react-router-dom";
-import UserProfile from "../../containers/UserProfile/UserProfile";
 import { useDispatch, useSelector } from "react-redux";
-import { useNotifications } from "../../hooks/useNotifications";
+
 import { loadStrangers } from "../../store/usersSlice";
+import { useNotifications } from "../../hooks/useNotifications";
+
+import UserProfile from "../../containers/UserProfile/UserProfile";
 import FilterSortWrapper from "../../components/FIlterSortWrapper/FilterSortWrapper";
+import UserCard from "../../components/UserCard/UserCard";
+import Map from "../../components/Map/Map";
 
 const useStyles = makeStyles({
   Strangers: {
     fontSize: "2rem",
     paddingBottom: "60px",
+    position: "relative",
   },
   CardContainer: {
     paddingBottom: "90px",
@@ -20,6 +25,16 @@ const useStyles = makeStyles({
     marginTop: "1rem",
     width: "100%",
     textAlign: "center",
+  },
+  Fab: {
+    position: "fixed",
+    right: "10px",
+    bottom: "61px",
+    zIndex: 20,
+  },
+  Map: {
+    width: "70vw",
+    height: "70vh",
   },
 });
 
@@ -31,6 +46,7 @@ const Strangers = () => {
   const [cards, setCards] = useState(null);
   const classes = useStyles();
   const dispatch = useDispatch();
+  const [mapShown, setMapShown] = useState(false);
 
   // load strangers on component mount
   useEffect(() => {
@@ -101,16 +117,43 @@ const Strangers = () => {
           path="/"
           exact
           render={() => (
-            <Grid
-              className={classes.CardContainer}
-              container
-              item
-              xs={10}
-              spacing={3}
-            >
-              {cards}
-              <FilterSortWrapper />
-            </Grid>
+            <>
+              <Grid
+                className={classes.CardContainer}
+                container
+                item
+                xs={10}
+                spacing={3}
+              >
+                {mapShown ? (
+                  <Map strangers={strangers} classes={classes.Map} />
+                ) : (
+                  <>
+                    {cards}
+                    <FilterSortWrapper />
+                  </>
+                )}
+              </Grid>
+              <Fab
+                className={classes.Fab}
+                variant="extended"
+                color="primary"
+                size="large"
+                onClick={() => setMapShown((shown) => !shown)}
+              >
+                {mapShown ? (
+                  <>
+                    <DashboardRounded style={{ marginRight: 5 }} />
+                    Show cards
+                  </>
+                ) : (
+                  <>
+                    <MapRounded style={{ marginRight: 5 }} />
+                    Show map
+                  </>
+                )}
+              </Fab>
+            </>
           )}
         />
       </Switch>

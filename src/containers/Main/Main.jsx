@@ -2,7 +2,11 @@ import React, { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { Switch, Route, useHistory, withRouter, Link } from "react-router-dom";
-import { logout } from "../../store/generalSlice";
+import { logout, setNewState } from "../../store/generalSlice";
+import {
+  changeUseLocation,
+  updateInfo,
+} from "../../pages/AdditionalInfo/additionalSlice";
 import {
   setCompanion,
   setHeader,
@@ -36,6 +40,7 @@ import { useNotifications } from "../../hooks/useNotifications";
 import { useWS } from "../../hooks/useWS.hook";
 import { setChat } from "../../store/chatSlice";
 import { useChat } from "../../hooks/useChat.hook";
+import { getLocationByIp, useGPS } from "../../hooks/useGPS.hook";
 import Social from "../Social/Social";
 
 const useStyles = makeStyles({
@@ -114,13 +119,14 @@ const tabs = [
 ];
 
 const Main = () => {
-  const { notif } = useNotifications();
+  const { notif, showPrompt } = useNotifications();
   const { header, selectedTab, companion } = useSelector((state) => state.UI);
   const { isLoading } = useSelector((state) => state.general);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
   const { getChatsInfo } = useChat();
+  const { getCurrentLocaion } = useGPS();
   useWS();
 
   const handleChange = async (e, url) => {
@@ -140,6 +146,24 @@ const Main = () => {
 
   useEffect(() => {
     getChatsInfo();
+    navigator.permissions.query({ name: "geolocation" }).then((result) => {
+      console.log(result);
+      if (result.state === "granted") {
+        getCurrentLocaion();
+        dispatch(setNewState({ useLocation: true }));
+        dispatch(changeUseLocation(true));
+        dispatch(updateInfo());
+      } else if (result.state === "prompt") {
+        showPrompt(
+          "We use geolocation on this site to provide better results and optimize your experience. Allow using GPS?"
+        );
+      } else {
+        dispatch(setNewState({ useLocation: false }));
+        dispatch(changeUseLocation(false));
+        dispatch(updateInfo());
+        getLocationByIp();
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
