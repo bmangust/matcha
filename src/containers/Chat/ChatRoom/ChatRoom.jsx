@@ -31,14 +31,16 @@ const useStyles = makeStyles({
 });
 
 const ChatRoom = () => {
-  const { name, avatar, images } = useSelector((state) => state.UI.companion);
-  const { chat, chats } = useSelector((state) => state.chat);
-  const messages = chats.find((ch) => ch.id === chat).messages;
-  const myId = useSelector((state) => state.general.id);
   const classes = useStyles();
   const { readMsg } = useChat();
-  const [mappedMessages, setMappedMessages] = useState([]);
   const messagesEndRef = useRef(null);
+  const [mappedMessages, setMappedMessages] = useState([]);
+
+  const { name, avatar, images } = useSelector((state) => state.UI.companion);
+  const { chat, chats } = useSelector((state) => state.chat);
+  const myId = useSelector((state) => state.general.id);
+
+  const messages = chats.find((ch) => ch.id === chat).messages;
   console.log(`[ChatRoom] mappedMessages`, mappedMessages);
   console.log(`[ChatRoom] messages`, messages);
 
@@ -51,7 +53,11 @@ const ChatRoom = () => {
               <Message
                 self={el.sender === myId}
                 text={el.text}
-                image={avatar?.image || images[0]?.image}
+                image={
+                  avatar?.image || (images && images.length)
+                    ? images[0]?.image
+                    : null
+                }
                 name={name}
                 date={el.date}
                 status={el.status}

@@ -87,7 +87,7 @@ const Header = ({ header }) => {
   const allUsers = useSelector((state) => state.users.users);
   const general = useSelector((state) => state.general);
   const { notifications } = useSelector((state) => state.WS);
-  const [filledNotifications, setFilledNotifications] = useState(null);
+  const [filledNotifications, setFilledNotifications] = useState([]);
   const loc = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -100,7 +100,7 @@ const Header = ({ header }) => {
   }, [dispatch, notifications]);
 
   useEffect(() => {
-    if (!notifications || !notifications.length) return;
+    if (!notifications) return;
     const filledNotifications = notifications
       .map((notification) => {
         const user = allUsers.find((user) => user.id === notification.userId);
@@ -197,7 +197,7 @@ const Header = ({ header }) => {
                     <Typography className={classes.Category}>
                       Notifications
                     </Typography>
-                    {filledNotifications ? (
+                    {filledNotifications.length ? (
                       <Grid
                         container
                         justify="center"

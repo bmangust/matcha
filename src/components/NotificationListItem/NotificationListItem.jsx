@@ -37,6 +37,8 @@ const NotificationListItem = ({ notification }) => {
         return `Match with ${notification.user.name}!`;
       case CONSTANTS.UPDATE_TYPES.DELETE_MATCH:
         return `You have no match with ${notification.user.name} anymore`;
+      case CONSTANTS.MESSAGE_TYPES.NEW_MESSAGE:
+        return `You have unread messages`;
       default:
         throw new Error("[NotificationListItem] No such type in notification");
     }
@@ -66,9 +68,9 @@ const NotificationListItem = ({ notification }) => {
       <Avatar
         className={classes.Avatar}
         src={
-          notification.user?.avatar?.image ||
-          notification.user?.images[0]?.image ||
-          defaultAvatar
+          notification.user?.avatar?.image || notification.user?.images
+            ? notification.user.images[0]?.image
+            : defaultAvatar
         }
       />
       <Typography className={classes.Text}>

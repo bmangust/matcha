@@ -7,7 +7,10 @@ import { useOnline } from "./useOnline.hook";
 import { useNotifications } from "./useNotifications";
 
 const protocol = window.location.protocol === "http:" ? "ws" : "wss";
-const url = `${protocol}://`;
+const url =
+  window.location.host === "localhost:3000"
+    ? `${protocol}://localhost:8080`
+    : `${protocol}://`;
 let socket = null;
 // localStorage.debug = "*";
 

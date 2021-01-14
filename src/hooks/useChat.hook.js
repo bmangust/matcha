@@ -1,6 +1,12 @@
 import { useDispatch, useSelector, useStore } from "react-redux";
 import { chatApi } from "../axios";
-import { Chat, CONSTANTS, Message, WSmessage } from "../models/ws";
+import {
+  Chat,
+  CONSTANTS,
+  Message,
+  WSmessage,
+  WSNotification,
+} from "../models/ws";
 import {
   addChat,
   setChats,
@@ -10,6 +16,8 @@ import {
   deleteMessage,
   setChatByUserId,
 } from "../store/chatSlice";
+import { checkAndUpdateUsers } from "../store/usersSlice";
+import { addNotification, removeNotification } from "../store/WSSlice";
 import { useNotifications } from "./useNotifications";
 import { send } from "./useWS.hook";
 
@@ -77,6 +85,13 @@ export const useChat = () => {
   const handleMessage = (wsMessage) => {
     // console.log("[hadleChat]", wsMessage);
     if (wsMessage.type === CONSTANTS.MESSAGE_TYPES.NEW_MESSAGE) {
+      const newWSNotification = new WSNotification({
+        type: wsMessage.type,
+        userId: wsMessage.payload.sender,
+      });
+      dispatch(addNotification({ notification: newWSNotification }));
+      dispatch(checkAndUpdateUsers([{ id: wsMessage.payload.userId }]));
+
       dispatch(addMessage(wsMessage.payload));
       showNotif(wsMessage.payload);
     } else if (wsMessage.type === CONSTANTS.MESSAGE_TYPES.UPDATE_MESSAGE) {
@@ -107,6 +122,14 @@ export const useChat = () => {
       status: CONSTANTS.MESSAGE_STATUS.STATUS_READ,
     };
     dispatch(updateMessage(message));
+    dispatch(
+      removeNotification({
+        notification: {
+          userId: message.sender,
+          type: CONSTANTS.MESSAGE_TYPES.NEW_MESSAGE,
+        },
+      })
+    );
     const wsMessage = new WSmessage({
       type: CONSTANTS.MESSAGE_TYPES.UPDATE_MESSAGE,
       payload: message,

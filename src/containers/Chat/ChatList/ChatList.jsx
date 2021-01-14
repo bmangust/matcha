@@ -120,7 +120,10 @@ const ChatList = () => {
             (el) => el.status !== CONSTANTS.MESSAGE_STATUS.STATUS_READ
           );
           console.log(chat);
-          const img = avatar?.image || images[0]?.image || null;
+          const img =
+            avatar?.image || (images && images.length)
+              ? images[0]?.image
+              : null;
           return (
             <ListItem
               className={classes.ListItem}
