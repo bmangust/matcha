@@ -101,12 +101,13 @@ const AdditionalInfo = () => {
         maxAge,
       };
       const isInfoMissing = checkInfo(data);
+      console.log(isInfoMissing);
       if (isInfoMissing) {
         notif("Please, fill all the fields", "error");
       } else {
         dispatch(updateInfo(data, notif));
         dispatch(setIsInfoMissing(isInfoMissing));
-        history.push("/");
+        setTimeout(() => history.push("/"), 500);
       }
     } else {
       setActiveStep((prev) => prev + 1);

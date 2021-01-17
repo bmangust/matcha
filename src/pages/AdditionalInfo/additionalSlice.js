@@ -212,12 +212,6 @@ export const updateInfo = (
   if (generalState.position.lat !== 0 && generalState.position.lon !== 0) {
     body.position = generalState.position;
   }
-  // console.log(
-  //   "[AdditionalInfoSlice] update user info",
-  //   additionalState,
-  //   generalState,
-  //   body
-  // );
   if (!body.id) {
     // if didn't get self info yet - try lo send updated info later
     setTimeout(() => dispatch(updateInfo(body)), 1000);
