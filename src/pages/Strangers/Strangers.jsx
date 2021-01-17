@@ -12,7 +12,7 @@ import FilterSortWrapper from "../../components/FIlterSortWrapper/FilterSortWrap
 import UserCard from "../../components/UserCard/UserCard";
 import Map from "../../components/Map/Map";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   Strangers: {
     fontSize: "2rem",
     paddingBottom: "60px",
@@ -31,12 +31,15 @@ const useStyles = makeStyles({
     right: "10px",
     bottom: "61px",
     zIndex: 20,
+    [theme.breakpoints.down("xs")]: {
+      bottom: "121px",
+    },
   },
   Map: {
     width: "70vw",
     height: "70vh",
   },
-});
+}));
 
 const Strangers = () => {
   const { notif } = useNotifications();

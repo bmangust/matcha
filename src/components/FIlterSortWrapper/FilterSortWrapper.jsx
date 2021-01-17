@@ -12,20 +12,35 @@ import Sort from "../Sort/Sort";
 import { secondaryColor } from "../../theme";
 import cn from "classnames";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   Wrapper: {
     position: "fixed",
-    left: 0,
+    right: 0,
     bottom: "39px",
     zIndex: 6,
+    minWidth: 400,
+    maxWidth: 700,
+    [theme.breakpoints.down("xs")]: {
+      maxWidth: "100%",
+    },
+    [theme.breakpoints.up("md")]: {
+      minWidth: "100%",
+    },
   },
   Paper: {
     padding: "10px 40px",
+    marginRight: 120,
     width: "70vw",
-    minWidth: 400,
-    maxWidth: 700,
-    maxHeight: "80vh",
+    maxHeight: "90vh",
     overflow: "auto",
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+      marginRight: "auto",
+    },
+    [theme.breakpoints.up("md")]: {
+      margin: "auto",
+      maxWidth: 550,
+    },
   },
   ButtonLabel: {
     fontFamily: "Righteous",
@@ -41,7 +56,7 @@ const useStyles = makeStyles({
   Less: {
     transform: "rotateX(180deg)",
   },
-});
+}));
 
 const FilterSortWrapper = () => {
   const [content, setContent] = useState("");
