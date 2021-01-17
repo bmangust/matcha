@@ -104,7 +104,8 @@ const Input = (props) => {
     // update error message
     error ? setErrorText(helperText) : setErrorText("");
     // update inputValid state in Redux
-    onValidate && onValidate((ignoreUntouched || touched) && !error);
+    onValidate &&
+      onValidate((ignoreUntouched || touched || value.length) && !error);
     setError(error);
   }, [value, rule, touched, helperText, onValidate, ignoreUntouched]);
 

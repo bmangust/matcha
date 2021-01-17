@@ -35,7 +35,7 @@ const AvatarContainer = ({ loadingDisabled }) => {
       return;
     }
     if (image.type.search(/image\/(png|jpeg)/i) < 0) {
-      notif("Only png anf jpeg files allowed", "error");
+      notif("Only png and jpeg files allowed", "error");
       return;
     }
     try {
